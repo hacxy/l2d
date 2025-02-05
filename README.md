@@ -1,6 +1,3 @@
-<p align="center">
-  <img width="240" style="text-align:center;" src="https://raw.githubusercontent.com/hacxy/hacxy/main/images/121472002.png"/>
-</p>
 <h1 align="center">L2D</h1>
 <h4 align="center">更快捷的将live2D应用于浏览器环境中</h4>
 
