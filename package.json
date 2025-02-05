@@ -1,0 +1,56 @@
+{
+  "name": "l2d",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "",
+  "author": {
+    "name": "Hacxy",
+    "email": "hacxy.js@outlook.com"
+  },
+  "license": "MIT",
+  "keywords": [
+    "Live2D",
+    "cubism2",
+    "cubism5",
+    "Live2D Component"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build",
+    "test:demo": "vite __tests__",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "lint:staged": "eslint --fix",
+    "prepare": "simple-git-hooks",
+    "commit": "git-cz"
+  },
+  "devDependencies": {
+    "@hacxy/eslint-config": "^0.0.7",
+    "commitizen": "^4.3.1",
+    "cz-git": "^1.11.0",
+    "emittery": "^1.1.0",
+    "eslint": "^9.19.0",
+    "lint-staged": "^15.4.3",
+    "pixi-live2d-display": "0.4.0",
+    "pixi.js": "6.5.10",
+    "simple-git-hooks": "^2.11.1",
+    "vite": "^6.0.11",
+    "vite-plugin-dts": "^4.5.0"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged",
+    "commit-msg": "node scripts/git-hooks/commit-msg.mjs"
+  },
+  "lint-staged": {
+    "*": [
+      "pnpm run lint:staged"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-git",
+      "useEmoji": false
+    }
+  }
+}
