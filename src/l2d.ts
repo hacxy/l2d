@@ -5,6 +5,8 @@ import Emittery from 'emittery';
 import { Live2DModel, MotionPreloadStrategy } from 'pixi-live2d-display';
 import * as PIXI from 'pixi.js';
 
+window.PIXI = PIXI;
+window.PIXI.utils.skipHello();
 export interface Options {
   path: string
   width?: number
@@ -14,19 +16,24 @@ export interface Options {
   scale?: number
 }
 
-class L2D<Name extends keyof Emits> {
+export class L2D<Name extends keyof Emits> {
   private app: PIXI.Application;
   private model?: Live2DModel<InternalModel>;
   private canvasEl: HTMLCanvasElement;
   private emittery = new Emittery<Emits>();
 
   constructor(private el: HTMLElement) {
-    window.PIXI = PIXI;
-    window.PIXI.utils.skipHello();
+    const oldCanvas: HTMLCanvasElement | null = el.querySelector('#l2d-canvas');
     this.canvasEl = document.createElement('canvas');
-    el?.appendChild(this.canvasEl);
+    if (!oldCanvas) {
+      el?.appendChild(this.canvasEl);
+      this.canvasEl.id = 'l2d-canvas';
+    }
+    else {
+      this.canvasEl = oldCanvas;
+    }
     this.app = new PIXI.Application({
-      view: this.canvasEl,
+      view: this.canvasEl!,
       resolution: 2,
       autoStart: true,
       autoDensity: true,
@@ -145,10 +152,3 @@ class L2D<Name extends keyof Emits> {
   }
 }
 
-export function init(el: HTMLElement | null) {
-  if (!el) {
-    console.error('Target element node not found.');
-  }
-  const l2d = new L2D(el!);
-  return l2d;
-}

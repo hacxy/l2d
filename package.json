@@ -21,7 +21,7 @@
     "dist"
   ],
   "scripts": {
-    "dev": "vite build --watch",
+    "dev": "ENV=dev node scripts/build.js",
     "build": "vite build",
     "test:demo": "vite __tests__",
     "lint": "eslint .",
