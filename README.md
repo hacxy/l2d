@@ -5,7 +5,7 @@
 
 `l2d`是 live2D 的缩写. 同时也是我设法找到的足够简短的名称.
 
-顾名思义, `l2d` 是可以在 web 浏览器中加载 Live2D模型 的工具库,
+顾名思义, `l2d` 是可以在 web 浏览器中加载 Live2D模型的工具库
 
 通过 [stackblitz](https://stackblitz.com/edit/vitejs-vite-dye9t3?file=package.json) 在线体验
 

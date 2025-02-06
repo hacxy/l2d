@@ -2,7 +2,8 @@ import type { UnsubscribeFunction } from 'emittery';
 import type { InternalModel } from 'pixi-live2d-display';
 import type { Emits } from './types';
 import Emittery from 'emittery';
-import { Live2DModel, MotionPreloadStrategy } from 'pixi-live2d-display';
+import { Live2DModel, MotionPreloadStrategy, SoundManager } from 'pixi-live2d-display';
+import { HitAreaFrames } from 'pixi-live2d-display/extra';
 import * as PIXI from 'pixi.js';
 
 window.PIXI = PIXI;
@@ -21,6 +22,7 @@ export class L2D<Name extends keyof Emits> {
   private model?: Live2DModel<InternalModel>;
   private canvasEl: HTMLCanvasElement;
   private emittery = new Emittery<Emits>();
+  private hitAreaFrames = new HitAreaFrames();
 
   constructor(private el: HTMLElement) {
     const oldCanvas: HTMLCanvasElement | null = el.querySelector('#l2d-canvas');
@@ -73,16 +75,6 @@ export class L2D<Name extends keyof Emits> {
     });
   }
 
-  /**
-   * 将canvas中的模型移除
-   */
-  removeModel() {
-    const childLen = this.app?.stage.children.length || 0;
-    if (childLen > 0) {
-      this.app.stage.removeChildren(0);
-    }
-  }
-
   private verifyModel() {
     if (!this.model?.width) {
       console.error('Cannot set properties before the model has finished loading.');
@@ -111,6 +103,7 @@ export class L2D<Name extends keyof Emits> {
     this.canvasEl.height = height;
     this.canvasEl.style.width = `${width}px`;
     this.canvasEl.style.height = `${height}px`;
+    SoundManager.volume = 0;
     this.app.resize();
   }
 
@@ -123,6 +116,51 @@ export class L2D<Name extends keyof Emits> {
     if (this.verifyModel()) {
       this.model!.position.x = x;
       this.model!.position.y = y;
+    }
+  }
+
+  /**
+   * 设置旋转角度
+   * @param value
+   */
+  setRotaion(value: number) {
+    if (this.verifyModel()) {
+      this.model!.rotation = (Math.PI * value) / 180;
+    }
+  }
+
+  /**
+   * 设置锚点
+   * @param x
+   * @param y
+   */
+  setAnchor(x: number, y: number) {
+    if (this.verifyModel()) {
+      this.model!.anchor.set(x, y);
+    }
+  }
+
+  /**
+   * 显示可点击区域
+   */
+  showHitAreaFrames(): void {
+    this.model?.addChild(this.hitAreaFrames);
+  }
+
+  /**
+   * 隐藏点击区域
+   */
+  hideHitAreaFrames(): void {
+    this.model?.removeChildren(0);
+  }
+
+  /**
+   * 将canvas中的模型移除
+   */
+  removeModel() {
+    const childLen = this.app?.stage.children.length || 0;
+    if (childLen > 0) {
+      this.app.stage.removeChildren(0);
     }
   }
 
@@ -149,6 +187,14 @@ export class L2D<Name extends keyof Emits> {
       this.canvasEl.style.height = `${height}px`;
       this.app.resize();
     }
+  }
+
+  /**
+   * 设置音量
+   * @param value
+   */
+  setVolume(value: number) {
+    SoundManager.volume = value;
   }
 }
 

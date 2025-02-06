@@ -10,6 +10,10 @@ async function main() {
     scale: 0.1
   });
 
+  await app1.loadModel({
+    path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
+    scale: 0.1
+  });
   // await app1.loadModel({
   //   path: 'https://model.hacxy.cn/Pio/model.json',
   //   scale: 0.1
