@@ -3,7 +3,6 @@ import dts from 'vite-plugin-dts';
 
 export default defineConfig({
   build: {
-    ssr: true,
     lib: {
       name: 'LIVE2D',
       entry: 'src/index.ts',
