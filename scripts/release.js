@@ -105,7 +105,7 @@ async function main() {
 
   // Commit changes to the Git and create a tag.
   step('\nCommitting changes...');
-  await run('git', ['add', 'README.md', 'package.json']);
+  await run('git', ['add', 'package.json']);
   await run('git', ['commit', '-m', `chore: release: v${targetVersion}`]);
   await run('git', ['tag', `v${targetVersion}`]);
 

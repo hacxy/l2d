@@ -1,3 +1,3 @@
 export interface Emits {
-  loaded: undefined
+  hit: string
 }
