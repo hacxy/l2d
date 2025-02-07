@@ -23,6 +23,9 @@
   "scripts": {
     "dev": "vite build --watch",
     "build": "vite build",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
     "test:demo": "vite __tests__",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -46,7 +49,10 @@
     "semver": "^7.7.1",
     "simple-git-hooks": "^2.11.1",
     "vite": "^6.0.11",
-    "vite-plugin-dts": "^4.5.0"
+    "vite-plugin-dts": "^4.5.0",
+    "vitepress": "^1.6.3",
+    "vitepress-theme-mild": "^0.7.0",
+    "vue": "^3.5.13"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged",

@@ -5,6 +5,7 @@ import '../lib/cubism5.js';
 import { L2D } from './l2d.js';
 
 export type { Options } from './l2d.js';
+export type { L2D } from './l2d.js';
 
 // eslint-disable-next-line no-console
 const originalConsoleLog = console.log;

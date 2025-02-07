@@ -17,7 +17,7 @@ export interface Options {
   scale?: number
 }
 
-export class L2D<Name extends keyof Emits> {
+export class L2D {
   private app: PIXI.Application;
   private model?: Live2DModel<InternalModel>;
   private canvasEl: HTMLCanvasElement;
@@ -44,7 +44,7 @@ export class L2D<Name extends keyof Emits> {
     });
   }
 
-  on(eventName: Name, listener: (eventData: Emits[Name]) => void | Promise<void>): UnsubscribeFunction {
+  on(eventName: keyof Emits, listener: (eventData: Emits[keyof Emits]) => void | Promise<void>): UnsubscribeFunction {
     return this.emittery.on(eventName, listener);
   }
 
