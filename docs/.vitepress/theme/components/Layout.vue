@@ -5,7 +5,6 @@ import Live2D from './Live2D.vue';
 
 const { Layout } = MildTheme;
 const path = ref('https://model.hacxy.cn/HK416-2-destroy/model.json');
-// path.value = 'https://model.hacxy.cn/HK416-1-normal/model.json';
 </script>
 
 <template>

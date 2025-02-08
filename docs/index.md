@@ -5,29 +5,29 @@ layout: home
 hero:
   name: "L2D"
   text: "用于浏览器的Live2D模型加载工具"
-  tagline: 将Live2D模型加入至个人网站, 仅需几秒
+  tagline: 将Live2D模型加入至个人网站, 仅需两步
   actions:
     - theme: brand
-      text: Markdown Examplessad
-      link: /markdown-examples
+      text: 快速开始
+      link: /guide/
     - theme: alt
       text: API Examples
       link: /api-examples
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: 开箱即用
+    details: 无需通过script标签额外导入其他sdk, 在浏览器中加载Live2D模型仅需两步
+  - title: 零依赖
+    details: 基于 Vite 现代构建链实现极简交付，源码依赖与生产包完全解耦, 最终生产环境是一个纯js文件, 不存在其他依赖
+  - title: 高兼容
+    details: 集成 cubism2 与 cubism5 支持所有模型版本
 ---
 
 <style>
 :root {
   --vp-home-hero-name-color: transparent;
   --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #bd34fe 30%, #41d1ff);
-  --vp-home-hero-image-background-image: linear-gradient(-45deg, #83dffd 50%, #47caff 50%);
+  --vp-home-hero-image-background-image: linear-gradient(-45deg,rgba(131, 222, 253, 0.6) 50%, #47caff 50%);
   --vp-home-hero-image-filter: blur(44px);
   .image-bg{
     z-index: -1;

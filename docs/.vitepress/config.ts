@@ -15,15 +15,9 @@ export default defineConfigWithTheme<ThemeConfig>({
       { text: 'Examples', link: '/markdown-examples' }
     ],
 
-    sidebar: [
-      {
-        text: 'Examples',
-        items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' }
-        ]
-      }
-    ],
+    sidebar: {
+      '/guide/': 'auto'
+    },
     footer: {
       message: 'MIT Licensed',
       copyright:

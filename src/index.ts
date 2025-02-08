@@ -4,8 +4,8 @@ import '../lib/cubism5.js';
 // eslint-disable-next-line perfectionist/sort-imports
 import { L2D } from './l2d.js';
 
-export type { Options } from './l2d.js';
 export type { L2D } from './l2d.js';
+export type * from './types.js';
 
 // eslint-disable-next-line no-console
 const originalConsoleLog = console.log;
