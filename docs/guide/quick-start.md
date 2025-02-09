@@ -1,3 +1,8 @@
+---
+sidebar:
+  sort: 1
+---
+
 # 快速开始
 
 ## 安装
@@ -9,6 +14,10 @@ npm install l2d
 ## 加载 Live2D 模型
 
 之后在浏览器中加载 Live2D 模型仅需两步, 假设 DOM 中存在一个 id 为 `l2d` 的 `div` 元素
+
+```html
+<div id="l2d"></div>
+```
 
 ### 初始化
 
@@ -26,5 +35,21 @@ l2d.loadModel({
   path: 'https://model.hacxy.cn/HK416-1-normal/model.json',
   scale: 0.1
   // ...other options
+}).then(() => {
+  // 模型加载成功
 });
+```
+
+调用加载模型方法时, 可以传入 `options` 来定义模型地址和模型样式, `loadModel` 是一个异步函数, 你可以在 `then` 方法中监听模型是否加载成功, 为避免回调地狱, 你还可以使用 `async` 和 `await` 关键字同步调用.
+
+```ts
+import { init } from 'l2d';
+const l2d = init(document.getElementById('l2d'));
+
+async function main() {
+  await l2d.loadModel({/** ...  */});
+  // ...模型加载成功之后的操作
+}
+
+main();
 ```

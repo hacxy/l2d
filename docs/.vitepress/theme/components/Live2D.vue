@@ -2,8 +2,8 @@
 // eslint-disable-next-line antfu/no-import-dist
 import type { L2D, Options } from '../../../../dist';
 import { onMounted, ref, toRefs, watch } from 'vue';
-// eslint-disable-next-line antfu/no-import-dist
-import { init } from '../../../../dist';
+
+// import { init } from '../../../../dist';
 
 const props = defineProps<Options>();
 const emits = defineEmits<{
@@ -41,8 +41,10 @@ function reloadModel() {
 }
 
 onMounted(() => {
-  l2d = init(l2dWrapper.value);
-  reloadModel();
+  import('../../../../dist').then(({ init }) => {
+    l2d = init(l2dWrapper.value);
+    reloadModel();
+  });
 });
 </script>
 

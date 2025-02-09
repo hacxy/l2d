@@ -9,12 +9,11 @@ export default defineConfigWithTheme<ThemeConfig>({
   extends: baseConfig,
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
-    logo: 'logo.svg',
+    logo: '/logo.svg',
     nav: [
-      { text: 'Home', link: '/' },
+      { text: '指南', link: '/guide/' },
       { text: 'Examples', link: '/markdown-examples' }
     ],
-
     sidebar: {
       '/guide/': 'auto'
     },

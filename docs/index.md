@@ -4,23 +4,23 @@ layout: home
 
 hero:
   name: "L2D"
-  text: "用于浏览器的Live2D模型加载工具"
+  text: "在浏览器中加载Live2D模型"
   tagline: 将Live2D模型加入至个人网站, 仅需两步
   actions:
     - theme: brand
       text: 快速开始
-      link: /guide/
+      link: /guide/index.md
     - theme: alt
       text: API Examples
       link: /api-examples
 
 features:
   - title: 开箱即用
-    details: 无需通过script标签额外导入其他sdk, 在浏览器中加载Live2D模型仅需两步
+    details: 在浏览器中加载Live2D模型仅需两步
   - title: 零依赖
-    details: 基于 Vite 现代构建链实现极简交付，源码依赖与生产包完全解耦, 最终生产环境是一个纯js文件, 不存在其他依赖
+    details: 基于 Vite 现代构建链实现极简交付，源码依赖与生产包完全解耦, 意味着这是一个可以被独立使用的纯js文件
   - title: 高兼容
-    details: 集成 cubism2 与 cubism5 支持所有模型版本
+    details: 默认集成 cubism2 与 cubism5 支持目前所有模型版本, 无需额外引入SDK
 ---
 
 <style>

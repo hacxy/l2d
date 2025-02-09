@@ -1,5 +1,5 @@
-import linter from '@hacxy/eslint-config';
+import linter from '@hacxy/eslint-config/vue';
 
 export default linter({
-  ignores: ['lib/**']
+  ignores: ['lib/**', 'dist/**']
 });
