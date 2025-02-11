@@ -8,7 +8,7 @@ sidebar:
 ## 安装
 
 ```sh
-npm install l2d
+npm install l2d@next
 ```
 
 ## 加载 Live2D 模型
