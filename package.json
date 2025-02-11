@@ -24,7 +24,7 @@
     "dev": "vite build --watch",
     "build": "vite build",
     "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
+    "docs:build": "npm run build && vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "test:demo": "vite __tests__",
     "lint": "eslint .",
