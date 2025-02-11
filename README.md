@@ -2,7 +2,7 @@
   <img width="240"  src="https://hacxy-1259720482.cos.ap-hongkong.myqcloud.com/images/logo.svg"/>
 </p>
 <h1 align="center">L2D</h1>
-<h4 align="center">在web环境中更加便携的加载Live2D</h4>
+<h4 align="center">在浏览器中加载Live2D模型更简单</h4>
 
 ## 什么是 l2d
 
