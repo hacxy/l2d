@@ -51,7 +51,7 @@
     "vite": "^6.0.11",
     "vite-plugin-dts": "^4.5.0",
     "vitepress": "^1.6.3",
-    "vitepress-theme-mild": "0.7.1-alpha.0",
+    "vitepress-theme-mild": "0.8.2",
     "vue": "^3.5.13"
   },
   "simple-git-hooks": {
