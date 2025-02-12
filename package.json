@@ -42,6 +42,7 @@
     "eslint": "^9.19.0",
     "execa": "^9.5.2",
     "lint-staged": "^15.4.3",
+    "live2d-motionsync": "^0.0.4",
     "picocolors": "^1.1.1",
     "pixi-live2d-display": "0.4.0",
     "pixi.js": "6.5.10",

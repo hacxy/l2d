@@ -29,6 +29,9 @@ importers:
       lint-staged:
         specifier: ^15.4.3
         version: 15.4.3
+      live2d-motionsync:
+        specifier: ^0.0.4
+        version: 0.0.4
       picocolors:
         specifier: ^1.1.1
         version: 1.1.1
@@ -2965,6 +2968,9 @@ packages:
 
   lit@3.2.1:
     resolution: {integrity: sha512-1BBa1E/z0O9ye5fZprPtdqnc0BFzxIxTTOO/tQFmyC/hj1O3jL4TfmLBw0WEwjAokdLwpclkvGgDJwTIh0/22w==}
+
+  live2d-motionsync@0.0.4:
+    resolution: {integrity: sha512-H88M2o580DSoZYwaymTB/7DcHg1N6jna2OQ15ECShoYvVJLPqZ2zMqacB4+ZYupJb/Q4/lJfuXUT06K/vrVX/g==}
 
   local-pkg@0.5.1:
     resolution: {integrity: sha512-9rrA30MRRP3gBD3HTGnC6cDFpaE1kVDWxWgqWJUN0RvDNAo+Nz/9GxB+nHOH0ifbVFy0hSA1V6vFDvnx54lTEQ==}
@@ -7479,6 +7485,8 @@ snapshots:
       '@lit/reactive-element': 2.0.4
       lit-element: 4.1.1
       lit-html: 3.2.1
+
+  live2d-motionsync@0.0.4: {}
 
   local-pkg@0.5.1:
     dependencies:

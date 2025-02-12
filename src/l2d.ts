@@ -2,6 +2,7 @@ import type { UnsubscribeFunction } from 'emittery';
 import type { InternalModel } from 'pixi-live2d-display';
 import type { Emits, Options } from './types';
 import Emittery from 'emittery';
+import { MotionSync } from 'live2d-motionsync';
 import { Live2DModel, MotionPreloadStrategy, SoundManager } from 'pixi-live2d-display';
 import { HitAreaFrames } from 'pixi-live2d-display/extra';
 import * as PIXI from 'pixi.js';
@@ -12,29 +13,18 @@ window.PIXI.utils.skipHello();
 export class L2D {
   private app: PIXI.Application;
   private model?: Live2DModel<InternalModel>;
-  private canvasEl: HTMLCanvasElement;
   private emittery = new Emittery<Emits>();
   private hitAreaFrames = new HitAreaFrames();
+  private motion?: MotionSync;
 
-  constructor(private el: HTMLElement) {
-    const oldCanvas: HTMLCanvasElement | null = el.querySelector('#l2d-canvas');
-    this.canvasEl = document.createElement('canvas');
-    el.style.width = '0px';
-    el.style.height = '0px';
-    if (!oldCanvas) {
-      el?.appendChild(this.canvasEl);
-      this.canvasEl.id = 'l2d-canvas';
-    }
-    else {
-      this.canvasEl = oldCanvas;
-    }
+  constructor(private canvasEl: HTMLCanvasElement) {
     this.app = new PIXI.Application({
-      view: this.canvasEl!,
+      view: this.canvasEl,
       resolution: 2,
       autoStart: true,
       autoDensity: true,
       backgroundAlpha: 0,
-      resizeTo: el!
+      resizeTo: canvasEl.parentElement
     });
   }
 
@@ -44,28 +34,30 @@ export class L2D {
 
   /**
    * 加载模型, 加载时可以设置初始属性用于决定如何展示模型
-   * 如果当前canvas中已经存在模型, 则会先移除之前加载的模型
    * @param options
    */
-  async loadModel(options: Options) {
-    const { anchor = [], x, y, width, height, rotaion, volume, scale, path } = options;
+  async load(options: Options) {
+    const { anchor = [], position, rotaion, volume, scale, path, motionSync } = options;
     return new Promise<void>((resolve, reject) => {
       Live2DModel.from(path, {
-        motionPreload: MotionPreloadStrategy.IDLE,
+        motionPreload: MotionPreloadStrategy.ALL,
+        // autoInteract: false,
         onError(err) {
           console.error(err);
           reject(err);
         },
       }).then(model => {
         this.model = model;
+        this.motion = new MotionSync(model.internalModel);
+        if (motionSync) {
+          this.motion.loadMotionSyncFromUrl(motionSync);
+        }
         if (model) {
           this.setAnchor(...anchor);
-          this.setPosition(x, y);
           this.setRotaion(rotaion);
           this.setVolume(volume);
           this.setScale(scale);
-          this.setSize(width, height);
-          this.destroyModel();
+          this.setPosition(position);
           this.app.stage.addChild(model);
         }
         resolve();
@@ -85,13 +77,17 @@ export class L2D {
 
   /**
    * 设置模型在canvas中的坐标
-   * @param x
-   * @param y
    */
-  setPosition(x = 0, y = 0) {
-    if (this.verifyModel()) {
-      this.model!.position.x = x;
-      this.model!.position.y = y;
+  setPosition(position: [x: number, y: number] | 'center') {
+    if (Array.isArray(position)) {
+      const [x, y] = position;
+      if (this.verifyModel()) {
+        this.model!.position.x = x;
+        this.model!.position.y = y;
+      }
+    }
+    else {
+      this.moveCenter();
     }
   }
 
@@ -133,35 +129,26 @@ export class L2D {
   /**
    * 将canvas中的模型移除
    */
-  destroyModel() {
-    const childLen = this.app?.stage.children.length || 0;
+  destroy() {
+    const childLen = this.app?.stage?.children?.length || 0;
     if (childLen > 0) {
-      this.app.stage.removeChildren(0);
+      this.app.stage.removeChildren(0, childLen);
     }
+    this.model.destroy();
   }
 
   // 设置缩放
-  setScale(x?: number, y?: number) {
+  setScale(value: number | 'auto') {
     if (this.verifyModel()) {
-      if (!y && x) {
-        y = x;
+      if (typeof value === 'number') {
+        this.model?.scale.set(value, value);
       }
-      this.model?.scale.set(x, y);
-    }
-  }
+      else {
+        const ratio = this.model.height / this.model.width;
 
-  setSize(width?: number, height?: number) {
-    if (this.verifyModel()) {
-      width = width ?? this.model!.width;
-      height = height ?? this.model!.height;
-
-      this.el.style.width = `${width}px`;
-      this.el.style.height = `${height}px`;
-      this.canvasEl.width = width;
-      this.canvasEl.height = height;
-      this.canvasEl.style.width = `${width}px`;
-      this.canvasEl.style.height = `${height}px`;
-      this.app.resize();
+        this.model.width = this.app.view.width / 2;
+        this.model.height = this.model.width * ratio;
+      }
     }
   }
 
@@ -171,6 +158,23 @@ export class L2D {
    */
   setVolume(value?: number) {
     SoundManager.volume = value;
+  }
+
+  moveCenter() {
+    this.model.x = (this.app.view.width / 2 - this.model.width) / 2;
+    this.model.y = (this.app.view.height / 2 - this.model.height) / 2;
+  }
+
+  /**
+   * 说话(口型动作同步)
+   * @param audioBuffer
+   */
+  async speak(audioBuffer: AudioBuffer) {
+    if (!this.motion || !this.model)
+      return;
+    if (audioBuffer instanceof AudioBuffer) {
+      this.motion.play(audioBuffer);
+    }
   }
 }
 

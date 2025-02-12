@@ -1,24 +1,31 @@
-import { init } from '../src';
+// eslint-disable-next-line antfu/no-import-dist
+import { init } from '../dist/index';
+import { tts } from './tts';
 
 async function main() {
-  const app1 = init(document.getElementById('app'));
-  // const app2 = init(document.getElementById('main'));
-  // init(document.getElementById('main2'));
-  // init(document.getElementById('main3'));
-  await app1?.loadModel({
-    path: 'https://model.hacxy.cn/HK416-1-normal/model.json',
-    scale: 0.1
+  const btnEl = document.getElementById('btn');
+  const l2d = init(document.getElementById('app') as HTMLCanvasElement);
+
+  await l2d.load({
+    path: 'https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.model3.json',
+    motionSync: 'https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.motionsync3.json'
+  }).then(() => {
+    setTimeout(async () => {
+    }, 2000);
   });
 
-  await app1.loadModel({
-    path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
-    scale: 0.1
+  btnEl?.addEventListener('click', async () => {
+    const audioBuffer = await tts('你好, 欢迎使用l2d,  这是一个 live2d 口型动作同步的例子');
+
+    await l2d.speak(audioBuffer);
   });
-  // await app1.loadModel({
+  // app1.destroy();
+  // // app1.moveCenter();
+  // await app1.load({
   //   path: 'https://model.hacxy.cn/Pio/model.json',
-  //   scale: 0.1
+  //   scale: 'auto'
   // });
-  app1?.setSize(window.innerWidth, window.innerHeight);
+  // app1?.setSize(window.innerWidth, window.innerHeight);
   // app1.setPosition(10, 10);
   // setTimeout(() => {
   //   app1.setScale(0.2);

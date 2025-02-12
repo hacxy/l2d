@@ -7,26 +7,10 @@ import { L2D } from './l2d.js';
 export type { L2D } from './l2d.js';
 export type * from './types.js';
 
-// eslint-disable-next-line no-console
-const originalConsoleLog = console.log;
-
-// eslint-disable-next-line no-console
-console.log = function (...args) {
-  // 检查第一个参数是否是字符串并且以 [CSM] 开头
-  if (typeof args[0] === 'string') {
-    if (args[0].startsWith('[CSM]')) {
-      return void 0;
-    }
-    else {
-      originalConsoleLog.apply(console, args);
-    }
-  }
-};
-
-export function init(el: HTMLElement | null) {
-  if (!el) {
+export function init(canvasEl: HTMLCanvasElement | null) {
+  if (!canvasEl) {
     console.error('Target element node not found.');
   }
-  const l2d = new L2D(el!);
+  const l2d = new L2D(canvasEl!);
   return l2d;
 }
