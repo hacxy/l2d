@@ -38,6 +38,7 @@ export class Model {
    * 设置模型在canvas中的坐标
    */
   setPosition(position: [x: number, y: number] | 'center') {
+    this.app.resize();
     if (Array.isArray(position)) {
       const [x, y] = position;
       this.model!.position.x = x;
@@ -62,6 +63,7 @@ export class Model {
    * @param y
    */
   setAnchor(x?: number, y?: number) {
+    this.app.resize();
     this.model.anchor.set(x, y);
   }
 
