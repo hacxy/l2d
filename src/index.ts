@@ -7,9 +7,17 @@ import { L2D } from './l2d.js';
 export type { L2D } from './l2d.js';
 export type * from './types.js';
 
-export function init(canvasEl: HTMLCanvasElement | null) {
+/**
+ * Initialize L2D instance
+ * @param canvasEl canvas element
+ * @returns L2D instance
+ */
+export function init(canvasEl: HTMLCanvasElement) {
   if (!canvasEl) {
-    console.error('Target element node not found.');
+    throw new TypeError('Target element node not found.');
+  }
+  if (!(canvasEl instanceof HTMLCanvasElement)) {
+    throw new TypeError('Target element node is not a canvas element.');
   }
   const l2d = new L2D(canvasEl!);
   return l2d;
