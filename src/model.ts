@@ -92,6 +92,7 @@ export class Model {
       this.model?.scale.set(value, value);
     }
     else {
+      this.app.resize();
       const ratio = this.model.height / this.model.width;
       this.model.width = this.app.view.width / 2;
       this.model.height = this.model.width * ratio;

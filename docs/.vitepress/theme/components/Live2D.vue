@@ -1,54 +1,62 @@
 <script lang="ts" setup>
 // eslint-disable-next-line antfu/no-import-dist
-import type { L2D, Options } from '../../../../dist';
-import { onMounted, ref, toRefs, watch } from 'vue';
+import type { L2D, Model, Options } from '../../../../dist';
+import { nextTick, onMounted, ref, toRefs, watch } from 'vue';
 
-// import { init } from '../../../../dist';
+const props = defineProps<Options & {
+  width?: number
+  height?: number
+}>();
 
-const props = defineProps<Options>();
 const emits = defineEmits<{
   (e: 'load', status: 'loading' | 'done'): void
 }>();
-const { path, x, y, height, width, scale, volume, anchor, rotaion } = toRefs(props);
+const { path, position, scale, volume, anchor, rotaion, width, height } = toRefs(props);
 
 let l2d: L2D;
+let model: Model;
 
-const l2dWrapper = ref(null);
+const l2dCanvas = ref(null);
 
 watch(path, reloadModel);
-watch(() => [width, height], () => l2d.setSize(width.value, height.value), { deep: true });
-watch(scale, () => l2d.setScale(scale.value));
-watch(volume, () => l2d.setVolume(volume.value));
-watch(anchor, () => l2d.setAnchor(...(anchor.value || [])));
-watch(rotaion, () => l2d.setRotaion(rotaion.value));
-watch(() => [x, y], () => l2d.setPosition(x.value, y.value), { deep: true });
+watch(scale, () => model.setScale(scale.value || 'auto'));
+watch(volume, () => model.setVolume(volume.value));
+watch(anchor, () => model.setAnchor(...(anchor.value || [])));
+watch(rotaion, () => model.setRotaion(rotaion.value));
+watch(() => position, () => model.setPosition(position.value || 'center'), { deep: true });
+watch(() => [width, height], () => {
+  nextTick(() => {
+    model.setScale(scale.value || 'auto');
+    model.setPosition(position.value || 'center');
+  });
+}, { deep: true });
 
-function reloadModel() {
+async function reloadModel() {
+  model?.destroy();
+
   emits('load', 'loading');
-  l2d.loadModel({
+
+  model = await l2d.create({
     path: path.value,
     scale: scale.value,
-    x: x.value,
-    y: y.value,
-    width: width.value,
-    height: height.value,
+    position: position.value,
     volume: volume.value,
     rotaion: rotaion.value,
     anchor: anchor.value
-  }).then(() => {
-    emits('load', 'done');
   });
+  emits('load', 'done');
 }
 
 onMounted(() => {
   import('../../../../dist').then(({ init }) => {
-    l2d = init(l2dWrapper.value);
+    l2d = init(l2dCanvas.value! as HTMLCanvasElement);
     reloadModel();
   });
 });
 </script>
 
 <template>
-  <div ref="l2dWrapper" />
+  <div :style="{ width: `${width}px`, height: `${height}px` }">
+    <canvas ref="l2dCanvas" />
+  </div>
 </template>
-

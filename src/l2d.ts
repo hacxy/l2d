@@ -26,9 +26,12 @@ export class L2D {
     return this.app.stage.children;
   }
 
+  // reseze() {
+  //   this.app.resize();
+  // }
+
   async create(options: Options) {
-    const { anchor = [], rotaion, volume, scale = 'auto', position = 'center'
-    } = options;
+    const { anchor = [], rotaion, volume, scale = 'auto', position = 'center' } = options;
     let _model: Live2DModel<InternalModel>;
     try {
       _model = await Model.create(options);
