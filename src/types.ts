@@ -1,5 +1,6 @@
 export interface Emits {
   hit: string
+  loaded: undefined
 }
 
 export interface Options {
