@@ -35,8 +35,8 @@ export class L2D {
     catch (e) {
       throw new Error(e);
     }
-    const _motion = new MotionSync(_model);
-    const _motionStream = new MotionSyncStream(_model);
+    const _motion = new MotionSync(_model.internalModel);
+    const _motionStream = new MotionSyncStream(_model.internalModel);
 
     if (options.motionSync) {
       _motion.loadMotionSyncFromUrl(options.motionSync);

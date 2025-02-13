@@ -119,7 +119,7 @@ export class Model {
    * @param audioBuffer
    */
   async speak(audioBuffer: AudioBuffer) {
-    if (!this.motion || !this.model)
+    if (!this.motion)
       return;
     if (audioBuffer instanceof AudioBuffer) {
       this.motion.play(audioBuffer);
