@@ -43,7 +43,7 @@ export class L2D {
       _motionStream.loadMotionSyncFromUrl(options.motionSync);
     }
 
-    const model = new Model(_model, _motion, this.app);
+    const model = new Model(_model, _motion, _motionStream, this.app);
 
     model.setAnchor(...anchor);
     model.setRotaion(rotaion);

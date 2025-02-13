@@ -1,5 +1,6 @@
 import type { UnsubscribeFunction } from 'emittery';
 import type { MotionSync } from 'live2d-motionsync';
+import type { MotionSync as MotionSyncStream } from 'live2d-motionsync/stream';
 import type { InternalModel } from 'pixi-live2d-display';
 import type { Application } from 'pixi.js';
 import type { Emits, Options } from './types';
@@ -11,7 +12,7 @@ export class Model {
   private emittery: Emittery<Emits>;
   private hitAreaFrames: HitAreaFrames;
 
-  constructor(private model: Live2DModel<InternalModel>, private motion: MotionSync, private app: Application) {
+  constructor(private model: Live2DModel<InternalModel>, private motion: MotionSync, private motionStream: MotionSyncStream, private app: Application) {
     this.emittery = new Emittery<Emits>();
     this.hitAreaFrames = new HitAreaFrames();
   }
@@ -124,5 +125,9 @@ export class Model {
     if (audioBuffer instanceof AudioBuffer) {
       this.motion.play(audioBuffer);
     }
+  }
+
+  async speakStream(mediaStream: MediaStream) {
+    this.motionStream.play(mediaStream);
   }
 }
