@@ -7,6 +7,7 @@ export default defineConfigWithTheme<ThemeConfig>({
   title: 'L2D',
   description: 'A VitePress Site',
   extends: baseConfig,
+  ignoreDeadLinks: true,
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     logo: '/logo.svg',
