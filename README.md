@@ -26,6 +26,12 @@
 
 最终我的想法是将模型加载能力抽离成一个独立的库, 它面向初级开发者同时也面向高级开发者, 它完全开源, 任何人都可以基于这个工具二次开发Live2D组件.
 
+## 案例
+
+以下是目前正在使用`l2d`的项目:
+
+- https://being.leafyee.xyz
+
 ## License
 
 [MIT](./LICENSE) License &copy; 2023-PRESENT [Hacxy](https://github.com/hacxy)

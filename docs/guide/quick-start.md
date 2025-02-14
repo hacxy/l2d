@@ -30,7 +30,7 @@ const l2d = init(document.getElementById('canvas') as HTMLCanvasElement);
 
 ### 创建模型
 
-在画布中创建和加载一个模型, 只需要调用`l2d`实例下的 `create` 方法, 调用时可以传入 [options](./create-options.md) 来定义模型地址和模型样式, 同时 `create` 是一个异步函数, 你可以在 `then` 方法被调用时表示模型创建成功.
+在画布中创建和加载一个模型, 只需要调用`l2d`实例下的 `create` 方法, 调用时可以传入 [options](./create-options.md) 来定义模型地址和模型样式, 同时 `create` 是一个异步函数, 当 `then` 方法被调用时表示模型创建成功.
 
 <<< ../demos/index.ts#demo1
 
@@ -65,7 +65,7 @@ main();
 
 <<< ../demos/index.ts#demo2
 
-== 效果
+== 实际效果
 
 <Demo :demo="demo2" :width="450"/>
 
