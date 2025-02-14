@@ -8,8 +8,13 @@ const l2d = init(document.getElementById('l2d') as HTMLCanvasElement);
 
 async function main() {
   const model = await l2d.create({
-    path: ''
+    path: 'https://model.hacxy.cn/HK416-1-normal/model.json',
+    position: 'center'
   });
+
+  // ...模型创建完成
+
+  model.setPosition([50, 50]); // 重新设置位置
 }
 ```
 
