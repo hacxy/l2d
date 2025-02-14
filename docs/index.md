@@ -9,7 +9,7 @@ hero:
   actions:
     - theme: brand
       text: 快速开始
-      link: /guide/index.md
+      link: /guide/quick-start.md
 
 features:
   - title: 开箱即用

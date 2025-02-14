@@ -4,5 +4,5 @@ export default linter({
   rules: {
     'max-params': 0
   },
-  ignores: ['lib/**', 'dist/**']
+  ignores: ['lib/**', 'dist/**', 'docs/api/**']
 });

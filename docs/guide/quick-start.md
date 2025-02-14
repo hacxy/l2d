@@ -11,7 +11,7 @@ sidebar:
 npm install l2d@next
 ```
 
-## 加载 Live2D 模型
+## 基础用法
 
 之后在浏览器中加载 Live2D 模型仅需两步, 假设 DOM 中存在一个 id 为 `l2d-canvas` 的 `canvas` 元素
 
@@ -30,7 +30,7 @@ const l2d = init(document.getElementById('canvas') as HTMLCanvasElement);
 
 ### 创建模型
 
-在画布中创建和加载一个模型, 只需要调用`l2d`实例下的 `create` 方法, 调用时可以传入 `options` 来定义模型地址和模型样式, 同时 `create` 是一个异步函数, 你可以在 `then` 方法被调用时表示模型创建成功.
+在画布中创建和加载一个模型, 只需要调用`l2d`实例下的 `create` 方法, 调用时可以传入 [options](./create-options.md) 来定义模型地址和模型样式, 同时 `create` 是一个异步函数, 你可以在 `then` 方法被调用时表示模型创建成功.
 
 ```ts
 l2d.create({
@@ -58,3 +58,5 @@ async function main() {
 
 main();
 ```
+
+另外, 在创建模型时可以传递 **[创建选项](./create-options.md)** 来定义模型的行为和样式.

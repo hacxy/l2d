@@ -23,8 +23,8 @@
   "scripts": {
     "dev": "vite build --watch",
     "build": "vite build",
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "npm run build && vitepress build docs",
+    "docs:dev": "npm run typedoc && vitepress dev docs",
+    "docs:build": "npm run typedoc && npm run build && vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "test:demo": "vite __tests__",
     "lint": "eslint .",
@@ -32,7 +32,8 @@
     "lint:staged": "eslint --fix",
     "prepare": "simple-git-hooks",
     "commit": "git-cz",
-    "release": "node scripts/release.js"
+    "release": "node scripts/release.js",
+    "typedoc": "typedoc"
   },
   "devDependencies": {
     "@hacxy/eslint-config": "^0.0.7",
@@ -49,6 +50,8 @@
     "prompts": "^2.4.2",
     "semver": "^7.7.1",
     "simple-git-hooks": "^2.11.1",
+    "typedoc": "^0.27.7",
+    "typedoc-plugin-markdown": "^4.4.2",
     "vite": "^6.0.11",
     "vite-plugin-dts": "^4.5.0",
     "vitepress": "^1.6.3",
