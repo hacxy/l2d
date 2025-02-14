@@ -66,8 +66,8 @@ importers:
         specifier: ^1.6.3
         version: 1.6.3(@algolia/client-search@5.20.1)(@types/node@22.13.1)(async-validator@4.2.5)(nprogress@0.2.0)(postcss@8.5.1)(sass@1.84.0)(search-insights@2.17.3)(typescript@5.7.3)
       vitepress-theme-mild:
-        specifier: 0.8.2
-        version: 0.8.2(@nuxt/kit@3.15.4)(@vue/devtools-api@7.7.1)(typescript@5.7.3)(vitepress@1.6.3(@algolia/client-search@5.20.1)(@types/node@22.13.1)(async-validator@4.2.5)(nprogress@0.2.0)(postcss@8.5.1)(sass@1.84.0)(search-insights@2.17.3)(typescript@5.7.3))
+        specifier: 0.8.3
+        version: 0.8.3(@nuxt/kit@3.15.4)(@vue/devtools-api@7.7.1)(typescript@5.7.3)(vitepress@1.6.3(@algolia/client-search@5.20.1)(@types/node@22.13.1)(async-validator@4.2.5)(nprogress@0.2.0)(postcss@8.5.1)(sass@1.84.0)(search-insights@2.17.3)(typescript@5.7.3))
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.7.3)
@@ -4221,8 +4221,8 @@ packages:
       vitepress: ^1.0.0-rc.27
       vue: ^3.3.8
 
-  vitepress-theme-mild@0.8.2:
-    resolution: {integrity: sha512-Twfz5g43bpCAzpUKAWhHS0XA4TjQpuRnAtJycgd0WiS6repJbG/I9cwttWdfY9JPqFOPypICn1tmmAy0Pue0Hg==}
+  vitepress-theme-mild@0.8.3:
+    resolution: {integrity: sha512-h4++N/sYEbxDSbo8q4wPB9wkiruE0uJu3oCULwDhFYfDGJVKEaFUceSRl36UDAJIDDopZJ0U0rZVAfd/b+sLbg==}
 
   vitepress@1.6.3:
     resolution: {integrity: sha512-fCkfdOk8yRZT8GD9BFqusW3+GggWYZ/rYncOfmgcDtP3ualNHCAg+Robxp2/6xfH1WwPHtGpPwv7mbA3qomtBw==}
@@ -9009,7 +9009,7 @@ snapshots:
       vitepress: 1.6.3(@algolia/client-search@5.20.1)(@types/node@22.13.1)(async-validator@4.2.5)(nprogress@0.2.0)(postcss@8.5.1)(sass@1.84.0)(search-insights@2.17.3)(typescript@5.7.3)
       vue: 3.5.13(typescript@5.7.3)
 
-  vitepress-theme-mild@0.8.2(@nuxt/kit@3.15.4)(@vue/devtools-api@7.7.1)(typescript@5.7.3)(vitepress@1.6.3(@algolia/client-search@5.20.1)(@types/node@22.13.1)(async-validator@4.2.5)(nprogress@0.2.0)(postcss@8.5.1)(sass@1.84.0)(search-insights@2.17.3)(typescript@5.7.3)):
+  vitepress-theme-mild@0.8.3(@nuxt/kit@3.15.4)(@vue/devtools-api@7.7.1)(typescript@5.7.3)(vitepress@1.6.3(@algolia/client-search@5.20.1)(@types/node@22.13.1)(async-validator@4.2.5)(nprogress@0.2.0)(postcss@8.5.1)(sass@1.84.0)(search-insights@2.17.3)(typescript@5.7.3)):
     dependencies:
       '@css-render/vue3-ssr': 0.15.14(vue@3.5.13(typescript@5.7.3))
       '@giscus/vue': 3.1.1(vue@3.5.13(typescript@5.7.3))
@@ -9050,9 +9050,9 @@ snapshots:
       '@docsearch/css': 3.8.2
       '@docsearch/js': 3.8.2(@algolia/client-search@5.20.1)(search-insights@2.17.3)
       '@iconify-json/simple-icons': 1.2.23
-      '@shikijs/core': 2.3.1
+      '@shikijs/core': 2.3.2
       '@shikijs/transformers': 2.3.1
-      '@shikijs/types': 2.3.1
+      '@shikijs/types': 2.3.2
       '@types/markdown-it': 14.1.2
       '@vitejs/plugin-vue': 5.2.1(vite@5.4.14(@types/node@22.13.1)(sass@1.84.0))(vue@3.5.13(typescript@5.7.3))
       '@vue/devtools-api': 7.7.1

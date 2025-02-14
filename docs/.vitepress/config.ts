@@ -9,6 +9,7 @@ export default defineConfigWithTheme<ThemeConfig>({
   extends: baseConfig,
   ignoreDeadLinks: true,
   themeConfig: {
+    outline: [2, 3],
     // https://vitepress.dev/reference/default-theme-config
     logo: '/logo.svg',
     nav: [
