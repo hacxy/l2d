@@ -1,6 +1,6 @@
 ---
 sidebar:
-  sort: 1
+  sort: 2
 ---
 
 # 快速开始
@@ -32,7 +32,7 @@ const l2d = init(document.getElementById('canvas') as HTMLCanvasElement);
 
 在画布中创建和加载一个模型, 只需要调用`l2d`实例下的 `create` 方法, 调用时可以传入 [options](./create-options.md) 来定义模型地址和模型样式, 同时 `create` 是一个异步函数, 当 `then` 方法被调用时表示模型创建成功.
 
-<<< ../demos/index.ts#demo1
+<<< ../../demos/index.ts#demo1
 
 如果模型成功被创建, 那么在画布中应该能看到这个 Live2D 模型:
 
@@ -56,21 +56,25 @@ main();
 
 另外, 在创建模型时可以传递 **[创建选项](./create-options.md)** 来定义模型的行为和样式.
 
-#### 在当前画布上创建多个模型
+## 创建多个模型
 
 `create` 方法支持调用多次, 这将会在画布上创建多个模型:
 
 :::tabs
 == 代码示例
 
-<<< ../demos/index.ts#demo2
+<<< ../../demos/index.ts#demo2
 
 == 实际效果
 
-<Demo :demo="demo2" :width="450"/>
+<Demo :demo="demo2" width="100%"/>
 
 :::
 
+::: tip
+在这个示例中, 当黑猫创建完成后才会开始创建白猫
+:::
+
 <script setup>
-import { demo1, demo2 } from '../demos/index.ts'
+import { demo1, demo2 } from '../../demos/index.ts'
 </script>

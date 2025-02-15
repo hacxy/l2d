@@ -1,4 +1,9 @@
-# 模型实例
+---
+sidebar:
+  sort: 3
+---
+
+# 调整模型
 
 创建模型将返回一个实例, 用于方便后续操作模型的样式和行为
 
@@ -18,4 +23,4 @@ async function main() {
 }
 ```
 
-<!--@include: ../api/classes/Model.md-->
+<!--@include: ../../api/classes/Model.md-->

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 const { demo, width, height } = defineProps<{
   demo: (init, l2dCanvas) => Promise<void>
-  width?: number
-  height?: number
+  width?: number | string
+  height?: number | string
 }>();
 
 const l2dCanvas = ref(null);
@@ -14,10 +14,31 @@ onMounted(() => {
     demo(init, l2dCanvas);
   });
 });
+const finalWidth = computed(() => {
+  if (!width)
+    return '300px';
+  if (typeof width === 'number') {
+    return `${width}px`;
+  }
+  else {
+    return width;
+  }
+});
+
+const finalHeight = computed(() => {
+  if (!height)
+    return '300px';
+  if (typeof height === 'number') {
+    return `${height}px`;
+  }
+  else {
+    return height;
+  }
+});
 </script>
 
 <template>
-  <div :style="{ width: `${width ?? 300}px`, height: `${height ?? 300}px` }">
+  <div :style="{ width: finalWidth, height: finalHeight }">
     <canvas ref="l2dCanvas" />
   </div>
 </template>
