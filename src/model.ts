@@ -15,6 +15,20 @@ export class Model {
   constructor(private model: Live2DModel<InternalModel>, private motion: MotionSync, private motionStream: MotionSyncStream, private app: Application) {
     this.emittery = new Emittery<Emits>();
     this.hitAreaFrames = new HitAreaFrames();
+    model.on('hit', area => {
+      this.emittery.emit('hit', area);
+    });
+  }
+
+  /**
+   * 获取当前模型所有动作组
+   */
+  getMotionGroups() {
+    return this.model.internalModel.motionManager.motionGroups;
+  }
+
+  playMotion(group: string, index?: number) {
+    this.model.motion(group, index);
   }
 
   static create(options: Options): Promise<Live2DModel<InternalModel>> {

@@ -1,5 +1,5 @@
 export interface Emits {
-  hit: string
+  hit: string[]
   loaded: undefined
 }
 
@@ -31,5 +31,8 @@ export interface Options {
    */
   volume?: number
 
+  /**
+   * 动作同步资源路径
+   */
   motionSync?: string
 }
