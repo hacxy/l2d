@@ -1,3 +1,8 @@
+---
+sidebar:
+  text: React
+---
+
 # 在React中使用
 
 ## 在标准的react项目中使用
@@ -12,7 +17,7 @@ function App() {
   const l2dRef = useRef<HTMLCanvasElement>(null);
   const model = useRef<Model>();
   useEffect(() => {
-    const l2d = init(l2dRef.current!);
+    const l2d = init(l2dRef.current);
     l2d.create({
       path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
     }).then(res => {
@@ -37,6 +42,13 @@ export default App;
 
 通过 [stackblitz](https://stackblitz.com/edit/stackblitz-starters-p3nascfd?file=app%2Flive2d.tsx) 在线体验
 
+:::tip
+
+如果组件中使用了`useRef`, 则需要在文件顶部声明 'use client', 表示该组件只会在客户端执行
+
+由于 `l2d` 使用了浏览器方法, 所以在Nextjs中需要使用动态导入 `import()`
+:::
+
 ```tsx
 'use client';
 import type { Model } from 'l2d';
@@ -47,7 +59,7 @@ function Live2D() {
   const model = useRef<Model>();
   useEffect(() => {
     import('l2d').then(({ init }) => {
-      const l2d = init(l2dRef.current!);
+      const l2d = init(l2dRef.current);
       l2d.create({
         path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
       }).then(res => {

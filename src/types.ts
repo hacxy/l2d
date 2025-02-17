@@ -1,6 +1,6 @@
 export interface Emits {
   /**
-   * 区域点击事件
+   * 可点击区域被点击
    */
   hit: string[]
 }

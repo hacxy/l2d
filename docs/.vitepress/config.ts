@@ -5,7 +5,7 @@ import pkgInfo from '../../package.json';
 // https://vitepress.dev/reference/site-config
 export default defineConfigWithTheme<ThemeConfig>({
   title: 'L2D',
-  description: 'A VitePress Site',
+  description: 'L2D documentation',
   extends: baseConfig,
   ignoreDeadLinks: true,
   themeConfig: {
