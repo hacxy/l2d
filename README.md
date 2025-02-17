@@ -36,6 +36,12 @@
   <img src="https://contrib.rocks/image?repo=hacxy/l2d" />
 </a>
 
+## 讨论
+
+微信群:
+
+<img width="200"  src="https://raw.githubusercontent.com/hacxy/hacxy/main/images/20250217175953.png"/>
+
 ## License
 
 [MIT](./LICENSE) License &copy; 2023-PRESENT [Hacxy](https://github.com/hacxy)
