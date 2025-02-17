@@ -8,7 +8,7 @@ sidebar:
 ## 安装
 
 ```sh
-npm install l2d@next
+npm install l2d
 ```
 
 ## 基础用法
