@@ -10,19 +10,17 @@ import { useEffect, useRef } from 'react';
 
 function App() {
   const l2dRef = useRef<HTMLCanvasElement>(null);
-  let model: Model;
+  const model = useRef<Model>();
   useEffect(() => {
     const l2d = init(l2dRef.current!);
-    l2d
-      .create({
-        path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
-      })
-      .then(res => {
-        model = res;
-      });
+    l2d.create({
+      path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
+    }).then(res => {
+      model.current = res;
+    });
 
     return () => {
-      model?.destroy();
+      model.current?.destroy();
     };
   }, []);
   return (
@@ -50,19 +48,18 @@ function Live2D() {
   useEffect(() => {
     import('l2d').then(({ init }) => {
       const l2d = init(l2dRef.current!);
-      l2d
-        .create({
-          path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
-        })
-        .then(res => {
-          model.current = res;
-        });
+      l2d.create({
+        path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
+      }).then(res => {
+        model.current = res;
+      });
     });
 
     return () => {
       model.current?.destroy();
     };
   }, []);
+
   return (
     <div style={{ width: '300px', height: '300px' }}>
       <canvas ref={l2dRef} />
@@ -71,5 +68,4 @@ function Live2D() {
 }
 
 export default Live2D;
-
 ```
