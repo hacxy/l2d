@@ -1,61 +1,75 @@
 # 在React中使用
 
+## 在标准的react项目中使用
+
+通过 [stackblitz](https://stackblitz.com/edit/vitejs-vite-bhgfdzer?file=src%2FApp.tsx) 在线体验
+
 ```tsx
-// src/App.tsx
-import { init, type L2D, type Model } from 'l2d';
-import { useEffect, useState } from 'react';
+import { init, Model } from 'l2d';
+import { useEffect, useRef } from 'react';
 
 function App() {
-  const [live2d, setLive2d] = useState<L2D | null>(null);
-  const [model, setModel] = useState<Model | null>(null);
-
-  // 初始化 l2d
+  const l2dRef = useRef<HTMLCanvasElement>(null);
+  let model: Model;
   useEffect(() => {
-    const canvas = document.getElementById('live2d') as HTMLCanvasElement;
-    const l2d = init(canvas);
-    setLive2d(l2d);
+    const l2d = init(l2dRef.current!);
+    l2d
+      .create({
+        path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
+      })
+      .then(res => {
+        model = res;
+      });
+
     return () => {
-      setLive2d(null);
+      model?.destroy();
     };
   }, []);
-
-  // 在组件卸载或者 model 变化时销毁 model
-  useEffect(() => {
-    return () => {
-      if (model) {
-        model.destroy();
-      }
-    };
-  }, [model]);
-
   return (
-    <main>
-      <div>
-        <canvas id="live2d" />
-      </div>
-      <div>
-        <button
-          onClick={async () => {
-            const model = await live2d!.create({
-              path: 'https://model.hacxy.cn/HK416-1-normal/model.json',
-              scale: 0.1,
-            });
-            setModel(model);
-          }}
-          disabled={live2d === null || model !== null}
-        >
-          加载模型
-        </button>
-        <button
-          onClick={() => setModel(null)}
-          disabled={model === null}
-        >
-          清除模型
-        </button>
-      </div>
-    </main>
+    <div style={{ width: '300px', height: '300px' }}>
+      <canvas ref={l2dRef} />
+    </div>
   );
 }
 
 export default App;
+```
+
+## 在Nextjs中使用
+
+通过 [stackblitz](https://stackblitz.com/edit/stackblitz-starters-p3nascfd?file=app%2Flive2d.tsx) 在线体验
+
+```tsx
+'use client';
+import type { Model } from 'l2d';
+import { useEffect, useRef } from 'react';
+
+function Live2D() {
+  const l2dRef = useRef<HTMLCanvasElement>(null);
+  const model = useRef<Model>();
+  useEffect(() => {
+    import('l2d').then(({ init }) => {
+      const l2d = init(l2dRef.current!);
+      l2d
+        .create({
+          path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
+        })
+        .then(res => {
+          model.current = res;
+        });
+    });
+
+    return () => {
+      model.current?.destroy();
+    };
+  }, []);
+  return (
+    <div style={{ width: '300px', height: '300px' }}>
+      <canvas ref={l2dRef} />
+    </div>
+  );
+}
+
+export default Live2D;
+
 ```
