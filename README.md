@@ -30,7 +30,7 @@
 
 ## 贡献者们
 
-感谢以下所有为 `oh-my-live2d` 贡献过代码的 [开发者们](https://github.com/hacxy/l2d/graphs/contributors)。
+感谢以下所有为 `l2d` 贡献过代码的 [开发者们](https://github.com/hacxy/l2d/graphs/contributors)。
 
 <a href="https://github.com/hacxy/l2d/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=hacxy/l2d" />
