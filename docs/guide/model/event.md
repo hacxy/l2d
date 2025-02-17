@@ -1,3 +1,8 @@
+---
+sidebar:
+  icon: line-md:telegram
+---
+
 # 模型事件
 
 通过模型实例的 `on` 方法来监听模型事件.

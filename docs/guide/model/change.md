@@ -1,5 +1,6 @@
 ---
 sidebar:
+  icon: line-md:edit
   sort: 3
 ---
 

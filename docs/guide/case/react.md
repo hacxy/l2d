@@ -1,5 +1,6 @@
 ---
 sidebar:
+  icon: mdi:react
   text: React
 ---
 

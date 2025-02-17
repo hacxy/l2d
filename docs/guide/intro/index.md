@@ -2,6 +2,9 @@
 group:
   sort: 1
   text: 简介
+  icon: line-md:lightbulb-twotone
+sidebar:
+  icon: line-md:buy-me-a-coffee-filled
 ---
 
 # 什么是l2d?

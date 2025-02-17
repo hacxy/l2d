@@ -1,3 +1,8 @@
+---
+sidebar:
+  icon: line-md:document-code
+---
+
 # 可点击区域
 
 现在你可以非常快速的找到模型的可点击区域, 调用 `showHitAreaFrames` 方法将显示可点击区域, 调用`hideHitAreaFrames` 方法则隐藏, 以下是使用checkbox切换显示可点击区域的完整例子:

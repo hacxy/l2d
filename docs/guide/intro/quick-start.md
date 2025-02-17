@@ -1,5 +1,6 @@
 ---
 sidebar:
+  icon: line-md:coffee-loop
   sort: 2
 ---
 

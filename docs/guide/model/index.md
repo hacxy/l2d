@@ -1,7 +1,10 @@
 ---
 group:
+  icon: line-md:account
   text: 模型
   sort: 2
+sidebar:
+  icon: line-md:cog-filled
 ---
 
 # 创建选项

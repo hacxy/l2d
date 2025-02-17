@@ -1,5 +1,6 @@
 ---
 sidebar:
+  icon: mdi:vuejs
   text: Vue
 ---
 
