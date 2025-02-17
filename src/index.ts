@@ -13,7 +13,7 @@ export type * from './types.js';
  * @param canvasEl canvas element
  * @returns L2D instance
  */
-export function init(canvasEl: HTMLCanvasElement) {
+export function init(canvasEl: HTMLCanvasElement | null) {
   if (!canvasEl) {
     throw new TypeError('Target element node not found.');
   }
