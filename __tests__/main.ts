@@ -14,6 +14,8 @@ async function main() {
   });
   model.setVolume(0);
   // const motions = model.getMotionGroups();
+  model.showHitAreaFrames();
+
   model.on('hit', () => {
     model.playMotion('flick_head');
   });

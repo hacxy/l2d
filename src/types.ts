@@ -1,6 +1,8 @@
 export interface Emits {
+  /**
+   * 区域点击事件
+   */
   hit: string[]
-  loaded: undefined
 }
 
 export interface Options {

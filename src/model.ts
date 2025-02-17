@@ -21,12 +21,25 @@ export class Model {
   }
 
   /**
-   * 获取当前模型所有动作组
+   * 获取当前模型所有动作组名称
    */
   getMotionGroups() {
-    return this.model.internalModel.motionManager.motionGroups;
+    return Object.keys(this.model.internalModel.motionManager.motionGroups);
   }
 
+  /**
+   * 根据名称获取动作组
+   * @param name
+   */
+  getMotion(name: string) {
+    return this.model.internalModel.motionManager.motionGroups[name];
+  }
+
+  /**
+   * 根据动作组名称播放动作
+   * @param group
+   * @param index
+   */
   playMotion(group: string, index?: number) {
     this.model.motion(group, index);
   }
