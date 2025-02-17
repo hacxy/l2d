@@ -9,6 +9,7 @@ function App() {
   const [live2d, setLive2d] = useState<L2D | null>(null);
   const [model, setModel] = useState<Model | null>(null);
 
+  // 初始化 l2d
   useEffect(() => {
     const canvas = document.getElementById('live2d') as HTMLCanvasElement;
     const l2d = init(canvas);
@@ -18,40 +19,26 @@ function App() {
     };
   }, []);
 
+  // 在组件卸载或者 model 变化时销毁 model
+  useEffect(() => {
+    return () => {
+      if (model) {
+        model.destroy();
+      }
+    };
+  }, [model]);
+
   return (
-    <main
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
-        gap: '10px',
-        width: '100dvw',
-        height: '100dvh',
-      }}
-    >
-      <div
-        style={{
-          width: '300px',
-          height: '300px',
-          backgroundColor: 'lightblue',
-        }}
-      >
+    <main>
+      <div>
         <canvas id="live2d" />
       </div>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '10px',
-        }}
-      >
+      <div>
         <button
           onClick={async () => {
             const model = await live2d!.create({
               path: 'https://model.hacxy.cn/HK416-1-normal/model.json',
-              scale: 0.06,
+              scale: 0.1,
             });
             setModel(model);
           }}
@@ -60,10 +47,7 @@ function App() {
           加载模型
         </button>
         <button
-          onClick={() => {
-            model!.destroy();
-            setModel(null);
-          }}
+          onClick={() => setModel(null)}
           disabled={model === null}
         >
           清除模型
