@@ -15,9 +15,27 @@ export class Model {
   constructor(private model: Live2DModel<InternalModel>, private motion: MotionSync, private motionStream: MotionSyncStream, private app: Application) {
     this.emittery = new Emittery<Emits>();
     this.hitAreaFrames = new HitAreaFrames();
+    this.model.internalModel.on('afterMotionUpdate', () => this.emittery.emit('afterMotionUpdate'));
+
     model.on('hit', area => {
       this.emittery.emit('hit', area);
     });
+  }
+
+  setParam(id: string, value: number) {
+    if (typeof (this.model.internalModel.coreModel as any).setParameterValueById === 'function') {
+      // cubism 4.0
+      (this.model.internalModel.coreModel as any).setParameterValueById(id, value);
+    }
+    else if (typeof (this.model.internalModel.coreModel as any).setParamFloat === 'function') {
+      // cubism 2.0
+      (this.model.internalModel.coreModel as any).setParamFloat(id, value);
+    }
+  }
+
+  async expression(id: string) {
+    // this.model.expression
+    await this.model.expression(id);
   }
 
   /**
@@ -156,5 +174,8 @@ export class Model {
 
   async speakStream(mediaStream: MediaStream) {
     this.motionStream.play(mediaStream);
+  }
+
+  testSetParam() {
   }
 }

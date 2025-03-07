@@ -3,6 +3,11 @@ export interface Emits {
    * 可点击区域被点击
    */
   hit: string[]
+
+  /**
+   * 动作更新之后
+   */
+  afterMotionUpdate: undefined
 }
 
 export interface Options {
