@@ -175,7 +175,4 @@ export class Model {
   async speakStream(mediaStream: MediaStream) {
     this.motionStream.play(mediaStream);
   }
-
-  testSetParam() {
-  }
 }
