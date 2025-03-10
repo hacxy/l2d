@@ -2,6 +2,7 @@
 group:
   text: 动作
   icon: line-md:emoji-grin
+  sort: 3
 sidebar:
   icon: line-md:monitor-arrow-down
 ---

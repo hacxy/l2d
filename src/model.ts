@@ -22,6 +22,11 @@ export class Model {
     });
   }
 
+  /**
+   * 自定义参数
+   * @param id
+   * @param value
+   */
   setParam(id: string, value: number) {
     if (typeof (this.model.internalModel.coreModel as any).setParameterValueById === 'function') {
       // cubism 4.0
@@ -33,6 +38,10 @@ export class Model {
     }
   }
 
+  /**
+   * 加载表情
+   * @param id Expression Id
+   */
   async expression(id: string) {
     // this.model.expression
     await this.model.expression(id);
@@ -155,6 +164,9 @@ export class Model {
     SoundManager.volume = value;
   }
 
+  /**
+   * 将模型移动至画布中间
+   */
   moveCenter() {
     this.model.x = (this.app.view.width / 2 - this.model.width) / 2;
     this.model.y = (this.app.view.height / 2 - this.model.height) / 2;
@@ -172,6 +184,10 @@ export class Model {
     }
   }
 
+  /**
+   * 说话(媒体流)
+   * @param mediaStream
+   */
   async speakStream(mediaStream: MediaStream) {
     this.motionStream.play(mediaStream);
   }

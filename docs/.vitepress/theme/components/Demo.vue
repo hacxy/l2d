@@ -43,3 +43,16 @@ const finalHeight = computed(() => {
     <canvas ref="l2dCanvas" />
   </div>
 </template>
+
+<style>
+.say-button {
+  margin-left: 10px;
+}
+.say-input {
+  padding: 10px;
+  margin-top: 20px;
+  border-radius: 10px;
+  color: #000;
+  width: 300px;
+}
+</style>
