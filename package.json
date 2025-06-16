@@ -36,7 +36,7 @@
     "typedoc": "typedoc"
   },
   "devDependencies": {
-    "@hacxy/eslint-config": "^0.0.7",
+    "@hacxy/eslint-config": "^0.1.0",
     "commitizen": "^4.3.1",
     "cz-git": "^1.11.0",
     "emittery": "^1.1.0",

@@ -1,6 +1,6 @@
-import linter from '@hacxy/eslint-config/vue';
+import defineLint from '@hacxy/eslint-config/vue';
 
-export default linter({
+export default defineLint({
   rules: {
     'max-params': 0,
     'vue/block-lang': 0,
