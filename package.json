@@ -2,7 +2,7 @@
   "name": "l2d",
   "type": "module",
   "version": "0.1.2-alpha.0",
-  "description": "",
+  "description": "Loading Live2D in a browser is simpler.",
   "author": {
     "name": "Hacxy",
     "email": "hacxy.js@outlook.com"
@@ -23,8 +23,8 @@
   "scripts": {
     "dev": "vite build --watch",
     "build": "vite build",
-    "docs:dev": "npm run typedoc && vitepress dev docs",
-    "docs:build": "npm run typedoc && npm run build && vitepress build docs",
+    "docs:dev": "typedoc && vitepress dev docs",
+    "docs:build": "typedoc && npm run build && vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "test:demo": "vite __tests__",
     "lint": "eslint .",
