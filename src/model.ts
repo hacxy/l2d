@@ -39,11 +39,25 @@ export class Model {
   }
 
   /**
+   * 获取所有表情, 如果一个模型在其设置中没有定义表情， ExpressionManager 将完全不会创建，这意味着该方法将只能返回一个空数组。
+   */
+  getExpressions() {
+    // console.log(this.model.internalModel.coreModel);
+    const definitions = this.model.internalModel.motionManager.expressionManager?.definitions || [];
+    return definitions.map(item => {
+      return {
+        id: item.name || item.Name,
+        name: item.name || item.Name,
+        file: item.file || item.File
+      };
+    });
+  }
+
+  /**
    * 加载表情
    * @param id Expression Id
    */
   async expression(id: string) {
-    // this.model.expression
     await this.model.expression(id);
   }
 
