@@ -11,6 +11,9 @@ importers:
       '@hacxy/eslint-config':
         specifier: ^0.1.0
         version: 0.1.0(@vue/compiler-sfc@3.5.13)(eslint@9.29.0(jiti@2.4.2))(typescript@5.7.3)
+      '@iconify/vue':
+        specifier: ^5.0.0
+        version: 5.0.0(vue@3.5.13(typescript@5.7.3))
       commitizen:
         specifier: ^4.3.1
         version: 4.3.1(@types/node@22.13.1)(typescript@5.7.3)
@@ -32,6 +35,9 @@ importers:
       live2d-motionsync:
         specifier: ^0.0.4
         version: 0.0.4
+      naive-ui:
+        specifier: ^2.42.0
+        version: 2.42.0(vue@3.5.13(typescript@5.7.3))
       picocolors:
         specifier: ^1.1.1
         version: 1.1.1
@@ -781,6 +787,11 @@ packages:
 
   '@iconify/vue@4.3.0':
     resolution: {integrity: sha512-Xq0h6zMrHBbrW8jXJ9fISi+x8oDQllg5hTDkDuxnWiskJ63rpJu9CvJshj8VniHVTbsxCg9fVoPAaNp3RQI5OQ==}
+    peerDependencies:
+      vue: '>=3'
+
+  '@iconify/vue@5.0.0':
+    resolution: {integrity: sha512-C+KuEWIF5nSBrobFJhT//JS87OZ++QDORB6f2q2Wm6fl2mueSTpFBeBsveK0KW9hWiZ4mNiPjsh6Zs4jjdROSg==}
     peerDependencies:
       vue: '>=3'
 
@@ -3349,8 +3360,8 @@ packages:
   mute-stream@0.0.8:
     resolution: {integrity: sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==}
 
-  naive-ui@2.41.0:
-    resolution: {integrity: sha512-KnmLg+xPLwXV8QVR7ZZ69eCjvel7R5vru8+eFe4VoAJHEgqAJgVph6Zno9K2IVQRpSF3GBGea3tjavslOR4FAA==}
+  naive-ui@2.42.0:
+    resolution: {integrity: sha512-c7cXR2YgOjgtBadXHwiWL4Y0tpGLAI5W5QzzHksOi22iuHXoSGMAzdkVTGVPE/PM0MSGQ/JtUIzCx2Y0hU0vTQ==}
     peerDependencies:
       vue: ^3.0.0
 
@@ -5134,6 +5145,11 @@ snapshots:
       - supports-color
 
   '@iconify/vue@4.3.0(vue@3.5.13(typescript@5.7.3))':
+    dependencies:
+      '@iconify/types': 2.0.0
+      vue: 3.5.13(typescript@5.7.3)
+
+  '@iconify/vue@5.0.0(vue@3.5.13(typescript@5.7.3))':
     dependencies:
       '@iconify/types': 2.0.0
       vue: 3.5.13(typescript@5.7.3)
@@ -8131,7 +8147,7 @@ snapshots:
 
   mute-stream@0.0.8: {}
 
-  naive-ui@2.41.0(vue@3.5.13(typescript@5.7.3)):
+  naive-ui@2.42.0(vue@3.5.13(typescript@5.7.3)):
     dependencies:
       '@css-render/plugin-bem': 0.15.14(css-render@0.15.14)
       '@css-render/vue3-ssr': 0.15.14(vue@3.5.13(typescript@5.7.3))
@@ -9139,7 +9155,7 @@ snapshots:
       fs-extra: 11.3.0
       gray-matter: 4.0.3
       markdown-it-task-checkbox: 1.0.6
-      naive-ui: 2.41.0(vue@3.5.13(typescript@5.7.3))
+      naive-ui: 2.42.0(vue@3.5.13(typescript@5.7.3))
       nanostores: 0.11.3
       nprogress: 0.2.0
       reading-time-estimator: 1.11.0

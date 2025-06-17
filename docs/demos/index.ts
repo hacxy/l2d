@@ -94,17 +94,23 @@ export async function demo4(init, l2dCanvas) {
     inputEl.value = '这是一段文字, 用于测试口型动作同步';
     canvasEl.parentElement?.append(inputEl, buttonEl);
 
-    const model = await l2d.create({
+    const model = await l2d.createSync({
       path: 'https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.model3.json',
-      motionSync: 'https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.motionsync3.json',
+      // motionSync: 'https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.motionsync3.json',
       scale: 0.3
     });
 
-    buttonEl.addEventListener('click', async () => {
-      const audioBuffer = await tts(inputEl.value);
-      model.speak(audioBuffer);
+    model.on('modelLoaded', () => {
+      model.loadMotionSyncFromUrl('https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.motionsync3.json');
+
+      buttonEl.addEventListener('click', async () => {
+        const audioBuffer = await tts(inputEl.value);
+        model.speak(audioBuffer);
+      });
     });
+    return model;
   };
-  main();
+  const model = await main();
   // #endregion demo4
+  return model;
 }

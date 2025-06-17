@@ -1,7 +1,8 @@
 import type { InternalModel, Live2DModel } from 'pixi-live2d-display';
-import type { Options } from './types';
-import { MotionSync } from 'live2d-motionsync';
-import { MotionSync as MotionSyncStream } from 'live2d-motionsync/stream';
+import type { Emits, Options } from './types';
+import Emittery from 'emittery';
+// import { MotionSync } from 'live2d-motionsync';
+// import { MotionSync as MotionSyncStream } from 'live2d-motionsync/stream';
 import * as PIXI from 'pixi.js';
 import { Model } from './model';
 
@@ -26,34 +27,51 @@ export class L2D {
     return this.app.stage.children;
   }
 
-  async create(options: Options) {
+  createSync(options: Options): Model {
     const { anchor = [], rotaion, volume, scale = 'auto', position = 'center' } = options;
-    let _model: Live2DModel<InternalModel>;
-    try {
-      _model = await Model.create(options);
-    }
-    catch (e) {
-      throw new Error(e);
-    }
-    const _motion = new MotionSync(_model.internalModel);
-    const _motionStream = new MotionSyncStream(_model.internalModel);
+    const emittery = new Emittery<Emits>();
+    const live2dModel = Model.create(options, emittery);
 
-    if (options.motionSync) {
-      _motion.loadMotionSyncFromUrl(options.motionSync);
-      _motionStream.loadMotionSyncFromUrl(options.motionSync);
-    }
+    const model = new Model(live2dModel, this.app, emittery);
+    model.on('modelLoaded', () => {
+      model.setAnchor(...anchor);
+      model.setRotaion(rotaion);
+      model.setVolume(volume);
+      model.setScale(scale);
+      model.setPosition(position);
 
-    const model = new Model(_model, _motion, _motionStream, this.app);
-
-    model.setAnchor(...anchor);
-    model.setRotaion(rotaion);
-    model.setVolume(volume);
-    model.setScale(scale);
-    model.setPosition(position);
-
-    this.app.stage.addChild(_model);
-
+      this.app.stage.addChild(live2dModel);
+    });
     return model;
+  }
+
+  create(options: Options): Promise<Model> {
+    const { anchor = [], rotaion, volume, scale = 'auto', position = 'center' } = options;
+    let live2dModel: Live2DModel<InternalModel>;
+    const emittery = new Emittery<Emits>();
+
+    return new Promise((resolve, reject) => {
+      try {
+        live2dModel = Model.create(options, emittery);
+      }
+      catch (e) {
+        reject(e);
+        throw new Error(e);
+      }
+
+      live2dModel.on('modelLoaded', () => {
+        const model = new Model(live2dModel, this.app, emittery);
+
+        model.setAnchor(...anchor);
+        model.setRotaion(rotaion);
+        model.setVolume(volume);
+        model.setScale(scale);
+        model.setPosition(position);
+
+        this.app.stage.addChild(live2dModel);
+        resolve(model);
+      });
+    });
   }
 }
 

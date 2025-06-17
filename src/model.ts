@@ -1,23 +1,32 @@
 import type { UnsubscribeFunction } from 'emittery';
-import type { MotionSync } from 'live2d-motionsync';
-import type { MotionSync as MotionSyncStream } from 'live2d-motionsync/stream';
+import type Emittery from 'emittery';
+// import type { MotionSync } from 'live2d-motionsync';
+// import type { MotionSync as MotionSyncStream } from 'live2d-motionsync/stream';
 import type { InternalModel } from 'pixi-live2d-display';
 import type { Application } from 'pixi.js';
 import type { Emits, Options } from './types';
-import Emittery from 'emittery';
+import { MotionSync } from 'live2d-motionsync';
+import { MotionSync as MotionSyncStream } from 'live2d-motionsync/stream';
 import { Live2DModel, MotionPreloadStrategy, SoundManager } from 'pixi-live2d-display';
 import { HitAreaFrames } from 'pixi-live2d-display/extra';
 
 export class Model {
-  private emittery: Emittery<Emits>;
+  // private emittery: Emittery<Emits>;
   private hitAreaFrames: HitAreaFrames;
-
-  constructor(private model: Live2DModel<InternalModel>, private motion: MotionSync, private motionStream: MotionSyncStream, private app: Application) {
-    this.emittery = new Emittery<Emits>();
+  private motion: MotionSync;
+  private motionStream: MotionSyncStream;
+  constructor(
+    private live2dModel: Live2DModel<InternalModel>,
+    private app: Application,
+    private emittery: Emittery<Emits>
+  ) {
     this.hitAreaFrames = new HitAreaFrames();
-    this.model.internalModel.on('afterMotionUpdate', () => this.emittery.emit('afterMotionUpdate'));
 
-    model.on('hit', area => {
+    live2dModel.once('load', () => {
+      this.live2dModel.internalModel.on('afterMotionUpdate', () => this.emittery.emit('afterMotionUpdate'));
+    });
+
+    live2dModel.on('hit', area => {
       this.emittery.emit('hit', area);
     });
   }
@@ -28,13 +37,13 @@ export class Model {
    * @param value
    */
   setParam(id: string, value: number) {
-    if (typeof (this.model.internalModel.coreModel as any).setParameterValueById === 'function') {
+    if (typeof (this.live2dModel.internalModel.coreModel as any).setParameterValueById === 'function') {
       // cubism 4.0
-      (this.model.internalModel.coreModel as any).setParameterValueById(id, value);
+      (this.live2dModel.internalModel.coreModel as any).setParameterValueById(id, value);
     }
-    else if (typeof (this.model.internalModel.coreModel as any).setParamFloat === 'function') {
+    else if (typeof (this.live2dModel.internalModel.coreModel as any).setParamFloat === 'function') {
       // cubism 2.0
-      (this.model.internalModel.coreModel as any).setParamFloat(id, value);
+      (this.live2dModel.internalModel.coreModel as any).setParamFloat(id, value);
     }
   }
 
@@ -43,7 +52,7 @@ export class Model {
    */
   getExpressions() {
     // console.log(this.model.internalModel.coreModel);
-    const definitions = this.model.internalModel.motionManager.expressionManager?.definitions || [];
+    const definitions = this.live2dModel.internalModel.motionManager.expressionManager?.definitions || [];
     return definitions.map(item => {
       return {
         id: item.name || item.Name,
@@ -58,14 +67,14 @@ export class Model {
    * @param id Expression Id
    */
   async expression(id: string) {
-    await this.model.expression(id);
+    await this.live2dModel.expression(id);
   }
 
   /**
    * 获取当前模型所有动作组名称
    */
   getMotionGroups() {
-    return Object.keys(this.model.internalModel.motionManager.motionGroups);
+    return Object.keys(this.live2dModel.internalModel.motionManager.motionGroups);
   }
 
   /**
@@ -73,7 +82,7 @@ export class Model {
    * @param name
    */
   getMotion(name: string) {
-    return this.model.internalModel.motionManager.motionGroups[name];
+    return this.live2dModel.internalModel.motionManager.motionGroups[name];
   }
 
   /**
@@ -82,21 +91,34 @@ export class Model {
    * @param index
    */
   playMotion(group: string, index?: number) {
-    this.model.motion(group, index);
+    this.live2dModel.motion(group, index);
   }
 
-  static create(options: Options): Promise<Live2DModel<InternalModel>> {
+  static create(options: Options, emittery: Emittery<Emits>): Live2DModel<InternalModel> {
     const { path } = options;
 
-    return new Promise((resolve, reject) => {
-      Live2DModel.from(path, {
-        motionPreload: MotionPreloadStrategy.ALL,
-      }).then(res => {
-        resolve(res);
-      }).catch(e => {
-        reject(e);
-      });
+    const _live2dModel = Live2DModel.fromSync(path, {
+      motionPreload: MotionPreloadStrategy.ALL,
     });
+
+    _live2dModel.on('settingsJSONLoaded', json => {
+      emittery.emit('settingsJSONLoaded', json);
+    });
+
+    _live2dModel.on('settingsLoaded', setting => {
+      emittery.emit('settingsLoaded', setting);
+    });
+    _live2dModel.on('textureLoaded', () => {
+      emittery.emit('textureLoaded');
+    });
+    _live2dModel.on('modelLoaded', () => {
+      emittery.emit('modelLoaded');
+    });
+    _live2dModel.on('ready', () => {
+      emittery.emit('ready');
+    });
+
+    return _live2dModel;
   }
 
   on(eventName: keyof Emits, listener: (eventData: Emits[keyof Emits]) => void | Promise<void>): UnsubscribeFunction {
@@ -110,8 +132,8 @@ export class Model {
     this.app.resize();
     if (Array.isArray(position)) {
       const [x, y] = position;
-      this.model!.position.x = x;
-      this.model!.position.y = y;
+      this.live2dModel!.position.x = x;
+      this.live2dModel!.position.y = y;
     }
     else {
       this.moveCenter();
@@ -123,7 +145,7 @@ export class Model {
    * @param value
    */
   setRotaion(value: number = 0) {
-    this.model!.rotation = (Math.PI * value) / 180;
+    this.live2dModel!.rotation = (Math.PI * value) / 180;
   }
 
   /**
@@ -133,40 +155,40 @@ export class Model {
    */
   setAnchor(x?: number, y?: number) {
     this.app.resize();
-    this.model.anchor.set(x, y);
+    this.live2dModel.anchor.set(x, y);
   }
 
   /**
    * 显示可点击区域
    */
   showHitAreaFrames(): void {
-    this.model.addChild(this.hitAreaFrames);
+    this.live2dModel.addChild(this.hitAreaFrames);
   }
 
   /**
    * 隐藏点击区域
    */
   hideHitAreaFrames(): void {
-    this.model.removeChildren(0);
+    this.live2dModel.removeChildren(0);
   }
 
   /**
    * 销毁模型
    */
   destroy() {
-    this.model.destroy();
+    this.live2dModel.destroy();
   }
 
   // 设置缩放
   setScale(value: number | 'auto') {
     if (typeof value === 'number') {
-      this.model?.scale.set(value, value);
+      this.live2dModel?.scale.set(value, value);
     }
     else {
       this.app.resize();
-      const ratio = this.model.height / this.model.width;
-      this.model.width = this.app.view.width / 2;
-      this.model.height = this.model.width * ratio;
+      const ratio = this.live2dModel.height / this.live2dModel.width;
+      this.live2dModel.width = this.app.view.width / 2;
+      this.live2dModel.height = this.live2dModel.width * ratio;
     }
   }
 
@@ -182,8 +204,18 @@ export class Model {
    * 将模型移动至画布中间
    */
   moveCenter() {
-    this.model.x = (this.app.view.width / 2 - this.model.width) / 2;
-    this.model.y = (this.app.view.height / 2 - this.model.height) / 2;
+    this.live2dModel.x = (this.app.view.width / 2 - this.live2dModel.width) / 2;
+    this.live2dModel.y = (this.app.view.height / 2 - this.live2dModel.height) / 2;
+  }
+
+  loadMotionSyncFromUrl(url: string) {
+    this.motion = new MotionSync(this.live2dModel.internalModel);
+    this.motion.loadMotionSyncFromUrl(url);
+  }
+
+  loadMotionStreamSyncFromUrl(url: string) {
+    this.motionStream = new MotionSyncStream(this.live2dModel.internalModel);
+    this.motionStream.loadMotionSyncFromUrl(url);
   }
 
   /**

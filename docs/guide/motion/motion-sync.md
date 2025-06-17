@@ -13,13 +13,13 @@ sidebar:
 
 可以将 `AudioBuffer` 作为参数, 之后调用 `speak` 方法, 就可以实现模型的口型动作同步, 你可以借助一个tts服务将一段文本转为 `AudioBuffer`.
 
-<Demo :demo="demo4" width="100%" :style="{marginBottom: '90px'}"/>
-
 在这个例子中, 点击*说话按钮*, 可让模型播放说出输入框的内容
 
 示例代码:
 
 <<< ../../demos/index.ts#demo4
+
+<DemoModal :demo="demo4" width="100%" :style="{marginBottom: '90px'}"/>
 
 <script setup>
 import { demo4 } from '../../demos/index.ts'
@@ -28,3 +28,5 @@ import { demo4 } from '../../demos/index.ts'
 ## 使用媒体流
 
 待补充...
+
+<!-- <DemoModal/> -->

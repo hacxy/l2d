@@ -8,6 +8,31 @@ export interface Emits {
    * 动作更新之后
    */
   afterMotionUpdate: undefined
+
+  /**
+   * setting json 文件加载完毕
+   */
+  settingsJSONLoaded: Record<string, any>
+
+  /**
+   * 设置加载完毕
+   */
+  settingsLoaded: Record<string, any>
+
+  /**
+   * texture文件加载完毕
+   */
+  textureLoaded: undefined
+
+  /**
+   * 模型加载完毕
+   */
+  modelLoaded: undefined
+
+  /**
+   * 所有必要文件加载完毕
+   */
+  ready: undefined
 }
 
 export interface Options {
@@ -38,8 +63,8 @@ export interface Options {
    */
   volume?: number
 
-  /**
-   * 动作同步资源路径
-   */
-  motionSync?: string
+  // /**
+  //  * 动作同步资源路径
+  //  */
+  // motionSync?: string
 }
