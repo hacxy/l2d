@@ -1,6 +1,6 @@
 ---
 group:
-  text: 动作
+  text: 动作&表情
   icon: line-md:emoji-grin
   sort: 3
 sidebar:
@@ -9,4 +9,4 @@ sidebar:
 
 # 预加载策略
 
-待完善
+在创建模型时, 可以决定模型动作文件的预加载策略

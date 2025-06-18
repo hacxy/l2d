@@ -6,5 +6,5 @@ export default defineLint({
     'vue/block-lang': 0,
     'vue/enforce-style-attribute': 0
   },
-  ignores: ['lib/**', 'dist/**', 'docs/api/**']
+  ignores: ['lib/**', 'dist/**', 'docs/api/**', 'docs/guide/**'],
 });

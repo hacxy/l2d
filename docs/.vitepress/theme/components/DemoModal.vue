@@ -6,7 +6,13 @@ import { NCard, NModal } from 'naive-ui';
 import VPButton from 'vitepress/dist/client/theme-default/components/VPButton.vue';
 import { computed, ref, watch } from 'vue';
 
-const { demo, width, height, style, title = '运行结果' } = defineProps<{
+const {
+  demo,
+  width,
+  height,
+  style,
+  title = '运行结果',
+} = defineProps<{
   demo: (init, l2dCanvas) => Promise<Model>
   width?: number | string
   height?: number | string
@@ -21,8 +27,7 @@ const settingsLoaded = ref(false);
 const texturesLoaded = ref(false);
 const modelLoaded = ref(false);
 const finalWidth = computed(() => {
-  if (!width)
-    return '300px';
+  if (!width) return '300px';
   if (typeof width === 'number') {
     return `${width}px`;
   }
@@ -32,8 +37,7 @@ const finalWidth = computed(() => {
 });
 
 const finalHeight = computed(() => {
-  if (!height)
-    return '300px';
+  if (!height) return '300px';
   if (typeof height === 'number') {
     return `${height}px`;
   }
@@ -42,25 +46,38 @@ const finalHeight = computed(() => {
   }
 });
 const done = computed(() => {
-  return settingsJsonLoaded.value && settingsLoaded.value && texturesLoaded.value && modelLoaded.value;
+  return (
+    settingsJsonLoaded.value
+    && settingsLoaded.value
+    && texturesLoaded.value
+    && modelLoaded.value
+  );
 });
 
 watch(showModal, () => {
   if (showModal.value) {
     import('../../../../dist').then(({ init }) => {
       demo(init, l2dCanvas).then(model => {
-        model.on('settingsJSONLoaded', () => {
+        if (model) {
+          model.on('settingsJSONLoaded', () => {
+            settingsJsonLoaded.value = true;
+          });
+          model.on('settingsLoaded', () => {
+            settingsLoaded.value = true;
+          });
+          model.on('modelLoaded', () => {
+            modelLoaded.value = true;
+          });
+          model.on('textureLoaded', () => {
+            texturesLoaded.value = true;
+          });
+        }
+        else {
           settingsJsonLoaded.value = true;
-        });
-        model.on('settingsLoaded', () => {
           settingsLoaded.value = true;
-        });
-        model.on('modelLoaded', () => {
           modelLoaded.value = true;
-        });
-        model.on('textureLoaded', () => {
           texturesLoaded.value = true;
-        });
+        }
       });
     });
   }
@@ -88,19 +105,47 @@ watch(showModal, () => {
     >
       <div v-show="!done" class="loading-state">
         <div class="loading-state-item">
-          <Icon :icon="settingsJsonLoaded ? 'akar-icons:circle-check-fill' : 'svg-spinners:6-dots-scale'" style="font-size: 20px;" />
+          <Icon
+            :icon="
+              settingsJsonLoaded
+                ? 'akar-icons:circle-check-fill'
+                : 'svg-spinners:6-dots-scale'
+            "
+            style="font-size: 20px"
+          />
           <span>Loading settings json</span>
         </div>
         <div class="loading-state-item">
-          <Icon :icon="settingsLoaded ? 'akar-icons:circle-check-fill' : 'svg-spinners:6-dots-scale'" style="font-size: 20px;" />
+          <Icon
+            :icon="
+              settingsLoaded
+                ? 'akar-icons:circle-check-fill'
+                : 'svg-spinners:6-dots-scale'
+            "
+            style="font-size: 20px"
+          />
           <span>Loading settings</span>
         </div>
         <div class="loading-state-item">
-          <Icon :icon="modelLoaded ? 'akar-icons:circle-check-fill' : 'svg-spinners:6-dots-scale'" style="font-size: 20px;" />
+          <Icon
+            :icon="
+              modelLoaded
+                ? 'akar-icons:circle-check-fill'
+                : 'svg-spinners:6-dots-scale'
+            "
+            style="font-size: 20px"
+          />
           <span>Loading model</span>
         </div>
         <div class="loading-state-item">
-          <Icon :icon="texturesLoaded ? 'akar-icons:circle-check-fill' : 'svg-spinners:6-dots-scale'" style="font-size: 20px;" />
+          <Icon
+            :icon="
+              texturesLoaded
+                ? 'akar-icons:circle-check-fill'
+                : 'svg-spinners:6-dots-scale'
+            "
+            style="font-size: 20px"
+          />
           <span>Loading textures</span>
         </div>
       </div>
