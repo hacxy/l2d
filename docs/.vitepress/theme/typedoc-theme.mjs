@@ -27,7 +27,7 @@ export function load(app) {
 
     page.contents = page.contents.replace(/## Properties/g, '');
     page.contents = page.contents.replace(/## Methods/g, '## 方法');
-
+    page.contents = page.contents.replace(/## Enumeration Members/g, '');
     // switch (page.model.name) {
     //   case 'Options':
     //     page.contents = page.contents.replace(/## Properties/g, '');
