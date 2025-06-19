@@ -210,12 +210,12 @@ export class Model {
     this.live2dModel.y = (this.app.view.height / 2 - this.live2dModel.height) / 2;
   }
 
-  loadMotionSyncFromUrl(url: string) {
+  loadMotionFromUrl(url: string) {
     this.motion = new MotionSync(this.live2dModel.internalModel);
     this.motion.loadMotionSyncFromUrl(url);
   }
 
-  loadMotionStreamSyncFromUrl(url: string) {
+  loadMotionStreamFromUrl(url: string) {
     this.motionStream = new MotionSyncStream(this.live2dModel.internalModel);
     this.motionStream.loadMotionSyncFromUrl(url);
   }
@@ -232,11 +232,19 @@ export class Model {
     }
   }
 
+  resetSpeak() {
+    this.motion.reset();
+  }
+
   /**
    * 说话(媒体流)
    * @param mediaStream
    */
   async speakStream(mediaStream: MediaStream) {
     this.motionStream.play(mediaStream);
+  }
+
+  resetSpeakStream() {
+    this.motionStream.reset();
   }
 }

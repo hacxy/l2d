@@ -26,6 +26,7 @@ const settingsJsonLoaded = ref(false);
 const settingsLoaded = ref(false);
 const texturesLoaded = ref(false);
 const modelLoaded = ref(false);
+const closeCallback = ref();
 const finalWidth = computed(() => {
   if (!width) return '300px';
   if (typeof width === 'number') {
@@ -58,7 +59,10 @@ watch(showModal, () => {
   if (showModal.value) {
     import('../../../../dist').then(({ init }) => {
       demo(init, l2dCanvas).then(model => {
-        if (model) {
+        if ((model as any).onClose) {
+          closeCallback.value = (model as any).onClose;
+        }
+        if (model.on) {
           model.on('settingsJSONLoaded', () => {
             settingsJsonLoaded.value = true;
           });
@@ -82,6 +86,7 @@ watch(showModal, () => {
     });
   }
   else {
+    closeCallback.value?.();
     setTimeout(() => {
       settingsJsonLoaded.value = false;
       settingsLoaded.value = false;

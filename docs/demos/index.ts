@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable antfu/no-import-dist */
 
 import type { L2D } from '../../dist';
@@ -96,31 +97,29 @@ export async function demo4(init, l2dCanvas) {
   const main = async () => {
     const inputEl = document.createElement('input');
     inputEl.style.backgroundColor = '#fff';
-    const buttonEl = document.createElement('a');
+    const buttonEl = document.createElement('button');
     buttonEl.className = 'say-button';
     buttonEl.innerHTML = '说话';
     inputEl.className = 'say-input';
     inputEl.value = '这是一段文字, 用于测试口型动作同步';
     canvasEl.parentElement?.append(inputEl, buttonEl);
 
-    const model = l2d.createSync({
+    const model = await l2d.create({
       path: 'https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.model3.json',
       scale: 0.3
     });
 
-    model.on('modelLoaded', () => {
-      model.loadMotionSyncFromUrl('https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.motionsync3.json');
+    model.loadMotionFromUrl('https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.motionsync3.json');
 
-      buttonEl.addEventListener('click', async () => {
-        const audioBuffer = await tts(inputEl.value);
-        model.speak(audioBuffer);
-      });
+    buttonEl.addEventListener('click', async () => {
+      const audioBuffer = await tts(inputEl.value);
+      model.speak(audioBuffer);
     });
+
     return model;
   };
-  const model = await main();
+  main();
   // #endregion demo4
-  return model;
 }
 
 export async function demoSync(init: any, l2dCanvas: any) {
@@ -276,3 +275,39 @@ export async function demo8(init: any, l2dCanvas: any) {
   loadModel();
 }
 
+export async function demo9(init, l2dCanvas) {
+  const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
+  const canvasEl = l2dCanvas.value! as HTMLCanvasElement;
+
+  const buttonEl = document.createElement('button');
+  buttonEl.className = 'say-button';
+  buttonEl.innerHTML = '停止说话';
+  canvasEl.parentElement?.append(buttonEl);
+
+  // #region demo9
+  const model = await l2d.create({
+    path: 'https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.model3.json',
+    scale: 0.3
+  });
+
+  model.loadMotionStreamFromUrl('https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.motionsync3.json');
+
+  const mediaStream = await navigator.mediaDevices.getUserMedia({
+    audio: true,
+  });
+
+  model.speakStream(mediaStream);
+
+  buttonEl.addEventListener('click', async () => {
+    mediaStream.getTracks().forEach(track => track.stop());
+    model.resetSpeakStream(); // 重置口型动作
+  });
+  // #endregion demo9
+
+  return {
+    onClose: () => {
+      mediaStream.getTracks().forEach(track => track.stop());
+      model.resetSpeakStream(); // 重置口型动作
+    }
+  };
+}

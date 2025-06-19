@@ -47,6 +47,11 @@ const finalHeight = computed(() => {
 <style>
 .say-button {
   margin-left: 10px;
+  background: var(--primary-color);
+  color: #fff;
+  padding: 10px 30px;
+  border-radius: 10px;
+  font-size: 20px;
 }
 .say-input {
   padding: 10px;
