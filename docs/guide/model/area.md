@@ -9,10 +9,14 @@ sidebar:
 
 <<< ../../demos/index.ts#demo3{13,16 ts:line-numbers}
 
-<Demo :demo="demo3" :style="{marginBottom: '50px'}"/>
+<DemoModal :demo="demo3" :style="{marginBottom: '50px'}"/>
 
-当鼠标 `hover` 到这些区域时, 会显示区域名称, 如果你监听了 [hit 事件](./event.md#hit), 这个名称可以在这个事件的回调中获取
+当鼠标 `hover` 到这些区域时, 会显示区域名称, 如果你监听了 [hit 事件](./event.md#hit), 这个名称可以在这个事件的回调中获取:
 
+
+<<< ../../demos/index.ts#demo7
+
+<DemoModal :demo="demo7"/>
 <script setup>
-import { demo3 } from '../../demos/index.ts'
+import { demo3, demo7 } from '../../demos/index.ts'
 </script>

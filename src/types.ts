@@ -1,3 +1,5 @@
+import type { MotionPreload } from './constants';
+
 export interface Emits {
   /**
    * 可点击区域被点击
@@ -63,8 +65,8 @@ export interface Options {
    */
   volume?: number
 
-  // /**
-  //  * 动作同步资源路径
-  //  */
-  // motionSync?: string
+  /**
+   * 动作文件预加载策略
+   */
+  motionPreload?: MotionPreload
 }

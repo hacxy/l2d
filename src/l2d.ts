@@ -1,8 +1,6 @@
 import type { InternalModel, Live2DModel } from 'pixi-live2d-display';
 import type { Emits, Options } from './types';
 import Emittery from 'emittery';
-// import { MotionSync } from 'live2d-motionsync';
-// import { MotionSync as MotionSyncStream } from 'live2d-motionsync/stream';
 import * as PIXI from 'pixi.js';
 import { Model } from './model';
 

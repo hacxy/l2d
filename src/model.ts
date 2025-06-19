@@ -7,7 +7,8 @@ import type { Application } from 'pixi.js';
 import type { Emits, Options } from './types';
 import { MotionSync } from 'live2d-motionsync';
 import { MotionSync as MotionSyncStream } from 'live2d-motionsync/stream';
-import { Live2DModel, MotionPreloadStrategy, SoundManager } from 'pixi-live2d-display';
+import { MotionPreloadStrategy } from 'pixi-live2d-display';
+import { Live2DModel, SoundManager } from 'pixi-live2d-display';
 import { HitAreaFrames } from 'pixi-live2d-display/extra';
 
 export class Model {
@@ -22,9 +23,9 @@ export class Model {
   ) {
     this.hitAreaFrames = new HitAreaFrames();
 
-    live2dModel.once('load', () => {
-      this.live2dModel.internalModel.on('afterMotionUpdate', () => this.emittery.emit('afterMotionUpdate'));
-    });
+    // live2dModel.once('load', () => {
+    //   this.live2dModel.internalModel.on('afterMotionUpdate', () => this.emittery.emit('afterMotionUpdate'));
+    // });
 
     live2dModel.on('hit', area => {
       this.emittery.emit('hit', area);
@@ -51,7 +52,6 @@ export class Model {
    * 获取所有表情, 如果一个模型在其设置中没有定义表情， ExpressionManager 将完全不会创建，这意味着该方法将只能返回一个空数组。
    */
   getExpressions() {
-    // console.log(this.model.internalModel.coreModel);
     const definitions = this.live2dModel.internalModel.motionManager.expressionManager?.definitions || [];
     return definitions.map(item => {
       return {
@@ -63,7 +63,7 @@ export class Model {
   }
 
   /**
-   * 加载表情
+   * 根据表情id播放表情
    * @param id Expression Id
    */
   async expression(id: string) {
@@ -73,16 +73,16 @@ export class Model {
   /**
    * 获取当前模型所有动作组名称
    */
-  getMotionGroups() {
-    return Object.keys(this.live2dModel.internalModel.motionManager.motionGroups);
+  getMotionGroupNames() {
+    return Object.keys(this.live2dModel.internalModel.motionManager.definitions);
   }
 
   /**
-   * 根据名称获取动作组
+   * 根据动作组名称获取动作文件列表
    * @param name
    */
-  getMotion(name: string) {
-    return this.live2dModel.internalModel.motionManager.motionGroups[name];
+  getMotionListByGroupName(name: string) {
+    return this.live2dModel.internalModel.motionManager.definitions[name];
   }
 
   /**
@@ -90,15 +90,16 @@ export class Model {
    * @param group
    * @param index
    */
-  playMotion(group: string, index?: number) {
-    this.live2dModel.motion(group, index);
+  async playMotion(group: string, index?: number) {
+    return this.live2dModel.motion(group, index);
   }
 
+  /** @ignore */
   static create(options: Options, emittery: Emittery<Emits>): Live2DModel<InternalModel> {
     const { path } = options;
 
     const _live2dModel = Live2DModel.fromSync(path, {
-      motionPreload: MotionPreloadStrategy.ALL,
+      motionPreload: options.motionPreload as unknown as MotionPreloadStrategy || MotionPreloadStrategy.IDLE,
     });
 
     _live2dModel.on('settingsJSONLoaded', json => {
@@ -208,12 +209,12 @@ export class Model {
     this.live2dModel.y = (this.app.view.height / 2 - this.live2dModel.height) / 2;
   }
 
-  loadMotionSyncFromUrl(url: string) {
+  loadMotionFromUrl(url: string) {
     this.motion = new MotionSync(this.live2dModel.internalModel);
     this.motion.loadMotionSyncFromUrl(url);
   }
 
-  loadMotionStreamSyncFromUrl(url: string) {
+  loadMotionStreamFromUrl(url: string) {
     this.motionStream = new MotionSyncStream(this.live2dModel.internalModel);
     this.motionStream.loadMotionSyncFromUrl(url);
   }
@@ -230,11 +231,19 @@ export class Model {
     }
   }
 
+  resetSpeak() {
+    this.motion.reset();
+  }
+
   /**
    * 说话(媒体流)
    * @param mediaStream
    */
   async speakStream(mediaStream: MediaStream) {
     this.motionStream.play(mediaStream);
+  }
+
+  resetSpeakStream() {
+    this.motionStream.reset();
   }
 }
