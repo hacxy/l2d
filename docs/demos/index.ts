@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable max-lines */
 /* eslint-disable antfu/no-import-dist */
 
@@ -311,3 +312,87 @@ export async function demo9(init, l2dCanvas) {
     }
   };
 }
+
+export async function demo10(init, l2dCanvas) {
+  const loadModel = async () => {
+    const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
+    // #region demo10
+    const model = await l2d.create({
+      path: 'https://model.hacxy.cn/live2d_002_101/object_live2d_002_101.asset.model3.json',
+      scale: 0.1
+    });
+    const motionGroups = model.getMotionGroupNames();
+    console.log(motionGroups);
+    // #endregion demo10
+
+    message.info(`动作组: ${JSON.stringify(motionGroups)}`, { showIcon: false });
+  };
+  loadModel();
+}
+
+export async function demo11(init, l2dCanvas) {
+  const loadModel = async () => {
+    const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
+    // #region demo11
+    const model = await l2d.create({
+      path: 'https://model.hacxy.cn/live2d_002_101/object_live2d_002_101.asset.model3.json',
+      scale: 0.1,
+      motionPreload: MotionPreload.ALL
+    });
+    const motionGroups = model.getMotionGroupNames();
+    console.log(motionGroups);
+    const motionNames = model.getMotionListByGroupName('Tap');
+    console.log(motionNames);
+    // #endregion demo11
+
+    message.info(`动作组: ${JSON.stringify(motionGroups)}`, { showIcon: false });
+
+    message.info(`动作: ${JSON.stringify(motionNames)}`, { showIcon: false });
+  };
+  loadModel();
+}
+
+export async function demo12(init, l2dCanvas) {
+  const loadModel = async () => {
+    const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
+    // #region demo12
+    const model = await l2d.create({
+      path: 'https://model.hacxy.cn/live2d_002_101/object_live2d_002_101.asset.model3.json',
+      scale: 0.1,
+      motionPreload: MotionPreload.ALL
+    });
+    const motionGroups = model.getMotionGroupNames();
+
+    model.showHitAreaFrames();
+
+    setTimeout(() => {
+      model.playMotion(motionGroups[1]);
+    }, 1000);
+
+    // #endregion demo12
+  };
+  loadModel();
+}
+
+export async function demo13(init, l2dCanvas) {
+  const loadModel = async () => {
+    const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
+    // #region demo13
+    const model = await l2d.create({
+      path: 'https://model.hacxy.cn/live2d_002_101/object_live2d_002_101.asset.model3.json',
+      scale: 0.1,
+      motionPreload: MotionPreload.ALL
+    });
+    const motionGroups = model.getMotionGroupNames();
+
+    model.showHitAreaFrames();
+
+    setTimeout(() => {
+      model.playMotion(motionGroups[1], 1);
+    }, 1000);
+
+    // #endregion demo13
+  };
+  loadModel();
+}
+

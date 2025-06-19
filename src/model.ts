@@ -23,9 +23,9 @@ export class Model {
   ) {
     this.hitAreaFrames = new HitAreaFrames();
 
-    live2dModel.once('load', () => {
-      this.live2dModel.internalModel.on('afterMotionUpdate', () => this.emittery.emit('afterMotionUpdate'));
-    });
+    // live2dModel.once('load', () => {
+    //   this.live2dModel.internalModel.on('afterMotionUpdate', () => this.emittery.emit('afterMotionUpdate'));
+    // });
 
     live2dModel.on('hit', area => {
       this.emittery.emit('hit', area);
@@ -74,16 +74,16 @@ export class Model {
   /**
    * 获取当前模型所有动作组名称
    */
-  getMotionGroups() {
-    return Object.keys(this.live2dModel.internalModel.motionManager.motionGroups);
+  getMotionGroupNames() {
+    return Object.keys(this.live2dModel.internalModel.motionManager.definitions);
   }
 
   /**
-   * 根据名称获取动作组
+   * 根据动作组名称获取动作文件列表
    * @param name
    */
-  getMotion(name: string) {
-    return this.live2dModel.internalModel.motionManager.motionGroups[name];
+  getMotionListByGroupName(name: string) {
+    return this.live2dModel.internalModel.motionManager.definitions[name];
   }
 
   /**
@@ -91,8 +91,8 @@ export class Model {
    * @param group
    * @param index
    */
-  playMotion(group: string, index?: number) {
-    this.live2dModel.motion(group, index);
+  async playMotion(group: string, index?: number) {
+    return this.live2dModel.motion(group, index);
   }
 
   /** @ignore */

@@ -59,10 +59,10 @@ watch(showModal, () => {
   if (showModal.value) {
     import('../../../../dist').then(({ init }) => {
       demo(init, l2dCanvas).then(model => {
-        if ((model as any).onClose) {
+        if ((model as any)?.onClose) {
           closeCallback.value = (model as any).onClose;
         }
-        if (model.on) {
+        if (model?.on) {
           model.on('settingsJSONLoaded', () => {
             settingsJsonLoaded.value = true;
           });
