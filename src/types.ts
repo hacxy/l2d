@@ -1,17 +1,5 @@
-export enum MotionPreload {
-  /**
-   * 预加载所有动作
-   */
-  ALL = 'ALL',
-  /**
-   * 预加载闲置动作
-   */
-  IDLE = 'IDLE',
-  /**
-   * 禁止预加载
-   */
-  NONE = 'NONE'
-}
+import type { MotionPreload } from './constants';
+
 export interface Emits {
   /**
    * 可点击区域被点击

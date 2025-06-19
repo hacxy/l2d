@@ -7,7 +7,8 @@ import type { Application } from 'pixi.js';
 import type { Emits, Options } from './types';
 import { MotionSync } from 'live2d-motionsync';
 import { MotionSync as MotionSyncStream } from 'live2d-motionsync/stream';
-import { Live2DModel, MotionPreloadStrategy, SoundManager } from 'pixi-live2d-display';
+import { MotionPreloadStrategy } from 'pixi-live2d-display';
+import { Live2DModel, SoundManager } from 'pixi-live2d-display';
 import { HitAreaFrames } from 'pixi-live2d-display/extra';
 
 export class Model {
@@ -94,11 +95,12 @@ export class Model {
     this.live2dModel.motion(group, index);
   }
 
+  /** @ignore */
   static create(options: Options, emittery: Emittery<Emits>): Live2DModel<InternalModel> {
     const { path } = options;
 
     const _live2dModel = Live2DModel.fromSync(path, {
-      motionPreload: MotionPreloadStrategy.ALL,
+      motionPreload: options.motionPreload as unknown as MotionPreloadStrategy || MotionPreloadStrategy.IDLE,
     });
 
     _live2dModel.on('settingsJSONLoaded', json => {

@@ -28,6 +28,8 @@ export function load(app) {
     page.contents = page.contents.replace(/## Properties/g, '');
     page.contents = page.contents.replace(/## Methods/g, '## 方法');
     page.contents = page.contents.replace(/## Enumeration Members/g, '');
+    page.contents = page.contents.replace('[`MotionPreload`](../enumerations/MotionPreload.md)', '[`MotionPreload`](../../guide/motion/index.md)');
+    page.contents = page.contents.replace(/\[`Emits`\]\(\.\.\/interfaces\/Emits\.md\)/g, '[`Emits`](../../guide/model/event.md)');
     // switch (page.model.name) {
     //   case 'Options':
     //     page.contents = page.contents.replace(/## Properties/g, '');

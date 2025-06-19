@@ -1,6 +1,8 @@
-// eslint-disable-next-line antfu/no-import-dist
+/* eslint-disable antfu/no-import-dist */
+
 import type { L2D } from '../../dist';
 import { createDiscreteApi } from 'naive-ui';
+import { MotionPreload } from '../../dist';
 
 const { message } = createDiscreteApi(['message']);
 
@@ -225,8 +227,8 @@ export async function demo6(init: any, l2dCanvas: any) {
       position: [150, 10],
       scale: 0.1
     });
+    // #endregion demo6
   };
-  // #endregion demo6
   loadModel();
 }
 
@@ -262,14 +264,15 @@ export async function demo7(init: any, l2dCanvas: any) {
 export async function demo8(init: any, l2dCanvas: any) {
   const loadModel = async () => {
     const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
-    // #region demo6
+    // #region demo8
     await l2d.create({
       path: 'https://model.hacxy.cn/cat-black/model.json',
-
+      motionPreload: MotionPreload.ALL, // [!code focus]
       position: [0, 10],
       scale: 0.1
     });
+    // #endregion demo8
   };
-    // #endregion demo6
   loadModel();
 }
+
