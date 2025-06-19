@@ -337,7 +337,6 @@ export async function demo11(init, l2dCanvas) {
     const model = await l2d.create({
       path: 'https://model.hacxy.cn/live2d_002_101/object_live2d_002_101.asset.model3.json',
       scale: 0.1,
-      motionPreload: MotionPreload.ALL
     });
     const motionGroups = model.getMotionGroupNames();
     console.log(motionGroups);
@@ -359,7 +358,6 @@ export async function demo12(init, l2dCanvas) {
     const model = await l2d.create({
       path: 'https://model.hacxy.cn/live2d_002_101/object_live2d_002_101.asset.model3.json',
       scale: 0.1,
-      motionPreload: MotionPreload.ALL
     });
     const motionGroups = model.getMotionGroupNames();
 
@@ -381,7 +379,6 @@ export async function demo13(init, l2dCanvas) {
     const model = await l2d.create({
       path: 'https://model.hacxy.cn/live2d_002_101/object_live2d_002_101.asset.model3.json',
       scale: 0.1,
-      motionPreload: MotionPreload.ALL
     });
     const motionGroups = model.getMotionGroupNames();
 
@@ -392,6 +389,42 @@ export async function demo13(init, l2dCanvas) {
     }, 1000);
 
     // #endregion demo13
+  };
+  loadModel();
+}
+
+export async function demo14(init, l2dCanvas) {
+  const loadModel = async () => {
+    const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
+    // #region demo14
+    const model = await l2d.create({
+      path: 'https://model.hacxy.cn/live2d_002_101/object_live2d_002_101.asset.model3.json',
+      scale: 0.1,
+    });
+    const expressions = model.getExpressions();
+    console.log(expressions);
+    // #endregion demo14
+    message.info(`表情列表: ${JSON.stringify(expressions)}`);
+  };
+  loadModel();
+}
+
+export async function demo15(init, l2dCanvas) {
+  const loadModel = async () => {
+    const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
+    // #region demo15
+    const model = await l2d.create({
+      path: 'https://model.hacxy.cn/live2d_002_101/object_live2d_002_101.asset.model3.json',
+      scale: 0.23,
+      position: [0, 3]
+    });
+    const expressions = model.getExpressions();
+    model.expression(expressions[4].id);
+    setTimeout(() => {
+      model.expression(expressions[1].id);
+    }, 2000);
+
+    // #endregion demo15
   };
   loadModel();
 }

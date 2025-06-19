@@ -52,7 +52,6 @@ export class Model {
    * 获取所有表情, 如果一个模型在其设置中没有定义表情， ExpressionManager 将完全不会创建，这意味着该方法将只能返回一个空数组。
    */
   getExpressions() {
-    // console.log(this.model.internalModel.coreModel);
     const definitions = this.live2dModel.internalModel.motionManager.expressionManager?.definitions || [];
     return definitions.map(item => {
       return {
@@ -64,7 +63,7 @@ export class Model {
   }
 
   /**
-   * 加载表情
+   * 根据表情id播放表情
    * @param id Expression Id
    */
   async expression(id: string) {
