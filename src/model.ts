@@ -3,13 +3,14 @@ import type Emittery from 'emittery';
 // import type { MotionSync } from 'live2d-motionsync';
 // import type { MotionSync as MotionSyncStream } from 'live2d-motionsync/stream';
 import type { InternalModel } from 'pixi-live2d-display';
+import type { MotionPreloadStrategy } from 'pixi-live2d-display';
 import type { Application } from 'pixi.js';
 import type { Emits, Options } from './types';
 import { MotionSync } from 'live2d-motionsync';
 import { MotionSync as MotionSyncStream } from 'live2d-motionsync/stream';
-import { MotionPreloadStrategy } from 'pixi-live2d-display';
 import { Live2DModel, SoundManager } from 'pixi-live2d-display';
 import { HitAreaFrames } from 'pixi-live2d-display/extra';
+import { MotionPreload } from './constants';
 
 export class Model {
   // private emittery: Emittery<Emits>;
@@ -99,7 +100,7 @@ export class Model {
     const { path } = options;
 
     const _live2dModel = Live2DModel.fromSync(path, {
-      motionPreload: options.motionPreload as unknown as MotionPreloadStrategy || MotionPreloadStrategy.IDLE,
+      motionPreload: options.motionPreload as unknown as MotionPreloadStrategy || MotionPreload.IDLE as unknown as MotionPreloadStrategy,
     });
 
     _live2dModel.on('settingsJSONLoaded', json => {
