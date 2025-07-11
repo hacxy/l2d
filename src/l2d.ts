@@ -54,7 +54,7 @@ export class L2D {
       }
       catch (e) {
         reject(e);
-        throw new Error(e);
+        console.error(e);
       }
 
       live2dModel.on('modelLoaded', () => {
