@@ -1,20 +1,20 @@
 import type { UnsubscribeFunction } from 'emittery';
 import type Emittery from 'emittery';
-import type { InternalModel } from 'pixi-live2d-display';
-import type { MotionPreloadStrategy } from 'pixi-live2d-display';
+import type { InternalModel, MotionPreloadStrategy } from 'pixi-live2d-display';
 import type { Application } from 'pixi.js';
-import type { Emits, Options } from './types';
+import type { Emits, Options } from './types.js';
 import { isArray, isFunction, isNumber, isString } from '@hacxy/utils';
 import { MotionSync } from 'live2d-motionsync';
 import { MotionSync as MotionSyncStream } from 'live2d-motionsync/stream';
 import { Live2DModel, SoundManager } from 'pixi-live2d-display';
 import { HitAreaFrames } from 'pixi-live2d-display/extra';
-import { MotionPreload } from './constants';
+import { MotionPreload } from './constants.js';
 
 export class Model {
   private hitAreaFrames: HitAreaFrames;
-  private motion: MotionSync;
-  private motionStream: MotionSyncStream;
+  private motion?: MotionSync;
+  private motionStream?: MotionSyncStream;
+
   constructor(
     private live2dModel: Live2DModel<InternalModel>,
     private app: Application,
@@ -199,7 +199,7 @@ export class Model {
    * @param value
    */
   setVolume(value?: number) {
-    SoundManager.volume = value;
+    SoundManager.volume = value || 0;
   }
 
   /**
@@ -244,7 +244,7 @@ export class Model {
    * 用于重置AudioBuffer播放的口型同步动作
    */
   resetSpeak() {
-    this.motion.reset();
+    this.motion?.reset();
   }
 
   /**
@@ -252,13 +252,13 @@ export class Model {
    * @param mediaStream
    */
   async speakStream(mediaStream: MediaStream) {
-    this.motionStream.play(mediaStream);
+    this.motionStream?.play(mediaStream);
   }
 
   /**
    * 用于重置StreamMedia播放的口型同步动作
    */
   resetSpeakStream() {
-    this.motionStream.reset();
+    this.motionStream?.reset();
   }
 }

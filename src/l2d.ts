@@ -1,8 +1,8 @@
 import type { InternalModel, Live2DModel } from 'pixi-live2d-display';
-import type { Emits, Options } from './types';
+import type { Emits, Options } from './types.js';
 import Emittery from 'emittery';
 import * as PIXI from 'pixi.js';
-import { Model } from './model';
+import { Model } from './model.js';
 
 window.PIXI = PIXI;
 window.PIXI.utils.skipHello();
@@ -11,6 +11,14 @@ export class L2D {
   private app: PIXI.Application;
 
   constructor(private canvasEl: HTMLCanvasElement) {
+    if (!canvasEl) {
+      throw new TypeError('Target element node not found.');
+    }
+    if (!canvasEl.parentElement) {
+      // 目标元素需要被一个父元素包裹
+      throw new TypeError('The target element needs to be wrapped by a parent element.');
+    }
+
     this.app = new PIXI.Application({
       view: this.canvasEl,
       resolution: 2,
@@ -72,4 +80,3 @@ export class L2D {
     });
   }
 }
-

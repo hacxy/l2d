@@ -1,5 +1,9 @@
 /// <reference types="vite/client" />
 
-interface Window {
-  PIXI: typeof import('pixi.js')
+declare global {
+  interface Window {
+    PIXI: typeof import('pixi.js');
+  }
 }
+
+export {};

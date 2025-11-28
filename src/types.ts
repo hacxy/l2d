@@ -1,4 +1,4 @@
-import type { MotionPreload } from './constants';
+import type { MotionPreload } from './constants.js';
 
 export interface Emits {
   /**

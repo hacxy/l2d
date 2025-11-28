@@ -32,11 +32,14 @@
     "lint:staged": "eslint --fix",
     "prepare": "simple-git-hooks",
     "commit": "git-cz",
-    "release": "node scripts/release.js",
+    "release": "bump",
     "typedoc": "typedoc"
   },
   "devDependencies": {
-    "@hacxy/eslint-config": "^0.1.0",
+    "@hacxy/bump": "^0.3.2",
+    "@hacxy/eslint-config": "^0.5.4",
+    "@hacxy/fe": "^0.6.1",
+    "@hacxy/tsconfig": "^0.1.0",
     "@hacxy/utils": "^0.4.0",
     "@iconify/vue": "^5.0.0",
     "commitizen": "^4.3.1",
@@ -55,7 +58,8 @@
     "simple-git-hooks": "^2.11.1",
     "typedoc": "^0.27.7",
     "typedoc-plugin-markdown": "^4.4.2",
-    "vite": "^6.0.11",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.4",
     "vite-plugin-dts": "^4.5.0",
     "vitepress": "^1.6.3",
     "vitepress-theme-mild": "0.8.4-beta.3",
@@ -63,7 +67,7 @@
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged",
-    "commit-msg": "node scripts/git-hooks/commit-msg.mjs"
+    "commit-msg": "npx fe msg"
   },
   "lint-staged": {
     "*": [

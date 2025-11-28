@@ -28,7 +28,8 @@ const texturesLoaded = ref(false);
 const modelLoaded = ref(false);
 const closeCallback = ref();
 const finalWidth = computed(() => {
-  if (!width) return '300px';
+  if (!width)
+    return '300px';
   if (typeof width === 'number') {
     return `${width}px`;
   }
@@ -38,7 +39,8 @@ const finalWidth = computed(() => {
 });
 
 const finalHeight = computed(() => {
-  if (!height) return '300px';
+  if (!height)
+    return '300px';
   if (typeof height === 'number') {
     return `${height}px`;
   }

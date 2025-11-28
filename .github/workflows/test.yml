@@ -30,4 +30,3 @@ jobs:
 
       - name: Linter
         run: pnpm lint
-

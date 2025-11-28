@@ -432,4 +432,3 @@ export async function demo15(init, l2dCanvas) {
   };
   loadModel();
 }
-

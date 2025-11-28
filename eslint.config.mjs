@@ -1,8 +1,8 @@
-import defineLint from '@hacxy/eslint-config';
+import hacxy from '@hacxy/eslint-config';
 
-export default defineLint({
+export default hacxy({
   rules: {
     'max-params': 0,
   },
-  ignores: ['lib/**', 'dist/**', 'docs/api/**', 'docs/guide/**'],
+  ignores: ['lib/**', 'dist/**', 'docs/api/**', 'docs/guide/**', '**/*.d.ts'],
 });
