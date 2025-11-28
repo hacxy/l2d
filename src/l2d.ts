@@ -11,9 +11,6 @@ export class L2D {
   private app: PIXI.Application;
 
   constructor(private canvasEl: HTMLCanvasElement) {
-    if (!canvasEl) {
-      throw new TypeError('Target element node not found.');
-    }
     if (!canvasEl.parentElement) {
       // 目标元素需要被一个父元素包裹
       throw new TypeError('The target element needs to be wrapped by a parent element.');
