@@ -6,6 +6,9 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
+// Namespace definition for compatibility.
+import * as $ from './cubismmath';
+
 import { CubismVector2 } from './cubismvector2.js';
 
 /**
@@ -25,7 +28,8 @@ export class CubismMath {
   static range(value: number, min: number, max: number): number {
     if (value < min) {
       value = min;
-    } else if (value > max) {
+    }
+    else if (value > max) {
       value = max;
     }
 
@@ -91,7 +95,8 @@ export class CubismMath {
     let ret: number;
     if (cx === Infinity) {
       ret = Infinity;
-    } else {
+    }
+    else {
       ret = Math.exp(Math.log(cx) / 3);
       ret = (cx / (ret * ret) + 2 * ret) / 3;
     }
@@ -108,7 +113,8 @@ export class CubismMath {
   static getEasingSine(value: number): number {
     if (value < 0.0) {
       return 0.0;
-    } else if (value > 1.0) {
+    }
+    else if (value > 1.0) {
       return 1.0;
     }
 
@@ -140,7 +146,8 @@ export class CubismMath {
   public static clamp(val: number, min: number, max: number): number {
     if (val < min) {
       return min;
-    } else if (max < val) {
+    }
+    else if (max < val) {
       return max;
     }
     return val;
@@ -294,14 +301,14 @@ export class CubismMath {
         return this.range(root1, 0.0, 1.0);
       }
 
-      const root2: number =
-        t1 * this.cos((phi + 2.0 * Math.PI) / 3.0) - ba / 3.0;
+      const root2: number
+        = t1 * this.cos((phi + 2.0 * Math.PI) / 3.0) - ba / 3.0;
       if (this.abs(root2 - center) < threshold) {
         return this.range(root2, 0.0, 1.0);
       }
 
-      const root3: number =
-        t1 * this.cos((phi + 4.0 * Math.PI) / 3.0) - ba / 3.0;
+      const root3: number
+        = t1 * this.cos((phi + 4.0 * Math.PI) / 3.0) - ba / 3.0;
       return this.range(root3, 0.0, 1.0);
     }
 
@@ -309,7 +316,8 @@ export class CubismMath {
       let u1: number;
       if (q2 < 0.0) {
         u1 = this.cbrt(-q2);
-      } else {
+      }
+      else {
         u1 = -this.cbrt(q2);
       }
 
@@ -338,15 +346,15 @@ export class CubismMath {
    */
   static mod(dividend: number, divisor: number): number {
     if (
-      !isFinite(dividend) ||
-      divisor === 0 ||
-      isNaN(dividend) ||
-      isNaN(divisor)
+      !isFinite(dividend)
+      || divisor === 0
+      || isNaN(dividend)
+      || isNaN(divisor)
     ) {
       console.warn(
         `divided: ${dividend}, divisor: ${divisor} mod() returns 'NaN'.`
       );
-      return NaN;
+      return Number.NaN;
     }
 
     // 絶対値に変換する。
@@ -354,8 +362,8 @@ export class CubismMath {
     const absDivisor = Math.abs(divisor);
 
     // 絶対値で割り算する。
-    let result =
-      absDividend - Math.floor(absDividend / absDivisor) * absDivisor;
+    let result
+      = absDividend - Math.floor(absDividend / absDivisor) * absDivisor;
 
     // 符号を被除数のものに指定する。
     result *= Math.sign(dividend);
@@ -367,9 +375,6 @@ export class CubismMath {
    */
   private constructor() {}
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismmath';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismMath = $.CubismMath;

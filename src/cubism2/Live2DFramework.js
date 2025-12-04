@@ -237,7 +237,7 @@ class L2DExpressionMotion extends AMotion {
         calcTypeInt = L2DExpressionMotion.TYPE_ADD;
       }
       if (calcTypeInt == L2DExpressionMotion.TYPE_ADD) {
-        let defaultValue = param.def == null ? 0 : Number.parseFloat(param.def);
+        const defaultValue = param.def == null ? 0 : Number.parseFloat(param.def);
         value = value - defaultValue;
       }
       else if (calcTypeInt == L2DExpressionMotion.TYPE_MULT) {
@@ -597,9 +597,9 @@ class L2DPhysics {
       const srcNum = srcList.length;
       for (let j = 0; j < srcNum; j++) {
         const src = srcList[j];
-        let id = src.id;
+        const id = src.id;
         let type = PhysicsHair.Src.SRC_TO_X;
-        let typeStr = src.ptype;
+        const typeStr = src.ptype;
         if (typeStr === 'x') {
           type = PhysicsHair.Src.SRC_TO_X;
         }
@@ -612,17 +612,17 @@ class L2DPhysics {
         else {
           UtDebug.error('live2d', 'Invalid parameter:PhysicsHair.Src');
         }
-        let scale = Number.parseFloat(src.scale);
-        let weight = Number.parseFloat(src.weight);
+        const scale = Number.parseFloat(src.scale);
+        const weight = Number.parseFloat(src.weight);
         physics.addSrcParam(type, id, scale, weight);
       }
       const targetList = param.targets;
       const targetNum = targetList.length;
       for (let j = 0; j < targetNum; j++) {
         const target = targetList[j];
-        let id = target.id;
+        const id = target.id;
         let type = PhysicsHair.Target.TARGET_FROM_ANGLE;
-        let typeStr = target.ptype;
+        const typeStr = target.ptype;
         if (typeStr === 'angle') {
           type = PhysicsHair.Target.TARGET_FROM_ANGLE;
         }
@@ -632,8 +632,8 @@ class L2DPhysics {
         else {
           UtDebug.error('live2d', 'Invalid parameter:PhysicsHair.Target');
         }
-        let scale = Number.parseFloat(target.scale);
-        let weight = Number.parseFloat(target.weight);
+        const scale = Number.parseFloat(target.scale);
+        const weight = Number.parseFloat(target.weight);
         physics.addTargetParam(type, id, scale, weight);
       }
       ret.physicsList.push(physics);
@@ -733,7 +733,7 @@ class L2DPose {
     const phi = 0.5;
     const maxBackOpacity = 0.15;
     for (let i = 0; i < partsGroup.length; i++) {
-      let partsIndex = partsGroup[i].partsIndex;
+      const partsIndex = partsGroup[i].partsIndex;
       const paramIndex = partsGroup[i].paramIndex;
       if (partsIndex < 0)
         continue;
@@ -754,7 +754,7 @@ class L2DPose {
       visibleOpacity = 1;
     }
     for (let i = 0; i < partsGroup.length; i++) {
-      let partsIndex = partsGroup[i].partsIndex;
+      const partsIndex = partsGroup[i].partsIndex;
       if (partsIndex < 0)
         continue;
       if (visibleParts == i) {

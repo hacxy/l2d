@@ -6,6 +6,9 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
+// Namespace definition for compatibility.
+import * as $ from './cubismstring';
+
 export class CubismString {
   /**
    * 標準出力の書式を適用した文字列を取得する。
@@ -38,8 +41,8 @@ export class CubismString {
     let startWordIndex = 0;
     while (startWord[startWordIndex] != '\0') {
       if (
-        text[textIndex] == '\0' ||
-        text[textIndex++] != startWord[startWordIndex++]
+        text[textIndex] == '\0'
+        || text[textIndex++] != startWord[startWordIndex++]
       ) {
         return false;
       }
@@ -67,49 +70,54 @@ export class CubismString {
     let period = false;
     let v1 = 0;
 
-    //負号の確認
-    let c: number = parseInt(string[i]);
+    // 負号の確認
+    let c: number = Number.parseInt(string[i]);
     if (c < 0) {
       minus = true;
       i++;
     }
 
-    //整数部の確認
+    // 整数部の確認
     for (; i < length; i++) {
       const c = string[i];
-      if (0 <= parseInt(c) && parseInt(c) <= 9) {
-        v1 = v1 * 10 + (parseInt(c) - 0);
-      } else if (c == '.') {
+      if (Number.parseInt(c) >= 0 && Number.parseInt(c) <= 9) {
+        v1 = v1 * 10 + (Number.parseInt(c) - 0);
+      }
+      else if (c == '.') {
         period = true;
         i++;
         break;
-      } else {
+      }
+      else {
         break;
       }
     }
 
-    //小数部の確認
+    // 小数部の確認
     if (period) {
       let mul = 0.1;
       for (; i < length; i++) {
-        c = parseFloat(string[i]) & 0xff;
-        if (0 <= c && c <= 9) {
+        c = Number.parseFloat(string[i]) & 0xFF;
+        if (c >= 0 && c <= 9) {
           v1 += mul * (c - 0);
-        } else {
+        }
+        else {
           break;
         }
-        mul *= 0.1; //一桁下げる
-        if (!c) break;
+        mul *= 0.1; // 一桁下げる
+        if (!c)
+          break;
       }
     }
 
     if (i == position) {
-      //一文字も読み込まなかった場合
-      outEndPos[0] = -1; //エラー値が入るので呼び出し元で適切な処理を行う
+      // 一文字も読み込まなかった場合
+      outEndPos[0] = -1; // エラー値が入るので呼び出し元で適切な処理を行う
       return 0;
     }
 
-    if (minus) v1 = -v1;
+    if (minus)
+      v1 = -v1;
 
     outEndPos[0] = i;
     return v1;
@@ -120,9 +128,6 @@ export class CubismString {
    */
   private constructor() {}
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismstring';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismString = $.CubismString;

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable max-lines */
 /* eslint-disable antfu/no-import-dist */
 import type { L2D } from '../../dist';

@@ -6,9 +6,12 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
-import { CubismIdHandle } from '../id/cubismid.js';
-import { csmString } from '../type/csmstring.js';
+import type { CubismIdHandle } from '../id/cubismid.js';
+import type { csmString } from '../type/csmstring.js';
 import { csmVector } from '../type/csmvector.js';
+
+// Namespace definition for compatibility.
+import * as $ from './cubismmotioninternal';
 
 /**
  * @brief モーションカーブの種類
@@ -50,7 +53,7 @@ export class CubismMotionPoint {
  * @param   time        評価する時間[秒]
  */
 export interface csmMotionSegmentEvaluationFunction {
-  (points: CubismMotionPoint[], time: number): number;
+  (points: CubismMotionPoint[], time: number): number
 }
 
 /**
@@ -134,9 +137,6 @@ export class CubismMotionData {
   points: csmVector<CubismMotionPoint>; // ポイントのリスト
   events: csmVector<CubismMotionEvent>; // イベントのリスト
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismmotioninternal';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismMotionCurve = $.CubismMotionCurve;
@@ -153,6 +153,6 @@ export namespace Live2DCubismFramework {
   export type CubismMotionSegment = $.CubismMotionSegment;
   export const CubismMotionSegmentType = $.CubismMotionSegmentType;
   export type CubismMotionSegmentType = $.CubismMotionSegmentType;
-  export type csmMotionSegmentEvaluationFunction =
-    $.csmMotionSegmentEvaluationFunction;
+  export type csmMotionSegmentEvaluationFunction
+    = $.csmMotionSegmentEvaluationFunction;
 }

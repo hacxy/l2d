@@ -6,8 +6,9 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
-import { csmVector, iterator } from '../core/type/csmvector.js';
-import { LAppGlManager } from './lappglmanager.js';
+import type { iterator } from '../core/type/csmvector.js';
+import type { LAppGlManager } from './lappglmanager.js';
+import { csmVector } from '../core/type/csmvector.js';
 
 /**
  * テクスチャ管理クラス
@@ -54,8 +55,8 @@ export class LAppTextureManager {
       ite.preIncrement()
     ) {
       if (
-        ite.ptr().fileName == fileName &&
-        ite.ptr().usePremultply == usePremultiply
+        ite.ptr().fileName == fileName
+        && ite.ptr().usePremultply == usePremultiply
       ) {
         // 2回目以降はキャッシュが使用される(待ち時間なし)
         // WebKitでは同じImageのonloadを再度呼ぶには再インスタンスが必要
@@ -63,7 +64,8 @@ export class LAppTextureManager {
         ite.ptr().img = new Image();
         ite
           .ptr()
-          .img.addEventListener('load', (): void => callback(ite.ptr()), {
+          .img
+          .addEventListener('load', (): void => callback(ite.ptr()), {
             passive: true
           });
         ite.ptr().img.src = fileName;

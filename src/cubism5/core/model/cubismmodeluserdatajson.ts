@@ -6,9 +6,12 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
-import { CubismIdHandle } from '../id/cubismid.js';
+import type { CubismIdHandle } from '../id/cubismid.js';
 import { CubismFramework } from '../live2dcubismframework.js';
 import { CubismJson } from '../utils/cubismjson.js';
+
+// Namespace definition for compatibility.
+import * as $ from './cubismmodeluserdatajson';
 
 const Meta = 'Meta';
 const UserDataCount = 'UserDataCount';
@@ -108,9 +111,6 @@ export class CubismModelUserDataJson {
 
   private _json: CubismJson;
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismmodeluserdatajson';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismModelUserDataJson = $.CubismModelUserDataJson;

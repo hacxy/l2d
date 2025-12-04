@@ -6,10 +6,13 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
-import { CubismIdHandle } from '../id/cubismid.js';
+import type { CubismIdHandle } from '../id/cubismid.js';
 import { CubismFramework } from '../live2dcubismframework.js';
 import { CubismVector2 } from '../math/cubismvector2.js';
 import { CubismJson } from '../utils/cubismjson.js';
+
+// Namespace definition for compatibility.
+import * as $ from './cubismphysicsjson';
 
 // JSON keys
 const Position = 'Position';
@@ -652,9 +655,6 @@ export class CubismPhysicsJson {
 
   _json: CubismJson; // physics3.jsonデータ
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismphysicsjson';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismPhysicsJson = $.CubismPhysicsJson;

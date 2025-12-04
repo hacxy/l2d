@@ -9,6 +9,9 @@
 /**
  * 文字列クラス。
  */
+// Namespace definition for compatibility.
+import * as $ from './csmstring';
+
 export class csmString {
   /**
    * 文字列を後方に追加する
@@ -98,9 +101,6 @@ export class csmString {
 
   s: string;
 }
-
-// Namespace definition for compatibility.
-import * as $ from './csmstring';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const csmString = $.csmString;

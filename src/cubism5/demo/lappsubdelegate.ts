@@ -63,7 +63,8 @@ export class LAppSubdelegate {
 
     if (LAppDefine.CanvasSize === 'auto') {
       this.resizeCanvas();
-    } else {
+    }
+    else {
       canvas.width = LAppDefine.CanvasSize.width;
       canvas.height = LAppDefine.CanvasSize.height;
     }
@@ -164,16 +165,16 @@ export class LAppSubdelegate {
       return null;
     }
 
-    const vertexShader: string =
-      'precision mediump float;' +
-      'attribute vec3 position;' +
-      'attribute vec2 uv;' +
-      'varying vec2 vuv;' +
-      'void main(void)' +
-      '{' +
-      '   gl_Position = vec4(position, 1.0);' +
-      '   vuv = uv;' +
-      '}';
+    const vertexShader: string
+      = 'precision mediump float;'
+        + 'attribute vec3 position;'
+        + 'attribute vec2 uv;'
+        + 'varying vec2 vuv;'
+        + 'void main(void)'
+        + '{'
+        + '   gl_Position = vec4(position, 1.0);'
+        + '   vuv = uv;'
+        + '}';
 
     gl.shaderSource(vertexShaderId, vertexShader);
     gl.compileShader(vertexShaderId);
@@ -186,14 +187,14 @@ export class LAppSubdelegate {
       return null;
     }
 
-    const fragmentShader: string =
-      'precision mediump float;' +
-      'varying vec2 vuv;' +
-      'uniform sampler2D texture;' +
-      'void main(void)' +
-      '{' +
-      '   gl_FragColor = texture2D(texture, vuv);' +
-      '}';
+    const fragmentShader: string
+      = 'precision mediump float;'
+        + 'varying vec2 vuv;'
+        + 'uniform sampler2D texture;'
+        + 'void main(void)'
+        + '{'
+        + '   gl_FragColor = texture2D(texture, vuv);'
+        + '}';
 
     gl.shaderSource(fragmentShaderId, fragmentShader);
     gl.compileShader(fragmentShaderId);

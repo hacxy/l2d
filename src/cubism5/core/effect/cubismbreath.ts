@@ -6,9 +6,12 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
-import { CubismIdHandle } from '../id/cubismid.js';
-import { CubismModel } from '../model/cubismmodel.js';
-import { csmVector } from '../type/csmvector.js';
+import type { CubismIdHandle } from '../id/cubismid.js';
+import type { CubismModel } from '../model/cubismmodel.js';
+import type { csmVector } from '../type/csmvector.js';
+
+// Namespace definition for compatibility.
+import * as $ from './cubismbreath';
 
 /**
  * 呼吸機能
@@ -113,9 +116,6 @@ export class BreathParameterData {
   cycle: number; // 呼吸を正弦波としたときの、波の周期
   weight: number; // パラメータへの重み
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismbreath';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const BreathParameterData = $.BreathParameterData;

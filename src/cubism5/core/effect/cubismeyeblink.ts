@@ -6,10 +6,13 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
-import { ICubismModelSetting } from '../icubismmodelsetting.js';
-import { CubismIdHandle } from '../id/cubismid.js';
-import { CubismModel } from '../model/cubismmodel.js';
+import type { ICubismModelSetting } from '../icubismmodelsetting.js';
+import type { CubismIdHandle } from '../id/cubismid.js';
+import type { CubismModel } from '../model/cubismmodel.js';
 import { csmVector } from '../type/csmvector.js';
+
+// Namespace definition for compatibility.
+import * as $ from './cubismeyeblink';
 
 /**
  * 自動まばたき機能
@@ -92,9 +95,9 @@ export class CubismEyeBlink {
 
     switch (blinkingState) {
       case EyeState.EyeState_Closing:
-        t =
-          (this._userTimeSeconds - this._stateStartTimeSeconds) /
-          this._closingSeconds;
+        t
+          = (this._userTimeSeconds - this._stateStartTimeSeconds)
+            / this._closingSeconds;
 
         if (t >= 1.0) {
           t = 1.0;
@@ -106,9 +109,9 @@ export class CubismEyeBlink {
 
         break;
       case EyeState.EyeState_Closed:
-        t =
-          (this._userTimeSeconds - this._stateStartTimeSeconds) /
-          this._closedSeconds;
+        t
+          = (this._userTimeSeconds - this._stateStartTimeSeconds)
+            / this._closedSeconds;
 
         if (t >= 1.0) {
           this._blinkingState = EyeState.EyeState_Opening;
@@ -119,9 +122,9 @@ export class CubismEyeBlink {
 
         break;
       case EyeState.EyeState_Opening:
-        t =
-          (this._userTimeSeconds - this._stateStartTimeSeconds) /
-          this._openingSeconds;
+        t
+          = (this._userTimeSeconds - this._stateStartTimeSeconds)
+            / this._openingSeconds;
 
         if (t >= 1.0) {
           t = 1.0;
@@ -223,9 +226,6 @@ export enum EyeState {
   EyeState_Closed, // まぶたが閉じている状態
   EyeState_Opening // まぶたが開いていく途中の状態
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismeyeblink';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismEyeBlink = $.CubismEyeBlink;

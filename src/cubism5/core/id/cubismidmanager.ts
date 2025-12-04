@@ -6,9 +6,12 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
-import { csmString } from '../type/csmstring.js';
+import type { csmString } from '../type/csmstring.js';
 import { csmVector } from '../type/csmvector.js';
 import { CubismId } from './cubismid.js';
+
+// Namespace definition for compatibility.
+import * as $ from './cubismidmanager';
 
 /**
  * ID名の管理
@@ -53,14 +56,15 @@ export class CubismIdManager {
   public registerId(id: string | csmString): CubismId {
     let result: CubismId = null;
 
-    if ('string' == typeof id) {
+    if (typeof id === 'string') {
       if ((result = this.findId(id)) != null) {
         return result;
       }
 
       result = CubismId.createIdInternal(id);
       this._ids.pushBack(result);
-    } else {
+    }
+    else {
       return this.registerId(id.s);
     }
 
@@ -83,7 +87,7 @@ export class CubismIdManager {
    * @return false 存在しない
    */
   public isExist(id: csmString | string): boolean {
-    if ('string' == typeof id) {
+    if (typeof id === 'string') {
       return this.findId(id) != null;
     }
     return this.isExist(id.s);
@@ -107,9 +111,6 @@ export class CubismIdManager {
 
   private _ids: csmVector<CubismId>; // 登録されているIDのリスト
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismidmanager';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismIdManager = $.CubismIdManager;

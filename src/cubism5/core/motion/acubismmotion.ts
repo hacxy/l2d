@@ -6,12 +6,17 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
+import type { CubismIdHandle } from '../id/cubismid';
+import type { CubismModel } from '../model/cubismmodel.js';
+import type { csmString } from '../type/csmstring.js';
+import type { CubismMotionQueueEntry } from './cubismmotionqueueentry.js';
+import { LogLevel } from '../live2dcubismframework';
 import { CubismMath } from '../math/cubismmath.js';
-import { CubismModel } from '../model/cubismmodel.js';
-import { csmString } from '../type/csmstring.js';
+
 import { csmVector } from '../type/csmvector.js';
 import { CSM_ASSERT, CubismDebug } from '../utils/cubismdebug.js';
-import { CubismMotionQueueEntry } from './cubismmotionqueueentry.js';
+// Namespace definition for compatibility.
+import * as $ from './acubismmotion';
 
 /** モーション再生開始コールバック関数定義 */
 export type BeganMotionCallback = (self: ACubismMotion) => void;
@@ -73,7 +78,7 @@ export abstract class ACubismMotion {
 
     const fadeWeight = this.updateFadeWeight(motionQueueEntry, userTimeSeconds);
 
-    //---- 全てのパラメータIDをループする ----
+    // ---- 全てのパラメータIDをループする ----
     this.doUpdateParameters(
       model,
       userTimeSeconds,
@@ -84,8 +89,8 @@ export abstract class ACubismMotion {
     // 後処理
     // 終了時刻を過ぎたら終了フラグを立てる(CubismMotionQueueManager)
     if (
-      motionQueueEntry.getEndTime() > 0 &&
-      motionQueueEntry.getEndTime() < userTimeSeconds
+      motionQueueEntry.getEndTime() > 0
+      && motionQueueEntry.getEndTime() < userTimeSeconds
     ) {
       motionQueueEntry.setIsFinished(true); // 終了
     }
@@ -144,29 +149,29 @@ export abstract class ACubismMotion {
 
     let fadeWeight: number = this._weight; // 現在の値と掛け合わせる割合
 
-    //---- フェードイン・アウトの処理 ----
+    // ---- フェードイン・アウトの処理 ----
     // 単純なサイン関数でイージングする
-    const fadeIn: number =
-      this._fadeInSeconds == 0.0
+    const fadeIn: number
+      = this._fadeInSeconds == 0.0
         ? 1.0
         : CubismMath.getEasingSine(
-            (userTimeSeconds - motionQueueEntry.getFadeInStartTime()) /
-              this._fadeInSeconds
-          );
+          (userTimeSeconds - motionQueueEntry.getFadeInStartTime())
+          / this._fadeInSeconds
+        );
 
-    const fadeOut: number =
-      this._fadeOutSeconds == 0.0 || motionQueueEntry.getEndTime() < 0.0
+    const fadeOut: number
+      = this._fadeOutSeconds == 0.0 || motionQueueEntry.getEndTime() < 0.0
         ? 1.0
         : CubismMath.getEasingSine(
-            (motionQueueEntry.getEndTime() - userTimeSeconds) /
-              this._fadeOutSeconds
-          );
+          (motionQueueEntry.getEndTime() - userTimeSeconds)
+          / this._fadeOutSeconds
+        );
 
     fadeWeight = fadeWeight * fadeIn * fadeOut;
 
     motionQueueEntry.setState(userTimeSeconds, fadeWeight);
 
-    CSM_ASSERT(0.0 <= fadeWeight && fadeWeight <= 1.0);
+    CSM_ASSERT(fadeWeight >= 0.0 && fadeWeight <= 1.0);
 
     return fadeWeight;
   }
@@ -412,8 +417,8 @@ export abstract class ACubismMotion {
     const duration = this.getDuration();
 
     // duration == -1 の場合はループする
-    const endTime =
-      duration <= 0.0 ? -1 : motionQueueEntry.getStartTime() + duration;
+    const endTime
+      = duration <= 0.0 ? -1 : motionQueueEntry.getStartTime() + duration;
 
     motionQueueEntry.setEndTime(endTime);
   }
@@ -432,11 +437,6 @@ export abstract class ACubismMotion {
   // モーション再生終了コールバック関数
   public _onFinishedMotion?: FinishedMotionCallback;
 }
-
-// Namespace definition for compatibility.
-import * as $ from './acubismmotion';
-import { CubismIdHandle } from '../id/cubismid';
-import { LogLevel } from '../live2dcubismframework';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const ACubismMotion = $.ACubismMotion;

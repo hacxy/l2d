@@ -6,31 +6,34 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
-import { CubismBreath } from '../effect/cubismbreath.js';
-import { CubismEyeBlink } from '../effect/cubismeyeblink.js';
-import { CubismPose } from '../effect/cubismpose.js';
-import { ICubismModelSetting } from '../icubismmodelsetting.js';
-import { CubismIdHandle } from '../id/cubismid.js';
-import { Constant } from '../live2dcubismframework.js';
-import { CubismModelMatrix } from '../math/cubismmodelmatrix.js';
-import { CubismTargetPoint } from '../math/cubismtargetpoint.js';
-import {
+import type { ICubismModelSetting } from '../icubismmodelsetting.js';
+import type { CubismIdHandle } from '../id/cubismid.js';
+import type {
   ACubismMotion,
   BeganMotionCallback,
   FinishedMotionCallback
-} from '../motion/acubismmotion.js';  
+} from '../motion/acubismmotion.js';
+import type { CubismMotionQueueManager } from '../motion/cubismmotionqueuemanager.js';
+import type { csmString } from '../type/csmstring.js';
+import type { CubismModel } from './cubismmodel.js';
+import { CubismBreath } from '../effect/cubismbreath.js';
+import { CubismEyeBlink } from '../effect/cubismeyeblink.js';
+import { CubismPose } from '../effect/cubismpose.js';
+import { Constant } from '../live2dcubismframework.js';
+import { CubismModelMatrix } from '../math/cubismmodelmatrix.js';
+import { CubismTargetPoint } from '../math/cubismtargetpoint.js';
 import { CubismExpressionMotion } from '../motion/cubismexpressionmotion.js';
 import { CubismExpressionMotionManager } from '../motion/cubismexpressionmotionmanager.js';
 import { CubismMotion } from '../motion/cubismmotion.js';
 import { CubismMotionManager } from '../motion/cubismmotionmanager.js';
-import { CubismMotionQueueManager } from '../motion/cubismmotionqueuemanager.js';
 import { CubismPhysics } from '../physics/cubismphysics.js';
 import { CubismRenderer_WebGL } from '../rendering/cubismrenderer_webgl.js';
-import { csmString } from '../type/csmstring.js';
 import { CubismLogError, CubismLogInfo } from '../utils/cubismdebug.js';
 import { CubismMoc } from './cubismmoc.js';
-import { CubismModel } from './cubismmodel.js';
 import { CubismModelUserData } from './cubismmodeluserdata.js';
+
+// Namespace definition for compatibility.
+import * as $ from './cubismusermodel';
 
 /**
  * ユーザーが実際に使用するモデル
@@ -138,14 +141,14 @@ export class CubismUserModel {
     this._moc = CubismMoc.create(buffer, shouldCheckMocConsistency);
 
     if (this._moc == null) {
-      CubismLogError('Failed to CubismMoc.create().');
+      new CubismLogError('Failed to CubismMoc.create().');
       return;
     }
 
     this._model = this._moc.createModel();
 
     if (this._model == null) {
-      CubismLogError('Failed to CreateModel().');
+      new CubismLogError('Failed to CreateModel().');
       return;
     }
 
@@ -181,7 +184,7 @@ export class CubismUserModel {
     shouldCheckMotionConsistency: boolean = false
   ): CubismMotion {
     if (buffer == null || size == 0) {
-      CubismLogError('Failed to loadMotion().');
+      new CubismLogError('Failed to loadMotion().');
       return null;
     }
 
@@ -194,7 +197,7 @@ export class CubismUserModel {
     );
 
     if (motion == null) {
-      CubismLogError(`Failed to create motion from buffer in LoadMotion()`);
+      new CubismLogError('Failed to create motion from buffer in LoadMotion()');
       return null;
     }
 
@@ -229,7 +232,7 @@ export class CubismUserModel {
     name: string
   ): ACubismMotion {
     if (buffer == null || size == 0) {
-      CubismLogError('Failed to loadExpression().');
+      new CubismLogError('Failed to loadExpression().');
       return null;
     }
     return CubismExpressionMotion.create(buffer, size);
@@ -242,7 +245,7 @@ export class CubismUserModel {
    */
   public loadPose(buffer: ArrayBuffer, size: number): void {
     if (buffer == null || size == 0) {
-      CubismLogError('Failed to loadPose().');
+      new CubismLogError('Failed to loadPose().');
       return;
     }
     this._pose = CubismPose.create(buffer, size);
@@ -255,7 +258,7 @@ export class CubismUserModel {
    */
   public loadUserData(buffer: ArrayBuffer, size: number): void {
     if (buffer == null || size == 0) {
-      CubismLogError('Failed to loadUserData().');
+      new CubismLogError('Failed to loadUserData().');
       return;
     }
     this._modelUserData = CubismModelUserData.create(buffer, size);
@@ -268,7 +271,7 @@ export class CubismUserModel {
    */
   public loadPhysics(buffer: ArrayBuffer, size: number): void {
     if (buffer == null || size == 0) {
-      CubismLogError('Failed to loadPhysics().');
+      new CubismLogError('Failed to loadPhysics().');
       return;
     }
     this._physics = CubismPhysics.create(buffer, size);
@@ -509,9 +512,6 @@ export class CubismUserModel {
 
   private _renderer: CubismRenderer_WebGL; // レンダラ
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismusermodel';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismUserModel = $.CubismUserModel;

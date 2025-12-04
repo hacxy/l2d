@@ -6,11 +6,16 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
-import { CubismIdHandle } from '../id/cubismid.js';
+import type { CubismIdHandle } from '../id/cubismid.js';
+import type { CubismModel } from '../model/cubismmodel.js';
+import type { iterator } from '../type/csmvector.js';
+import type { Value } from '../utils/cubismjson.js';
 import { CubismFramework } from '../live2dcubismframework.js';
-import { CubismModel } from '../model/cubismmodel.js';
-import { csmVector, iterator } from '../type/csmvector.js';
-import { CubismJson, Value } from '../utils/cubismjson.js';
+import { csmVector } from '../type/csmvector.js';
+import { CubismJson } from '../utils/cubismjson.js';
+
+// Namespace definition for compatibility.
+import * as $ from './cubismpose';
 
 const Epsilon = 0.001;
 const DefaultFadeInSeconds = 0.5;
@@ -65,8 +70,8 @@ export class CubismPose {
       for (let groupIndex = 0; groupIndex < idCount; ++groupIndex) {
         const partInfo: Value = idListInfo.getValueByIndex(groupIndex);
         const partData: PartData = new PartData();
-        const parameterId: CubismIdHandle =
-          CubismFramework.getIdManager().getId(
+        const parameterId: CubismIdHandle
+          = CubismFramework.getIdManager().getId(
             partInfo.getValueByString(Id).getRawString()
           );
 
@@ -281,7 +286,8 @@ export class CubismPose {
 
         if (newOpacity < phi) {
           a1 = (newOpacity * (phi - 1)) / phi + 1.0; // (0,1),(phi,phi)を通る直線式
-        } else {
+        }
+        else {
           a1 = ((1 - newOpacity) * phi) / (1.0 - phi); // (1,0),(phi,phi)を通る直線式
         }
 
@@ -397,9 +403,6 @@ export class PartData {
   partIndex: number; // パーツのインデックス
   link: csmVector<PartData>; // 連動するパラメータ
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismpose';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismPose = $.CubismPose;

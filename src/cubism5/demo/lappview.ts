@@ -6,16 +6,15 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
+import type { LAppSubdelegate } from './lappsubdelegate.js';
+import type { TextureInfo } from './lapptexturemanager.js';
+
 import { CubismMatrix44 } from '../core/math/cubismmatrix44.js';
 import { CubismViewMatrix } from '../core/math/cubismviewmatrix.js';
-
 import * as LAppDefine from './lappdefine.js';
-import { LAppDelegate } from './lappdelegate.js';
 import { LAppPal } from './lapppal.js';
 import { LAppSprite } from './lappsprite.js';
-import { TextureInfo } from './lapptexturemanager.js';
 import { TouchManager } from './touchmanager.js';
-import type { LAppSubdelegate } from './lappsubdelegate.js';
 
 /**
  * 描画クラス。
@@ -59,7 +58,8 @@ export class LAppView {
     if (width > height) {
       const screenW: number = Math.abs(right - left);
       this._deviceToScreen.scaleRelative(screenW / width, -screenW / width);
-    } else {
+    }
+    else {
       const screenH: number = Math.abs(top - bottom);
       this._deviceToScreen.scaleRelative(screenH / height, -screenH / height);
     }

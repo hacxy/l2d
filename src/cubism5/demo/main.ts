@@ -7,7 +7,6 @@
  */
 
 import { LAppDelegate } from './lappdelegate.js';
-import * as LAppDefine from './lappdefine.js';
 
 /**
  * ブラウザロード後の処理

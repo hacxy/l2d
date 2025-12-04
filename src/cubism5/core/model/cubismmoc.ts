@@ -7,6 +7,9 @@
  */
 
 import { CSM_ASSERT, CubismLogError } from '../utils/cubismdebug.js';
+// Namespace definition for compatibility.
+import * as $ from './cubismmoc';
+
 import { CubismModel } from './cubismmodel.js';
 
 /**
@@ -30,13 +33,13 @@ export class CubismMoc {
 
       if (!consistency) {
         // 整合性が確認できなければ処理しない
-        CubismLogError(`Inconsistent MOC3.`);
+        new CubismLogError('Inconsistent MOC3.');
         return cubismMoc;
       }
     }
 
-    const moc: Live2DCubismCore.Moc =
-      Live2DCubismCore.Moc.fromArrayBuffer(mocBytes);
+    const moc: Live2DCubismCore.Moc
+      = Live2DCubismCore.Moc.fromArrayBuffer(mocBytes);
 
     if (moc) {
       cubismMoc = new CubismMoc(moc);
@@ -130,18 +133,15 @@ export class CubismMoc {
    * .moc3 の整合性を検証する
    */
   public static hasMocConsistency(mocBytes: ArrayBuffer): boolean {
-    const isConsistent =
-      Live2DCubismCore.Moc.prototype.hasMocConsistency(mocBytes);
-    return isConsistent === 1 ? true : false;
+    const isConsistent
+      = Live2DCubismCore.Moc.prototype.hasMocConsistency(mocBytes);
+    return isConsistent === 1;
   }
 
   _moc: Live2DCubismCore.Moc; // Mocデータ
   _modelCount: number; // Mocデータから作られたモデルの個数
   _mocVersion: number; // 読み込んだモデルの.moc3 Version
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismmoc';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismMoc = $.CubismMoc;

@@ -6,7 +6,7 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
-import { LAppSubdelegate } from './lappsubdelegate.js';
+import type { LAppSubdelegate } from './lappsubdelegate.js';
 
 /**
  * スプライトを実装するクラス
@@ -190,10 +190,10 @@ export class LAppSprite {
     const y = height - pointY;
 
     return (
-      pointX >= this._rect.left &&
-      pointX <= this._rect.right &&
-      y <= this._rect.up &&
-      y >= this._rect.down
+      pointX >= this._rect.left
+      && pointX <= this._rect.right
+      && y <= this._rect.up
+      && y >= this._rect.down
     );
   }
 

@@ -9,6 +9,9 @@
 /**
  * 矩形形状（座標・長さはfloat値）を定義するクラス
  */
+// Namespace definition for compatibility.
+import * as $ from './csmrectf';
+
 export class csmRect {
   /**
    * コンストラクタ
@@ -80,9 +83,6 @@ export class csmRect {
   public width: number; // 幅
   public height: number; // 高さ
 }
-
-// Namespace definition for compatibility.
-import * as $ from './csmrectf';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const csmRect = $.csmRect;

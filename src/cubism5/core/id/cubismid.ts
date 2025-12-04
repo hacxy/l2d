@@ -8,6 +8,9 @@
 
 import { csmString } from '../type/csmstring.js';
 
+// Namespace definition for compatibility.
+import * as $ from './cubismid';
+
 /**
  * パラメータ名・パーツ名・Drawable名を保持
  *
@@ -44,9 +47,11 @@ export class CubismId {
   public isEqual(c: string | csmString | CubismId): boolean {
     if (typeof c === 'string') {
       return this._id.isEqual(c);
-    } else if (c instanceof csmString) {
+    }
+    else if (c instanceof csmString) {
       return this._id.isEqual(c.s);
-    } else if (c instanceof CubismId) {
+    }
+    else if (c instanceof CubismId) {
       return this._id.isEqual(c._id.s);
     }
     return false;
@@ -58,11 +63,13 @@ export class CubismId {
    * @return 同じならばtrue,異なっていればfalseを返す
    */
   public isNotEqual(c: string | csmString | CubismId): boolean {
-    if (typeof c == 'string') {
+    if (typeof c === 'string') {
       return !this._id.isEqual(c);
-    } else if (c instanceof csmString) {
+    }
+    else if (c instanceof csmString) {
       return !this._id.isEqual(c.s);
-    } else if (c instanceof CubismId) {
+    }
+    else if (c instanceof CubismId) {
       return !this._id.isEqual(c._id.s);
     }
     return false;
@@ -86,9 +93,6 @@ export class CubismId {
 }
 
 export declare type CubismIdHandle = CubismId;
-
-// Namespace definition for compatibility.
-import * as $ from './cubismid';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismId = $.CubismId;

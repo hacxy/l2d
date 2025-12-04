@@ -6,13 +6,18 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
-import { CubismIdHandle } from '../id/cubismid.js';
+import type { CubismIdHandle } from '../id/cubismid.js';
+import type { CubismModel } from '../model/cubismmodel.js';
+import type { Value } from '../utils/cubismjson.js';
+import type { ExpressionParameterValue } from './cubismexpressionmotionmanager';
+import type { CubismMotionQueueEntry } from './cubismmotionqueueentry.js';
 import { CubismFramework } from '../live2dcubismframework.js';
-import { CubismModel } from '../model/cubismmodel.js';
 import { csmVector } from '../type/csmvector.js';
-import { CubismJson, Value } from '../utils/cubismjson.js';
+import { CubismJson } from '../utils/cubismjson.js';
+
 import { ACubismMotion } from './acubismmotion.js';
-import { CubismMotionQueueEntry } from './cubismmotionqueueentry.js';
+// Namespace definition for compatibility.
+import * as $ from './cubismexpressionmotion';
 
 // exp3.jsonのキーとデフォルト
 const ExpressionKeyFadeIn = 'FadeInTime';
@@ -138,15 +143,15 @@ export class CubismExpressionMotion extends ACubismMotion {
         continue;
       }
 
-      const currentParameterValue = (expressionParameterValue.overwriteValue =
-        model.getParameterValueById(expressionParameterValue.parameterId));
+      const currentParameterValue = (expressionParameterValue.overwriteValue
+        = model.getParameterValueById(expressionParameterValue.parameterId));
 
       const expressionParameters = this.getExpressionParameters();
       let parameterIndex = -1;
       for (let j = 0; j < expressionParameters.getSize(); ++j) {
         if (
-          expressionParameterValue.parameterId !=
-          expressionParameters.at(j).parameterId
+          expressionParameterValue.parameterId
+          != expressionParameters.at(j).parameterId
         ) {
           continue;
         }
@@ -159,12 +164,13 @@ export class CubismExpressionMotion extends ACubismMotion {
       // 再生中のExpressionが参照していないパラメータは初期値を適用
       if (parameterIndex < 0) {
         if (expressionIndex == 0) {
-          expressionParameterValue.additiveValue =
-            CubismExpressionMotion.DefaultAdditiveValue;
-          expressionParameterValue.multiplyValue =
-            CubismExpressionMotion.DefaultMultiplyValue;
+          expressionParameterValue.additiveValue
+            = CubismExpressionMotion.DefaultAdditiveValue;
+          expressionParameterValue.multiplyValue
+            = CubismExpressionMotion.DefaultMultiplyValue;
           expressionParameterValue.overwriteValue = currentParameterValue;
-        } else {
+        }
+        else {
           expressionParameterValue.additiveValue = this.calculateValue(
             expressionParameterValue.additiveValue,
             CubismExpressionMotion.DefaultAdditiveValue,
@@ -186,7 +192,7 @@ export class CubismExpressionMotion extends ACubismMotion {
 
       // 値を計算
       const value = expressionParameters.at(parameterIndex).value;
-      let newAdditiveValue, newMultiplyValue, newOverwriteValue;
+      let newAdditiveValue; let newMultiplyValue; let newOverwriteValue;
       switch (expressionParameters.at(parameterIndex).blendType) {
         case ExpressionBlendType.Additive:
           newAdditiveValue = value;
@@ -214,16 +220,17 @@ export class CubismExpressionMotion extends ACubismMotion {
         expressionParameterValue.additiveValue = newAdditiveValue;
         expressionParameterValue.multiplyValue = newMultiplyValue;
         expressionParameterValue.overwriteValue = newOverwriteValue;
-      } else {
-        expressionParameterValue.additiveValue =
-          expressionParameterValue.additiveValue * (1.0 - fadeWeight) +
-          newAdditiveValue * fadeWeight;
-        expressionParameterValue.multiplyValue =
-          expressionParameterValue.multiplyValue * (1.0 - fadeWeight) +
-          newMultiplyValue * fadeWeight;
-        expressionParameterValue.overwriteValue =
-          expressionParameterValue.overwriteValue * (1.0 - fadeWeight) +
-          newOverwriteValue * fadeWeight;
+      }
+      else {
+        expressionParameterValue.additiveValue
+          = expressionParameterValue.additiveValue * (1.0 - fadeWeight)
+            + newAdditiveValue * fadeWeight;
+        expressionParameterValue.multiplyValue
+          = expressionParameterValue.multiplyValue * (1.0 - fadeWeight)
+            + newMultiplyValue * fadeWeight;
+        expressionParameterValue.overwriteValue
+          = expressionParameterValue.overwriteValue * (1.0 - fadeWeight)
+            + newOverwriteValue * fadeWeight;
       }
     }
   }
@@ -291,21 +298,24 @@ export class CubismExpressionMotion extends ACubismMotion {
       let blendType: ExpressionBlendType;
 
       if (
-        param.getValueByString(ExpressionKeyBlend).isNull() ||
-        param.getValueByString(ExpressionKeyBlend).getString() == BlendValueAdd
+        param.getValueByString(ExpressionKeyBlend).isNull()
+        || param.getValueByString(ExpressionKeyBlend).getString() == BlendValueAdd
       ) {
         blendType = ExpressionBlendType.Additive;
-      } else if (
-        param.getValueByString(ExpressionKeyBlend).getString() ==
-        BlendValueMultiply
+      }
+      else if (
+        param.getValueByString(ExpressionKeyBlend).getString()
+        == BlendValueMultiply
       ) {
         blendType = ExpressionBlendType.Multiply;
-      } else if (
-        param.getValueByString(ExpressionKeyBlend).getString() ==
-        BlendValueOverwrite
+      }
+      else if (
+        param.getValueByString(ExpressionKeyBlend).getString()
+        == BlendValueOverwrite
       ) {
         blendType = ExpressionBlendType.Overwrite;
-      } else {
+      }
+      else {
         // その他 仕様にない値を設定した時は加算モードにすることで復旧
         blendType = ExpressionBlendType.Additive;
       }
@@ -377,11 +387,6 @@ export class ExpressionParameter {
   blendType: ExpressionBlendType; // パラメータの演算種類
   value: number; // 値
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismexpressionmotion';
-import { ExpressionParameterValue } from './cubismexpressionmotionmanager';
-import { CubismDefaultParameterId } from '../cubismdefaultparameterid';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismExpressionMotion = $.CubismExpressionMotion;

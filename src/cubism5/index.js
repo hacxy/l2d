@@ -1,11 +1,11 @@
 /* global document, window, Event */
 
-import { LAppDelegate } from './demo/lappdelegate.js';
-import { LAppSubdelegate } from './demo/lappsubdelegate.js';
+import logger from '../logger.js';
 import * as LAppDefine from './demo/lappdefine.js';
+import { LAppDelegate } from './demo/lappdelegate.js';
 import { LAppModel } from './demo/lappmodel.js';
 import { LAppPal } from './demo/lapppal.js';
-import logger from '../logger.js';
+import { LAppSubdelegate } from './demo/lappsubdelegate.js';
 
 LAppPal.printMessage = () => {};
 
@@ -26,7 +26,8 @@ class AppSubdelegate extends LAppSubdelegate {
     // Canvas size setting, supports auto and specified size
     if (LAppDefine.CanvasSize === 'auto') {
       this.resizeCanvas();
-    } else {
+    }
+    else {
       canvas.width = LAppDefine.CanvasSize.width;
       canvas.height = LAppDefine.CanvasSize.height;
     }
@@ -274,7 +275,7 @@ export class AppDelegate extends LAppDelegate {
   changeModel(modelSettingPath) {
     const segments = modelSettingPath.split('/');
     const modelJsonName = segments.pop();
-    const modelPath = segments.join('/') + '/';
+    const modelPath = `${segments.join('/')}/`;
     // Get the current Live2D manager
     const live2dManager = this._subdelegates.at(0).getLive2DManager();
     // Release all old models

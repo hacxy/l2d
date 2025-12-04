@@ -9,6 +9,9 @@
 /**
  * ベクター型（可変配列型）
  */
+// Namespace definition for compatibility.
+import * as $ from './csmvector';
+
 export class csmVector<T> {
   /**
    * 引数付きコンストラクタ
@@ -20,7 +23,8 @@ export class csmVector<T> {
       this._ptr = [];
       this._capacity = 0;
       this._size = 0;
-    } else {
+    }
+    else {
       this._ptr = new Array(initialCapacity);
       this._capacity = initialCapacity;
       this._size = 0;
@@ -125,7 +129,7 @@ export class csmVector<T> {
 
       if (callPlacementNew) {
         for (let i: number = this._size; i < newSize; i++) {
-          if (typeof value == 'function') {
+          if (typeof value === 'function') {
             // new
             this._ptr[i] = JSON.parse(JSON.stringify(new value()));
           } // プリミティブ型なので値渡し
@@ -133,14 +137,16 @@ export class csmVector<T> {
             this._ptr[i] = value;
           }
         }
-      } else {
+      }
+      else {
         for (let i: number = this._size; i < newSize; i++) {
           this._ptr[i] = value;
         }
       }
-    } else {
+    }
+    else {
       // newSize <= this._size
-      //---
+      // ---
       const sub = this._size - newSize;
       this._ptr.splice(this._size - sub, sub); // 不要なので破棄する
     }
@@ -225,7 +231,8 @@ export class csmVector<T> {
       if (this._capacity == 0) {
         this._ptr = new Array(newSize);
         this._capacity = newSize;
-      } else {
+      }
+      else {
         this._ptr.length = newSize;
         this._capacity = newSize;
       }
@@ -236,8 +243,8 @@ export class csmVector<T> {
    * コンテナの先頭要素を返す
    */
   public begin(): iterator<T> {
-    const ite: iterator<T> =
-      this._size == 0 ? this.end() : new iterator<T>(this, 0);
+    const ite: iterator<T>
+      = this._size == 0 ? this.end() : new iterator<T>(this, 0);
     return ite;
   }
 
@@ -341,9 +348,6 @@ export class iterator<T> {
   _index: number; // コンテナのインデックス値
   _vector: csmVector<T>; // コンテナ
 }
-
-// Namespace definition for compatibility.
-import * as $ from './csmvector';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const csmVector = $.csmVector;

@@ -6,9 +6,12 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
-import { CubismIdHandle } from '../id/cubismid.js';
+import type { CubismIdHandle } from '../id/cubismid.js';
 import { CubismVector2 } from '../math/cubismvector2.js';
 import { csmVector } from '../type/csmvector.js';
+
+// Namespace definition for compatibility.
+import * as $ from './cubismphysicsinternal';
 
 /**
  * 物理演算の適用先の種類
@@ -36,6 +39,7 @@ export class PhysicsJsonEffectiveForces {
     this.gravity = new CubismVector2(0, 0);
     this.wind = new CubismVector2(0, 0);
   }
+
   gravity: CubismVector2; // 重力
   wind: CubismVector2; // 風
 }
@@ -90,6 +94,7 @@ export class CubismPhysicsSubRig {
     this.normalizationPosition = new CubismPhysicsNormalization();
     this.normalizationAngle = new CubismPhysicsNormalization();
   }
+
   inputCount: number; // 入力の個数
   outputCount: number; // 出力の個数
   particleCount: number; // 物理点の個数
@@ -125,7 +130,7 @@ export interface normalizedPhysicsParameterValueGetter {
     normalizationAngle: CubismPhysicsNormalization,
     isInverted: boolean,
     weight: number
-  ): void;
+  ): void
 }
 
 /**
@@ -143,7 +148,7 @@ export interface physicsValueGetter {
     particleIndex: number,
     isInverted: boolean,
     parentGravity: CubismVector2
-  ): number;
+  ): number
 }
 
 /**
@@ -153,7 +158,7 @@ export interface physicsValueGetter {
  * @return スケール値
  */
 export interface physicsScaleGetter {
-  (translationScale: CubismVector2, angleScale: number): number;
+  (translationScale: CubismVector2, angleScale: number): number
 }
 
 /**
@@ -163,6 +168,7 @@ export class CubismPhysicsInput {
   constructor() {
     this.source = new CubismPhysicsParameter();
   }
+
   source: CubismPhysicsParameter; // 入力元のパラメータ
   sourceParameterIndex: number; // 入力元のパラメータのインデックス
   weight: number; // 重み
@@ -219,11 +225,8 @@ export class CubismPhysicsRig {
   particles: csmVector<CubismPhysicsParticle>; // 物理演算の物理点のリスト
   gravity: CubismVector2; // 重力
   wind: CubismVector2; // 風
-  fps: number; //物理演算動作FPS
+  fps: number; // 物理演算動作FPS
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismphysicsinternal';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismPhysicsInput = $.CubismPhysicsInput;
@@ -246,8 +249,8 @@ export namespace Live2DCubismFramework {
   export type CubismPhysicsTargetType = $.CubismPhysicsTargetType;
   export const PhysicsJsonEffectiveForces = $.PhysicsJsonEffectiveForces;
   export type PhysicsJsonEffectiveForces = $.PhysicsJsonEffectiveForces;
-  export type normalizedPhysicsParameterValueGetter =
-    $.normalizedPhysicsParameterValueGetter;
+  export type normalizedPhysicsParameterValueGetter
+    = $.normalizedPhysicsParameterValueGetter;
   export type physicsScaleGetter = $.physicsScaleGetter;
   export type physicsValueGetter = $.physicsValueGetter;
 }

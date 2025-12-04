@@ -8,6 +8,9 @@
 
 import { CubismMatrix44 } from './cubismmatrix44.js';
 
+// Namespace definition for compatibility.
+import * as $ from './cubismviewmatrix';
+
 /**
  * カメラの位置変更に使うと便利な4x4行列
  *
@@ -51,8 +54,8 @@ export class CubismViewMatrix extends CubismMatrix44 {
     }
 
     if (
-      this._tr[5] * this._maxBottom + (this._tr[13] + y) >
-      this._screenBottom
+      this._tr[5] * this._maxBottom + (this._tr[13] + y)
+      > this._screenBottom
     ) {
       y = this._screenBottom - this._tr[5] * this._maxBottom - this._tr[13];
     }
@@ -96,7 +99,8 @@ export class CubismViewMatrix extends CubismMatrix44 {
       if (this._tr[0] > 0.0) {
         scale = minScale / this._tr[0];
       }
-    } else if (targetScale > maxScale) {
+    }
+    else if (targetScale > maxScale) {
       if (this._tr[0] > 0.0) {
         scale = maxScale / this._tr[0];
       }
@@ -330,9 +334,6 @@ export class CubismViewMatrix extends CubismMatrix44 {
   private _maxScale: number; // 拡大率の最大値
   private _minScale: number; // 拡大率の最小値
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismviewmatrix';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismViewMatrix = $.CubismViewMatrix;

@@ -6,14 +6,14 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
+import type { ACubismMotion } from '../core/motion/acubismmotion.js';
+import type { LAppSubdelegate } from './lappsubdelegate.js';
 import { CubismMatrix44 } from '../core/math/cubismmatrix44.js';
-import { ACubismMotion } from '../core/motion/acubismmotion.js';
-import { csmVector } from '../core/type/csmvector.js';
 
+import { csmVector } from '../core/type/csmvector.js';
 import * as LAppDefine from './lappdefine.js';
 import { LAppModel } from './lappmodel.js';
 import { LAppPal } from './lapppal.js';
-import { LAppSubdelegate } from './lappsubdelegate.js';
 
 /**
  * サンプルアプリケーションにおいてCubismModelを管理するクラス
@@ -60,7 +60,8 @@ export class LAppLive2DManager {
         LAppPal.printMessage(`[APP]hit area: [${LAppDefine.HitAreaNameHead}]`);
       }
       model.setRandomExpression();
-    } else if (model.hitTest(LAppDefine.HitAreaNameBody, x, y)) {
+    }
+    else if (model.hitTest(LAppDefine.HitAreaNameBody, x, y)) {
       if (LAppDefine.DebugLogEnable) {
         LAppPal.printMessage(`[APP]hit area: [${LAppDefine.HitAreaNameBody}]`);
       }
@@ -88,7 +89,8 @@ export class LAppLive2DManager {
         // 横に長いモデルを縦長ウィンドウに表示する際モデルの横サイズでscaleを算出する
         model.getModelMatrix().setWidth(2.0);
         projection.scale(1.0, width / height);
-      } else {
+      }
+      else {
         projection.scale(height / width, 1.0);
       }
 
@@ -127,7 +129,7 @@ export class LAppLive2DManager {
     // model3.jsonのパスを決定する。
     // ディレクトリ名とmodel3.jsonの名前を一致させておくこと。
     const model: string = LAppDefine.ModelDir[index];
-    const modelPath: string = LAppDefine.ResourcesPath + model + '/';
+    const modelPath: string = `${LAppDefine.ResourcesPath + model}/`;
     let modelJsonName: string = LAppDefine.ModelDir[index];
     modelJsonName += '.model3.json';
 
@@ -190,6 +192,7 @@ export class LAppLive2DManager {
     LAppPal.printMessage('Motion Began:');
     console.log(self);
   };
+
   // モーション再生終了のコールバック関数
   finishedMotion = (self: ACubismMotion): void => {
     LAppPal.printMessage('Motion Finished:');

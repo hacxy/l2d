@@ -6,12 +6,16 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
+import type { CubismIdHandle } from './id/cubismid.js';
+import type { csmMap, iterator } from './type/csmmap.js';
+import type { Value } from './utils/cubismjson.js';
+// Namespace definition for compatibility.
+import * as $ from './cubismmodelsettingjson';
 import { ICubismModelSetting } from './icubismmodelsetting.js';
-import { CubismIdHandle } from './id/cubismid.js';
 import { CubismFramework } from './live2dcubismframework.js';
-import { csmMap, iterator } from './type/csmmap.js';
+
 import { csmVector } from './type/csmvector.js';
-import { CubismJson, Value } from './utils/cubismjson.js';
+import { CubismJson } from './utils/cubismjson.js';
 
 export enum FrequestNode {
   FrequestNode_Groups, // getRoot().getValueByString(Groups)
@@ -718,8 +722,8 @@ export class CubismModelSettingJson extends ICubismModelSetting {
    */
   protected isExistEyeBlinkParameters(): boolean {
     if (
-      this._jsonValue.at(FrequestNode.FrequestNode_Groups).isNull() ||
-      this._jsonValue.at(FrequestNode.FrequestNode_Groups).isError()
+      this._jsonValue.at(FrequestNode.FrequestNode_Groups).isNull()
+      || this._jsonValue.at(FrequestNode.FrequestNode_Groups).isError()
     ) {
       return false;
     }
@@ -750,8 +754,8 @@ export class CubismModelSettingJson extends ICubismModelSetting {
    */
   protected isExistLipSyncParameters(): boolean {
     if (
-      this._jsonValue.at(FrequestNode.FrequestNode_Groups).isNull() ||
-      this._jsonValue.at(FrequestNode.FrequestNode_Groups).isError()
+      this._jsonValue.at(FrequestNode.FrequestNode_Groups).isNull()
+      || this._jsonValue.at(FrequestNode.FrequestNode_Groups).isError()
     ) {
       return false;
     }
@@ -828,9 +832,6 @@ export class CubismModelSettingJson extends ICubismModelSetting {
   protected readonly initPartsVisible = 'init_parts_visible';
   protected readonly val = 'val';
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismmodelsettingjson';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismModelSettingJson = $.CubismModelSettingJson;

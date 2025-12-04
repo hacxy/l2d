@@ -6,11 +6,15 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
-import { ACubismMotion } from './acubismmotion.js';
+import type { CubismModel } from '../model/cubismmodel.js';
+import type { csmString } from '../type/csmstring.js';
+import type { iterator } from '../type/csmvector.js';
+import type { ACubismMotion } from './acubismmotion.js';
+import { csmVector } from '../type/csmvector.js';
 import { CubismMotionQueueEntry } from './cubismmotionqueueentry.js';
-import { csmVector, iterator } from '../type/csmvector.js';
-import { CubismModel } from '../model/cubismmodel.js';
-import { csmString } from '../type/csmstring.js';
+
+// Namespace definition for compatibility.
+import * as $ from './cubismmotionqueuemanager';
 
 /**
  * モーション再生の管理
@@ -119,7 +123,8 @@ export class CubismMotionQueueManager {
       // ----- 終了済みの処理があれば削除する ------
       if (!motionQueueEntry.isFinished()) {
         return false;
-      } else {
+      }
+      else {
         ite.preIncrement();
       }
     }
@@ -148,8 +153,8 @@ export class CubismMotionQueueManager {
       }
 
       if (
-        motionQueueEntry._motionQueueEntryHandle == motionQueueEntryNumber &&
-        !motionQueueEntry.isFinished()
+        motionQueueEntry._motionQueueEntryHandle == motionQueueEntryNumber
+        && !motionQueueEntry.isFinished()
       ) {
         return false;
       }
@@ -198,7 +203,7 @@ export class CubismMotionQueueManager {
 
   /**
    * 指定したCubismMotionQueueEntryの取得
-
+   
    * @param   motionQueueEntryNumber  モーションの識別番号
    * @return  指定したCubismMotionQueueEntry
    * @return  null   見つからなかった
@@ -206,7 +211,7 @@ export class CubismMotionQueueManager {
   public getCubismMotionQueueEntry(
     motionQueueEntryNumber: any
   ): CubismMotionQueueEntry {
-    //------- 処理を行う -------
+    // ------- 処理を行う -------
     for (
       let ite: iterator<CubismMotionQueueEntry> = this._motions.begin();
       ite.notEqual(this._motions.end());
@@ -282,8 +287,8 @@ export class CubismMotionQueueManager {
 
       // ------ ユーザトリガーイベントを検査する ----
       const firedList: csmVector<csmString> = motion.getFiredEvent(
-        motionQueueEntry.getLastCheckEventSeconds() -
-          motionQueueEntry.getStartTime(),
+        motionQueueEntry.getLastCheckEventSeconds()
+        - motionQueueEntry.getStartTime(),
         userTimeSeconds - motionQueueEntry.getStartTime()
       );
 
@@ -298,7 +303,8 @@ export class CubismMotionQueueManager {
         motionQueueEntry.release();
         motionQueueEntry = null;
         ite = this._motions.erase(ite); // 削除
-      } else {
+      }
+      else {
         if (motionQueueEntry.isTriggeredFadeOut()) {
           motionQueueEntry.startFadeOut(
             motionQueueEntry.getFadeOutSeconds(),
@@ -311,6 +317,7 @@ export class CubismMotionQueueManager {
 
     return updated;
   }
+
   _userTimeSeconds: number; // デルタ時間の積算値[秒]
 
   _motions: csmVector<CubismMotionQueueEntry>; // モーション
@@ -331,7 +338,7 @@ export interface CubismMotionEventFunction {
     caller: CubismMotionQueueManager,
     eventValue: csmString,
     customData: any
-  ): void;
+  ): void
 }
 
 /**
@@ -340,17 +347,14 @@ export interface CubismMotionEventFunction {
  * モーションの識別番号の定義
  */
 export declare type CubismMotionQueueEntryHandle = any;
-export const InvalidMotionQueueEntryHandleValue: CubismMotionQueueEntryHandle =
-  -1;
-
-// Namespace definition for compatibility.
-import * as $ from './cubismmotionqueuemanager';
+export const InvalidMotionQueueEntryHandleValue: CubismMotionQueueEntryHandle
+  = -1;
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismMotionQueueManager = $.CubismMotionQueueManager;
   export type CubismMotionQueueManager = $.CubismMotionQueueManager;
-  export const InvalidMotionQueueEntryHandleValue =
-    $.InvalidMotionQueueEntryHandleValue;
+  export const InvalidMotionQueueEntryHandleValue
+    = $.InvalidMotionQueueEntryHandleValue;
   export type CubismMotionQueueEntryHandle = $.CubismMotionQueueEntryHandle;
   export type CubismMotionEventFunction = $.CubismMotionEventFunction;
 }

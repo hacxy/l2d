@@ -6,10 +6,13 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
+import type { CubismModel } from '../model/cubismmodel.js';
+import type { ICubismClippingManager } from './cubismclippingmanager.js';
 import { CubismMatrix44 } from '../math/cubismmatrix44.js';
-import { CubismModel } from '../model/cubismmodel.js';
 import { csmRect } from '../type/csmrectf.js';
-import { ICubismClippingManager } from './cubismclippingmanager.js';
+
+// Namespace definition for compatibility.
+import * as $ from './cubismrenderer';
 
 /**
  * モデル描画を処理するレンダラ
@@ -46,7 +49,8 @@ export abstract class CubismRenderer {
    * モデルを描画する
    */
   public drawModel(): void {
-    if (this.getModel() == null) return;
+    if (this.getModel() == null)
+      return;
 
     this.saveProfile();
 
@@ -88,25 +92,29 @@ export abstract class CubismRenderer {
   ): void {
     if (red < 0.0) {
       red = 0.0;
-    } else if (red > 1.0) {
+    }
+    else if (red > 1.0) {
       red = 1.0;
     }
 
     if (green < 0.0) {
       green = 0.0;
-    } else if (green > 1.0) {
+    }
+    else if (green > 1.0) {
       green = 1.0;
     }
 
     if (blue < 0.0) {
       blue = 0.0;
-    } else if (blue > 1.0) {
+    }
+    else if (blue > 1.0) {
       blue = 1.0;
     }
 
     if (alpha < 0.0) {
       alpha = 0.0;
-    } else if (alpha > 1.0) {
+    }
+    else if (alpha > 1.0) {
       alpha = 1.0;
     }
 
@@ -363,9 +371,6 @@ export abstract class CubismClippingContext {
   public _clippedDrawableIndexList: number[]; // このマスクにクリップされる描画オブジェクトのリスト
   public _bufferIndex: number; // このマスクが割り当てられるレンダーテクスチャ（フレームバッファ）やカラーバッファのインデックス
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismrenderer';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismBlendMode = $.CubismBlendMode;

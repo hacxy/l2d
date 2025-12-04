@@ -6,10 +6,14 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
-import { CubismModel } from '../model/cubismmodel.js';
-import { ACubismMotion } from './acubismmotion.js';
+import type { CubismModel } from '../model/cubismmodel.js';
+import type { ACubismMotion } from './acubismmotion.js';
+import type {
+  CubismMotionQueueEntryHandle } from './cubismmotionqueuemanager.js';
+// Namespace definition for compatibility.
+import * as $ from './cubismmotionmanager';
+
 import {
-  CubismMotionQueueEntryHandle,
   CubismMotionQueueManager
 } from './cubismmotionqueuemanager.js';
 
@@ -103,8 +107,8 @@ export class CubismMotionManager extends CubismMotionQueueManager {
    */
   public reserveMotion(priority: number): boolean {
     if (
-      priority <= this._reservePriority ||
-      priority <= this._currentPriority
+      priority <= this._reservePriority
+      || priority <= this._currentPriority
     ) {
       return false;
     }
@@ -117,9 +121,6 @@ export class CubismMotionManager extends CubismMotionQueueManager {
   _currentPriority: number; // 現在再生中のモーションの優先度
   _reservePriority: number; // 再生予定のモーションの優先度。再生中は0になる。モーションファイルを別スレッドで読み込むときの機能。
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismmotionmanager';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismMotionManager = $.CubismMotionManager;

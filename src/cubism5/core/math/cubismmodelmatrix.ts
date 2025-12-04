@@ -6,8 +6,11 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
-import { csmMap, iterator } from '../type/csmmap.js';
+import type { csmMap, iterator } from '../type/csmmap.js';
 import { CubismMatrix44 } from './cubismmatrix44.js';
+
+// Namespace definition for compatibility.
+import * as $ from './cubismmodelmatrix';
 
 /**
  * モデル座標設定用の4x4行列
@@ -181,7 +184,8 @@ export class CubismModelMatrix extends CubismMatrix44 {
 
       if (key == keyWidth) {
         this.setWidth(value);
-      } else if (key == keyHeight) {
+      }
+      else if (key == keyHeight) {
         this.setHeight(value);
       }
     }
@@ -196,19 +200,26 @@ export class CubismModelMatrix extends CubismMatrix44 {
 
       if (key == keyX) {
         this.setX(value);
-      } else if (key == keyY) {
+      }
+      else if (key == keyY) {
         this.setY(value);
-      } else if (key == keyCenterX) {
+      }
+      else if (key == keyCenterX) {
         this.centerX(value);
-      } else if (key == keyCenterY) {
+      }
+      else if (key == keyCenterY) {
         this.centerY(value);
-      } else if (key == keyTop) {
+      }
+      else if (key == keyTop) {
         this.top(value);
-      } else if (key == keyBottom) {
+      }
+      else if (key == keyBottom) {
         this.bottom(value);
-      } else if (key == keyLeft) {
+      }
+      else if (key == keyLeft) {
         this.left(value);
-      } else if (key == keyRight) {
+      }
+      else if (key == keyRight) {
         this.right(value);
       }
     }
@@ -217,9 +228,6 @@ export class CubismModelMatrix extends CubismMatrix44 {
   private _width: number; // 横幅
   private _height: number; // 縦幅
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismmodelmatrix';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismModelMatrix = $.CubismModelMatrix;

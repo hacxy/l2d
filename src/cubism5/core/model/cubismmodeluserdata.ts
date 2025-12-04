@@ -6,10 +6,13 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
-import { CubismIdHandle } from '../id/cubismid.js';
+import type { CubismIdHandle } from '../id/cubismid.js';
 import { CubismFramework } from '../live2dcubismframework.js';
 import { csmString } from '../type/csmstring.js';
 import { csmVector } from '../type/csmvector.js';
+// Namespace definition for compatibility.
+import * as $ from './cubismmodeluserdata';
+
 import { CubismModelUserDataJson } from './cubismmodeluserdatajson.js';
 
 const ArtMesh = 'ArtMesh';
@@ -130,9 +133,6 @@ export class CubismModelUserData {
   private _userDataNodes: csmVector<CubismModelUserDataNode>; // ユーザーデータ構造体配列
   private _artMeshUserDataNode: csmVector<CubismModelUserDataNode>; // 閲覧リストの保持
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismmodeluserdata';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismModelUserData = $.CubismModelUserData;

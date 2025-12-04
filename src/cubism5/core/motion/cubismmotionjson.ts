@@ -6,12 +6,15 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
-import { CubismIdHandle } from '../id/cubismid.js';
+import type { CubismIdHandle } from '../id/cubismid.js';
 import { CubismFramework } from '../live2dcubismframework.js';
 import { csmString } from '../type/csmstring.js';
 import { CSM_ASSERT, CubismLogWarning } from '../utils/cubismdebug.js';
-import { CubismJson, JsonMap } from '../utils/cubismjson.js';
+import { CubismJson } from '../utils/cubismjson.js';
 import { CubismMotionSegmentType } from './cubismmotioninternal.js';
+
+// Namespace definition for compatibility.
+import * as $ from './cubismmotionjson';
 
 // JSON keys
 const Meta = 'Meta';
@@ -458,11 +461,8 @@ export class CubismMotionJson {
  * @brief ベジェカーブの解釈方法のフラグタイプ
  */
 export enum EvaluationOptionFlag {
-  EvaluationOptionFlag_AreBeziersRistricted = 0 ///< ベジェハンドルの規制状態
+  EvaluationOptionFlag_AreBeziersRistricted = 0 /// < ベジェハンドルの規制状態
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismmotionjson';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismMotionJson = $.CubismMotionJson;

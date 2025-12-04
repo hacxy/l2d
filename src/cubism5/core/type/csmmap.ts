@@ -8,6 +8,9 @@
 
 import { CubismLogDebug, CubismLogWarning } from '../utils/cubismdebug.js';
 
+// Namespace definition for compatibility.
+import * as $ from './csmmap';
+
 /**
  * Key-Valueのペアを定義するクラス
  * csmMapクラスの内部データで使用する。
@@ -42,11 +45,13 @@ export class csmMap<_KeyT, _ValT> {
         this._keyValues = [];
         this._dummyValue = null;
         this._size = 0;
-      } else {
+      }
+      else {
         this._keyValues = new Array(size);
         this._size = size;
       }
-    } else {
+    }
+    else {
       this._keyValues = [];
       this._dummyValue = null;
       this._size = 0;
@@ -103,7 +108,8 @@ export class csmMap<_KeyT, _ValT> {
 
     if (found >= 0) {
       return this._keyValues[found].second;
-    } else {
+    }
+    else {
       this.appendKey(key); // 新規キーを追加
       return this._keyValues[this._size - 1].second;
     }
@@ -126,7 +132,8 @@ export class csmMap<_KeyT, _ValT> {
 
     if (found >= 0) {
       this._keyValues[found].second = value;
-    } else {
+    }
+    else {
       this.appendKey(key); // 新規キーを追加
       this._keyValues[this._size - 1].second = value;
     }
@@ -178,7 +185,8 @@ export class csmMap<_KeyT, _ValT> {
         if (!fitToSize && newSize < csmMap.DefaultSize)
           newSize = csmMap.DefaultSize;
         this._keyValues.length = newSize;
-      } else {
+      }
+      else {
         if (!fitToSize && newSize < this._keyValues.length * 2)
           newSize = this._keyValues.length * 2;
         this._keyValues.length = newSize;
@@ -300,7 +308,7 @@ export class iterator<_KeyT, _ValT> {
   }
 
   /**
-   * *演算子のオーバーロード
+   * 演算子のオーバーロード
    */
   public ptr(): csmPair<_KeyT, _ValT> {
     return this._map._keyValues[this._index];
@@ -316,9 +324,6 @@ export class iterator<_KeyT, _ValT> {
   _index: number; // コンテナのインデックス値
   _map: csmMap<_KeyT, _ValT>; // コンテナ
 }
-
-// Namespace definition for compatibility.
-import * as $ from './csmmap';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const csmMap = $.csmMap;

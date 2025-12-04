@@ -6,13 +6,16 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
+import type { CubismModel } from '../model/cubismmodel.js';
+import type {
+  CubismPhysicsNormalization } from './cubismphysicsinternal';
 import { CubismMath } from '../math/cubismmath.js';
 import { CubismVector2 } from '../math/cubismvector2.js';
 import { csmVector } from '../type/csmvector.js';
-import { CubismModel } from '../model/cubismmodel.js';
+// Namespace definition for compatibility.
+import * as $ from './cubismphysics';
 import {
   CubismPhysicsInput,
-  CubismPhysicsNormalization,
   CubismPhysicsOutput,
   CubismPhysicsParticle,
   CubismPhysicsRig,
@@ -20,6 +23,7 @@ import {
   CubismPhysicsSubRig,
   CubismPhysicsTargetType
 } from './cubismphysicsinternal';
+
 import { CubismPhysicsJson } from './cubismphysicsjson';
 
 // physics types tags.
@@ -109,24 +113,24 @@ export class CubismPhysics {
     this._currentRigOutputs.clear();
     this._previousRigOutputs.clear();
 
-    let inputIndex = 0,
-      outputIndex = 0,
-      particleIndex = 0;
+    let inputIndex = 0;
+    let outputIndex = 0;
+    let particleIndex = 0;
 
     for (let i = 0; i < this._physicsRig.settings.getSize(); ++i) {
-      this._physicsRig.settings.at(i).normalizationPosition.minimum =
-        json.getNormalizationPositionMinimumValue(i);
-      this._physicsRig.settings.at(i).normalizationPosition.maximum =
-        json.getNormalizationPositionMaximumValue(i);
-      this._physicsRig.settings.at(i).normalizationPosition.defalut =
-        json.getNormalizationPositionDefaultValue(i);
+      this._physicsRig.settings.at(i).normalizationPosition.minimum
+        = json.getNormalizationPositionMinimumValue(i);
+      this._physicsRig.settings.at(i).normalizationPosition.maximum
+        = json.getNormalizationPositionMaximumValue(i);
+      this._physicsRig.settings.at(i).normalizationPosition.defalut
+        = json.getNormalizationPositionDefaultValue(i);
 
-      this._physicsRig.settings.at(i).normalizationAngle.minimum =
-        json.getNormalizationAngleMinimumValue(i);
-      this._physicsRig.settings.at(i).normalizationAngle.maximum =
-        json.getNormalizationAngleMaximumValue(i);
-      this._physicsRig.settings.at(i).normalizationAngle.defalut =
-        json.getNormalizationAngleDefaultValue(i);
+      this._physicsRig.settings.at(i).normalizationAngle.minimum
+        = json.getNormalizationAngleMinimumValue(i);
+      this._physicsRig.settings.at(i).normalizationAngle.maximum
+        = json.getNormalizationAngleMaximumValue(i);
+      this._physicsRig.settings.at(i).normalizationAngle.defalut
+        = json.getNormalizationAngleDefaultValue(i);
 
       // Input
       this._physicsRig.settings.at(i).inputCount = json.getInputCount(i);
@@ -138,36 +142,38 @@ export class CubismPhysics {
           i,
           j
         );
-        this._physicsRig.inputs.at(inputIndex + j).reflect =
-          json.getInputReflect(i, j);
+        this._physicsRig.inputs.at(inputIndex + j).reflect
+          = json.getInputReflect(i, j);
 
         if (json.getInputType(i, j) == PhysicsTypeTagX) {
-          this._physicsRig.inputs.at(inputIndex + j).type =
-            CubismPhysicsSource.CubismPhysicsSource_X;
+          this._physicsRig.inputs.at(inputIndex + j).type
+            = CubismPhysicsSource.CubismPhysicsSource_X;
           this._physicsRig.inputs.at(
             inputIndex + j
-          ).getNormalizedParameterValue =
-            getInputTranslationXFromNormalizedParameterValue;
-        } else if (json.getInputType(i, j) == PhysicsTypeTagY) {
-          this._physicsRig.inputs.at(inputIndex + j).type =
-            CubismPhysicsSource.CubismPhysicsSource_Y;
+          ).getNormalizedParameterValue
+            = getInputTranslationXFromNormalizedParameterValue;
+        }
+        else if (json.getInputType(i, j) == PhysicsTypeTagY) {
+          this._physicsRig.inputs.at(inputIndex + j).type
+            = CubismPhysicsSource.CubismPhysicsSource_Y;
           this._physicsRig.inputs.at(
             inputIndex + j
-          ).getNormalizedParameterValue =
-            getInputTranslationYFromNormalizedParamterValue;
-        } else if (json.getInputType(i, j) == PhysicsTypeTagAngle) {
-          this._physicsRig.inputs.at(inputIndex + j).type =
-            CubismPhysicsSource.CubismPhysicsSource_Angle;
+          ).getNormalizedParameterValue
+            = getInputTranslationYFromNormalizedParamterValue;
+        }
+        else if (json.getInputType(i, j) == PhysicsTypeTagAngle) {
+          this._physicsRig.inputs.at(inputIndex + j).type
+            = CubismPhysicsSource.CubismPhysicsSource_Angle;
           this._physicsRig.inputs.at(
             inputIndex + j
-          ).getNormalizedParameterValue =
-            getInputAngleFromNormalizedParameterValue;
+          ).getNormalizedParameterValue
+            = getInputAngleFromNormalizedParameterValue;
         }
 
-        this._physicsRig.inputs.at(inputIndex + j).source.targetType =
-          CubismPhysicsTargetType.CubismPhysicsTargetType_Parameter;
-        this._physicsRig.inputs.at(inputIndex + j).source.id =
-          json.getInputSourceId(i, j);
+        this._physicsRig.inputs.at(inputIndex + j).source.targetType
+          = CubismPhysicsTargetType.CubismPhysicsTargetType_Parameter;
+        this._physicsRig.inputs.at(inputIndex + j).source.id
+          = json.getInputSourceId(i, j);
       }
       inputIndex += this._physicsRig.settings.at(i).inputCount;
 
@@ -190,45 +196,47 @@ export class CubismPhysics {
         currentRigOutput.outputs.set(j, 0.0);
         previousRigOutput.outputs.set(j, 0.0);
 
-        this._physicsRig.outputs.at(outputIndex + j).destinationParameterIndex =
-          -1;
-        this._physicsRig.outputs.at(outputIndex + j).vertexIndex =
-          json.getOutputVertexIndex(i, j);
-        this._physicsRig.outputs.at(outputIndex + j).angleScale =
-          json.getOutputAngleScale(i, j);
-        this._physicsRig.outputs.at(outputIndex + j).weight =
-          json.getOutputWeight(i, j);
-        this._physicsRig.outputs.at(outputIndex + j).destination.targetType =
-          CubismPhysicsTargetType.CubismPhysicsTargetType_Parameter;
+        this._physicsRig.outputs.at(outputIndex + j).destinationParameterIndex
+          = -1;
+        this._physicsRig.outputs.at(outputIndex + j).vertexIndex
+          = json.getOutputVertexIndex(i, j);
+        this._physicsRig.outputs.at(outputIndex + j).angleScale
+          = json.getOutputAngleScale(i, j);
+        this._physicsRig.outputs.at(outputIndex + j).weight
+          = json.getOutputWeight(i, j);
+        this._physicsRig.outputs.at(outputIndex + j).destination.targetType
+          = CubismPhysicsTargetType.CubismPhysicsTargetType_Parameter;
 
-        this._physicsRig.outputs.at(outputIndex + j).destination.id =
-          json.getOutputDestinationId(i, j);
+        this._physicsRig.outputs.at(outputIndex + j).destination.id
+          = json.getOutputDestinationId(i, j);
 
         if (json.getOutputType(i, j) == PhysicsTypeTagX) {
-          this._physicsRig.outputs.at(outputIndex + j).type =
-            CubismPhysicsSource.CubismPhysicsSource_X;
-          this._physicsRig.outputs.at(outputIndex + j).getValue =
-            getOutputTranslationX;
-          this._physicsRig.outputs.at(outputIndex + j).getScale =
-            getOutputScaleTranslationX;
-        } else if (json.getOutputType(i, j) == PhysicsTypeTagY) {
-          this._physicsRig.outputs.at(outputIndex + j).type =
-            CubismPhysicsSource.CubismPhysicsSource_Y;
-          this._physicsRig.outputs.at(outputIndex + j).getValue =
-            getOutputTranslationY;
-          this._physicsRig.outputs.at(outputIndex + j).getScale =
-            getOutputScaleTranslationY;
-        } else if (json.getOutputType(i, j) == PhysicsTypeTagAngle) {
-          this._physicsRig.outputs.at(outputIndex + j).type =
-            CubismPhysicsSource.CubismPhysicsSource_Angle;
-          this._physicsRig.outputs.at(outputIndex + j).getValue =
-            getOutputAngle;
-          this._physicsRig.outputs.at(outputIndex + j).getScale =
-            getOutputScaleAngle;
+          this._physicsRig.outputs.at(outputIndex + j).type
+            = CubismPhysicsSource.CubismPhysicsSource_X;
+          this._physicsRig.outputs.at(outputIndex + j).getValue
+            = getOutputTranslationX;
+          this._physicsRig.outputs.at(outputIndex + j).getScale
+            = getOutputScaleTranslationX;
+        }
+        else if (json.getOutputType(i, j) == PhysicsTypeTagY) {
+          this._physicsRig.outputs.at(outputIndex + j).type
+            = CubismPhysicsSource.CubismPhysicsSource_Y;
+          this._physicsRig.outputs.at(outputIndex + j).getValue
+            = getOutputTranslationY;
+          this._physicsRig.outputs.at(outputIndex + j).getScale
+            = getOutputScaleTranslationY;
+        }
+        else if (json.getOutputType(i, j) == PhysicsTypeTagAngle) {
+          this._physicsRig.outputs.at(outputIndex + j).type
+            = CubismPhysicsSource.CubismPhysicsSource_Angle;
+          this._physicsRig.outputs.at(outputIndex + j).getValue
+            = getOutputAngle;
+          this._physicsRig.outputs.at(outputIndex + j).getScale
+            = getOutputScaleAngle;
         }
 
-        this._physicsRig.outputs.at(outputIndex + j).reflect =
-          json.getOutputReflect(i, j);
+        this._physicsRig.outputs.at(outputIndex + j).reflect
+          = json.getOutputReflect(i, j);
       }
 
       this._currentRigOutputs.pushBack(currentRigOutput);
@@ -241,16 +249,16 @@ export class CubismPhysics {
       this._physicsRig.settings.at(i).baseParticleIndex = particleIndex;
 
       for (let j = 0; j < this._physicsRig.settings.at(i).particleCount; ++j) {
-        this._physicsRig.particles.at(particleIndex + j).mobility =
-          json.getParticleMobility(i, j);
-        this._physicsRig.particles.at(particleIndex + j).delay =
-          json.getParticleDelay(i, j);
-        this._physicsRig.particles.at(particleIndex + j).acceleration =
-          json.getParticleAcceleration(i, j);
-        this._physicsRig.particles.at(particleIndex + j).radius =
-          json.getParticleRadius(i, j);
-        this._physicsRig.particles.at(particleIndex + j).position =
-          json.getParticlePosition(i, j);
+        this._physicsRig.particles.at(particleIndex + j).mobility
+          = json.getParticleMobility(i, j);
+        this._physicsRig.particles.at(particleIndex + j).delay
+          = json.getParticleDelay(i, j);
+        this._physicsRig.particles.at(particleIndex + j).acceleration
+          = json.getParticleAcceleration(i, j);
+        this._physicsRig.particles.at(particleIndex + j).radius
+          = json.getParticleRadius(i, j);
+        this._physicsRig.particles.at(particleIndex + j).position
+          = json.getParticlePosition(i, j);
       }
 
       particleIndex += this._physicsRig.settings.at(i).particleCount;
@@ -279,12 +287,12 @@ export class CubismPhysics {
     let currentParticles: CubismPhysicsParticle[];
 
     const parameterValues: Float32Array = model.getModel().parameters.values;
-    const parameterMaximumValues: Float32Array =
-      model.getModel().parameters.maximumValues;
-    const parameterMinimumValues: Float32Array =
-      model.getModel().parameters.minimumValues;
-    const parameterDefaultValues: Float32Array =
-      model.getModel().parameters.defaultValues;
+    const parameterMaximumValues: Float32Array
+      = model.getModel().parameters.maximumValues;
+    const parameterMinimumValues: Float32Array
+      = model.getModel().parameters.minimumValues;
+    const parameterDefaultValues: Float32Array
+      = model.getModel().parameters.defaultValues;
 
     if ((this._parameterCaches?.length ?? 0) < model.getParameterCount()) {
       this._parameterCaches = new Float32Array(model.getParameterCount());
@@ -341,18 +349,18 @@ export class CubismPhysics {
           weight
         );
 
-        this._parameterCaches[currentInputs[i].sourceParameterIndex] =
-          parameterValues[currentInputs[i].sourceParameterIndex];
+        this._parameterCaches[currentInputs[i].sourceParameterIndex]
+          = parameterValues[currentInputs[i].sourceParameterIndex];
       }
 
       radAngle = CubismMath.degreesToRadian(-totalAngle.angle);
 
-      totalTranslation.x =
-        totalTranslation.x * CubismMath.cos(radAngle) -
-        totalTranslation.y * CubismMath.sin(radAngle);
-      totalTranslation.y =
-        totalTranslation.x * CubismMath.sin(radAngle) +
-        totalTranslation.y * CubismMath.cos(radAngle);
+      totalTranslation.x
+        = totalTranslation.x * CubismMath.cos(radAngle)
+          - totalTranslation.y * CubismMath.sin(radAngle);
+      totalTranslation.y
+        = totalTranslation.x * CubismMath.sin(radAngle)
+          + totalTranslation.y * CubismMath.cos(radAngle);
 
       // Calculate particles position.
       updateParticlesForStabilization(
@@ -375,8 +383,8 @@ export class CubismPhysics {
         }
 
         if (
-          particleIndex < 1 ||
-          particleIndex >= currentSetting.particleCount
+          particleIndex < 1
+          || particleIndex >= currentSetting.particleCount
         ) {
           continue;
         }
@@ -397,16 +405,16 @@ export class CubismPhysics {
         this._currentRigOutputs.at(settingIndex).outputs.set(i, outputValue);
         this._previousRigOutputs.at(settingIndex).outputs.set(i, outputValue);
 
-        const destinationParameterIndex: number =
-          currentOutputs[i].destinationParameterIndex;
+        const destinationParameterIndex: number
+          = currentOutputs[i].destinationParameterIndex;
 
-        const outParameterCaches: Float32Array =
-          !Float32Array.prototype.slice && 'subarray' in Float32Array.prototype
+        const outParameterCaches: Float32Array
+          = !Float32Array.prototype.slice && 'subarray' in Float32Array.prototype
             ? JSON.parse(
-                JSON.stringify(
-                  parameterValues.subarray(destinationParameterIndex)
-                )
-              ) // 値渡しするため、JSON.parse, JSON.stringify
+              JSON.stringify(
+                parameterValues.subarray(destinationParameterIndex)
+              )
+            ) // 値渡しするため、JSON.parse, JSON.stringify
             : parameterValues.slice(destinationParameterIndex);
 
         updateOutputParameterValue(
@@ -423,8 +431,8 @@ export class CubismPhysics {
           offset < this._parameterCaches.length;
           offset++, outParamIndex++
         ) {
-          parameterValues[offset] = this._parameterCaches[offset] =
-            outParameterCaches[outParamIndex];
+          parameterValues[offset] = this._parameterCaches[offset]
+            = outParameterCaches[outParamIndex];
         }
       }
     }
@@ -482,17 +490,17 @@ export class CubismPhysics {
     let currentOutputs: CubismPhysicsOutput[];
     let currentParticles: CubismPhysicsParticle[];
 
-    if (0.0 >= deltaTimeSeconds) {
+    if (deltaTimeSeconds <= 0.0) {
       return;
     }
 
     const parameterValues: Float32Array = model.getModel().parameters.values;
-    const parameterMaximumValues: Float32Array =
-      model.getModel().parameters.maximumValues;
-    const parameterMinimumValues: Float32Array =
-      model.getModel().parameters.minimumValues;
-    const parameterDefaultValues: Float32Array =
-      model.getModel().parameters.defaultValues;
+    const parameterMaximumValues: Float32Array
+      = model.getModel().parameters.maximumValues;
+    const parameterMinimumValues: Float32Array
+      = model.getModel().parameters.minimumValues;
+    const parameterDefaultValues: Float32Array
+      = model.getModel().parameters.defaultValues;
 
     let physicsDeltaTime: number;
     this._currentRemainTime += deltaTimeSeconds;
@@ -513,7 +521,8 @@ export class CubismPhysics {
 
     if (this._physicsRig.fps > 0.0) {
       physicsDeltaTime = 1.0 / this._physicsRig.fps;
-    } else {
+    }
+    else {
       physicsDeltaTime = deltaTimeSeconds;
     }
 
@@ -531,7 +540,8 @@ export class CubismPhysics {
         for (let i = 0; i < currentSetting.outputCount; ++i) {
           this._previousRigOutputs
             .at(settingIndex)
-            .outputs.set(
+            .outputs
+            .set(
               i,
               this._currentRigOutputs.at(settingIndex).outputs.at(i)
             );
@@ -544,9 +554,9 @@ export class CubismPhysics {
       // _parameterCache needs to be separated from _parameterInputCache because of its role in propagating values between groups.
       const inputWeight = physicsDeltaTime / this._currentRemainTime;
       for (let j = 0; j < model.getParameterCount(); ++j) {
-        this._parameterCaches[j] =
-          this._parameterInputCaches[j] * (1.0 - inputWeight) +
-          parameterValues[j] * inputWeight;
+        this._parameterCaches[j]
+          = this._parameterInputCaches[j] * (1.0 - inputWeight)
+            + parameterValues[j] * inputWeight;
         this._parameterInputCaches[j] = this._parameterCaches[j];
       }
 
@@ -595,12 +605,12 @@ export class CubismPhysics {
 
         radAngle = CubismMath.degreesToRadian(-totalAngle.angle);
 
-        totalTranslation.x =
-          totalTranslation.x * CubismMath.cos(radAngle) -
-          totalTranslation.y * CubismMath.sin(radAngle);
-        totalTranslation.y =
-          totalTranslation.x * CubismMath.sin(radAngle) +
-          totalTranslation.y * CubismMath.cos(radAngle);
+        totalTranslation.x
+          = totalTranslation.x * CubismMath.cos(radAngle)
+            - totalTranslation.y * CubismMath.sin(radAngle);
+        totalTranslation.y
+          = totalTranslation.x * CubismMath.sin(radAngle)
+            + totalTranslation.y * CubismMath.cos(radAngle);
 
         // Calculate particles position.
         updateParticles(
@@ -619,24 +629,24 @@ export class CubismPhysics {
           const particleIndex = currentOutputs[i].vertexIndex;
 
           if (currentOutputs[i].destinationParameterIndex == -1) {
-            currentOutputs[i].destinationParameterIndex =
-              model.getParameterIndex(currentOutputs[i].destination.id);
+            currentOutputs[i].destinationParameterIndex
+              = model.getParameterIndex(currentOutputs[i].destination.id);
           }
 
           if (
-            particleIndex < 1 ||
-            particleIndex >= currentSetting.particleCount
+            particleIndex < 1
+            || particleIndex >= currentSetting.particleCount
           ) {
             continue;
           }
 
           const translation: CubismVector2 = new CubismVector2();
-          translation.x =
-            currentParticles[particleIndex].position.x -
-            currentParticles[particleIndex - 1].position.x;
-          translation.y =
-            currentParticles[particleIndex].position.y -
-            currentParticles[particleIndex - 1].position.y;
+          translation.x
+            = currentParticles[particleIndex].position.x
+              - currentParticles[particleIndex - 1].position.x;
+          translation.y
+            = currentParticles[particleIndex].position.y
+              - currentParticles[particleIndex - 1].position.y;
 
           outputValue = currentOutputs[i].getValue(
             translation,
@@ -648,16 +658,16 @@ export class CubismPhysics {
 
           this._currentRigOutputs.at(settingIndex).outputs.set(i, outputValue);
 
-          const destinationParameterIndex: number =
-            currentOutputs[i].destinationParameterIndex;
-          const outParameterCaches: Float32Array =
-            !Float32Array.prototype.slice &&
-            'subarray' in Float32Array.prototype
+          const destinationParameterIndex: number
+            = currentOutputs[i].destinationParameterIndex;
+          const outParameterCaches: Float32Array
+            = !Float32Array.prototype.slice
+              && 'subarray' in Float32Array.prototype
               ? JSON.parse(
-                  JSON.stringify(
-                    this._parameterCaches.subarray(destinationParameterIndex)
-                  )
-                ) // 値渡しするため、JSON.parse, JSON.stringify
+                JSON.stringify(
+                  this._parameterCaches.subarray(destinationParameterIndex)
+                )
+              ) // 値渡しするため、JSON.parse, JSON.stringify
               : this._parameterCaches.slice(destinationParameterIndex);
 
           updateOutputParameterValue(
@@ -695,10 +705,10 @@ export class CubismPhysics {
     let currentOutputs: CubismPhysicsOutput[];
     let currentSetting: CubismPhysicsSubRig;
     const parameterValues: Float32Array = model.getModel().parameters.values;
-    const parameterMaximumValues: Float32Array =
-      model.getModel().parameters.maximumValues;
-    const parameterMinimumValues: Float32Array =
-      model.getModel().parameters.minimumValues;
+    const parameterMaximumValues: Float32Array
+      = model.getModel().parameters.maximumValues;
+    const parameterMinimumValues: Float32Array
+      = model.getModel().parameters.minimumValues;
 
     for (
       let settingIndex = 0;
@@ -716,24 +726,24 @@ export class CubismPhysics {
           continue;
         }
 
-        const destinationParameterIndex: number =
-          currentOutputs[i].destinationParameterIndex;
-        const outParameterValues: Float32Array =
-          !Float32Array.prototype.slice && 'subarray' in Float32Array.prototype
+        const destinationParameterIndex: number
+          = currentOutputs[i].destinationParameterIndex;
+        const outParameterValues: Float32Array
+          = !Float32Array.prototype.slice && 'subarray' in Float32Array.prototype
             ? JSON.parse(
-                JSON.stringify(
-                  parameterValues.subarray(destinationParameterIndex)
-                )
-              ) // 値渡しするため、JSON.parse, JSON.stringify
+              JSON.stringify(
+                parameterValues.subarray(destinationParameterIndex)
+              )
+            ) // 値渡しするため、JSON.parse, JSON.stringify
             : parameterValues.slice(destinationParameterIndex);
 
         updateOutputParameterValue(
           outParameterValues,
           parameterMinimumValues[destinationParameterIndex],
           parameterMaximumValues[destinationParameterIndex],
-          this._previousRigOutputs.at(settingIndex).outputs.at(i) *
-            (1 - weight) +
-            this._currentRigOutputs.at(settingIndex).outputs.at(i) * weight,
+          this._previousRigOutputs.at(settingIndex).outputs.at(i)
+          * (1 - weight)
+          + this._currentRigOutputs.at(settingIndex).outputs.at(i) * weight,
           currentOutputs[i]
         );
 
@@ -846,13 +856,13 @@ export class CubismPhysics {
   _physicsRig: CubismPhysicsRig; // 物理演算のデータ
   _options: Options; // オプション
 
-  _currentRigOutputs: csmVector<PhysicsOutput>; ///< 最新の振り子計算の結果
-  _previousRigOutputs: csmVector<PhysicsOutput>; ///< 一つ前の振り子計算の結果
+  _currentRigOutputs: csmVector<PhysicsOutput>; /// < 最新の振り子計算の結果
+  _previousRigOutputs: csmVector<PhysicsOutput>; /// < 一つ前の振り子計算の結果
 
-  _currentRemainTime: number; ///< 物理演算が処理していない時間
+  _currentRemainTime: number; /// < 物理演算が処理していない時間
 
-  _parameterCaches: Float32Array; ///< Evaluateで利用するパラメータのキャッシュ
-  _parameterInputCaches: Float32Array; ///< UpdateParticlesが動くときの入力をキャッシュ
+  _parameterCaches: Float32Array; /// < Evaluateで利用するパラメータのキャッシュ
+  _parameterInputCaches: Float32Array; /// < UpdateParticlesが動くときの入力をキャッシュ
 }
 
 /**
@@ -891,7 +901,8 @@ function sign(value: number): number {
 
   if (value > 0.0) {
     ret = 1;
-  } else if (value < 0.0) {
+  }
+  else if (value < 0.0) {
     ret = -1;
   }
 
@@ -910,8 +921,8 @@ function getInputTranslationXFromNormalizedParameterValue(
   isInverted: boolean,
   weight: number
 ): void {
-  targetTranslation.x +=
-    normalizeParameterValue(
+  targetTranslation.x
+    += normalizeParameterValue(
       value,
       parameterMinimumValue,
       parameterMaximumValue,
@@ -935,8 +946,8 @@ function getInputTranslationYFromNormalizedParamterValue(
   isInverted: boolean,
   weight: number
 ): void {
-  targetTranslation.y +=
-    normalizeParameterValue(
+  targetTranslation.y
+    += normalizeParameterValue(
       value,
       parameterMinimumValue,
       parameterMaximumValue,
@@ -960,8 +971,8 @@ function getInputAngleFromNormalizedParameterValue(
   isInverted: boolean,
   weight: number
 ): void {
-  targetAngle.angle +=
-    normalizeParameterValue(
+  targetAngle.angle
+    += normalizeParameterValue(
       value,
       parameterMinimumValue,
       parameterMaximumValue,
@@ -1017,7 +1028,8 @@ function getOutputAngle(
     parentGravity = particles[particleIndex - 1].position.substract(
       particles[particleIndex - 2].position
     );
-  } else {
+  }
+  else {
     parentGravity = parentGravity.multiplyByScaler(-1.0);
   }
 
@@ -1098,8 +1110,8 @@ function updateParticles(
   );
 
   const totalRadian: number = CubismMath.degreesToRadian(totalAngle);
-  const currentGravity: CubismVector2 =
-    CubismMath.radianToDirection(totalRadian);
+  const currentGravity: CubismVector2
+    = CubismMath.radianToDirection(totalRadian);
   currentGravity.normalize();
 
   for (let i = 1; i < strandCount; ++i) {
@@ -1116,16 +1128,16 @@ function updateParticles(
 
     direction = strand[i].position.substract(strand[i - 1].position);
 
-    radian =
-      CubismMath.directionToRadian(strand[i].lastGravity, currentGravity) /
-      airResistance;
+    radian
+      = CubismMath.directionToRadian(strand[i].lastGravity, currentGravity)
+        / airResistance;
 
-    direction.x =
-      CubismMath.cos(radian) * direction.x -
-      direction.y * CubismMath.sin(radian);
-    direction.y =
-      CubismMath.sin(radian) * direction.x +
-      direction.y * CubismMath.cos(radian);
+    direction.x
+      = CubismMath.cos(radian) * direction.x
+        - direction.y * CubismMath.sin(radian);
+    direction.y
+      = CubismMath.sin(radian) * direction.x
+        + direction.y * CubismMath.cos(radian);
 
     strand[i].position = strand[i - 1].position.add(direction);
 
@@ -1187,8 +1199,8 @@ function updateParticlesForStabilization(
   );
 
   const totalRadian: number = CubismMath.degreesToRadian(totalAngle);
-  const currentGravity: CubismVector2 =
-    CubismMath.radianToDirection(totalRadian);
+  const currentGravity: CubismVector2
+    = CubismMath.radianToDirection(totalRadian);
   currentGravity.normalize();
 
   for (let i = 1; i < strandCount; ++i) {
@@ -1248,7 +1260,8 @@ function updateOutputParameterValue(
     }
 
     value = parameterValueMinimum;
-  } else if (value > parameterValueMaximum) {
+  }
+  else if (value > parameterValueMaximum) {
     if (value > output.valueExceededMaximum) {
       output.valueExceededMaximum = value;
     }
@@ -1260,7 +1273,8 @@ function updateOutputParameterValue(
 
   if (weight >= 1.0) {
     parameterValue[0] = value;
-  } else {
+  }
+  else {
     value = parameterValue[0] * (1.0 - weight) + value * weight;
     parameterValue[0] = value;
   }
@@ -1338,9 +1352,6 @@ function normalizeParameterValue(
 
   return isInverted ? result : result * -1.0;
 }
-
-// Namespace definition for compatibility.
-import * as $ from './cubismphysics';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const CubismPhysics = $.CubismPhysics;

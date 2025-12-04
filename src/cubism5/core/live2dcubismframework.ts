@@ -7,12 +7,15 @@
  */
 
 import { CubismIdManager } from './id/cubismidmanager.js';
+// Namespace definition for compatibility.
+import * as $ from './live2dcubismframework';
 import { CubismRenderer } from './rendering/cubismrenderer.js';
 import {
   CSM_ASSERT,
   CubismLogInfo,
   CubismLogWarning
 } from './utils/cubismdebug.js';
+
 import { Value } from './utils/cubismjson.js';
 
 export function strtod(s: string, endPtr: string[]): number {
@@ -34,11 +37,11 @@ export function strtod(s: string, endPtr: string[]): number {
 
     index = i;
   }
-  let d = parseFloat(s); // パースした数値
+  let d = Number.parseFloat(s); // パースした数値
 
   if (isNaN(d)) {
     // 数値として認識できなくなったので終了
-    d = NaN;
+    d = Number.NaN;
   }
 
   endPtr[0] = s.slice(index); // 後続の文字列
@@ -99,16 +102,16 @@ export class CubismFramework {
     // Live2D Cubism Coreバージョン情報を表示
     if (s_isStarted) {
       const version: number = Live2DCubismCore.Version.csmGetVersion();
-      const major: number = (version & 0xff000000) >> 24;
-      const minor: number = (version & 0x00ff0000) >> 16;
-      const patch: number = version & 0x0000ffff;
+      const major: number = (version & 0xFF000000) >> 24;
+      const minor: number = (version & 0x00FF0000) >> 16;
+      const patch: number = version & 0x0000FFFF;
       const versionNumber: number = version;
 
       CubismLogInfo(
-        `Live2D Cubism Core version: {0}.{1}.{2} ({3})`,
-        ('00' + major).slice(-2),
-        ('00' + minor).slice(-2),
-        ('0000' + patch).slice(-4),
+        'Live2D Cubism Core version: {0}.{1}.{2} ({3})',
+        (`00${major}`).slice(-2),
+        (`00${minor}`).slice(-2),
+        (`0000${patch}`).slice(-4),
         versionNumber
       );
     }
@@ -155,7 +158,7 @@ export class CubismFramework {
       return;
     }
 
-    //---- static 初期化 ----
+    // ---- static 初期化 ----
     Value.staticInitializeNotForClientCall();
 
     s_cubismIdManager = new CubismIdManager();
@@ -277,9 +280,6 @@ export enum LogLevel {
   LogLevel_Error, // エラーログ
   LogLevel_Off // ログ出力無効
 }
-
-// Namespace definition for compatibility.
-import * as $ from './live2dcubismframework';
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Live2DCubismFramework {
   export const Constant = $.Constant;

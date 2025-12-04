@@ -2,7 +2,7 @@
 
 declare global {
   interface Window {
-    PIXI: typeof import('pixi.js');
+    PIXI: typeof import('pixi.js')
   }
 }
 
