@@ -1,5 +1,8 @@
 {
   "extends": "@hacxy/tsconfig",
+  "compilerOptions": {
+    "allowJs": true
+  },
   "include": ["src"],
-  "exclude": ["lib", "dist"]
+  "exclude": ["lib", "dist", "src/cubism5/**", "src/cubism2/**"]
 }

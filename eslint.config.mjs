@@ -4,5 +4,9 @@ export default hacxy({
   rules: {
     'max-params': 0,
   },
-  ignores: ['lib/**', 'dist/**', 'docs/api/**', 'docs/guide/**', '**/*.d.ts'],
+  ignores: ['lib/**', 'dist/**', 'docs/api/**', 'docs/guide/**'],
+}, {
+  rules: {
+    'no-console': 0,
+  }
 });
