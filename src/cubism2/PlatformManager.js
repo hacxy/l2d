@@ -1,9 +1,8 @@
 import logger from '../logger.js';
-
 class PlatformManager {
-  constructor(canvasId = 'l2d') {
+  constructor(canvas) {
     this.cache = {};
-    this.canvasId = canvasId;
+    this.canvas = canvas;
   }
 
   loadBytes(path, callback) {
@@ -31,9 +30,9 @@ class PlatformManager {
     loadedImage.crossOrigin = 'anonymous';
     loadedImage.src = path;
     loadedImage.onload = () => {
-      const canvas = document.getElementById(this.canvasId);
+      const canvas = this.canvas;
       if (!canvas) {
-        logger.error(`无法找到 canvas 元素 (id: ${this.canvasId})`);
+        logger.error('无法找到 canvas 元素');
         if (typeof callback === 'function')
           callback();
         return;

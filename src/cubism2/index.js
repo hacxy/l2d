@@ -26,9 +26,8 @@ function normalizePoint(x, y, x0, y0, w, h) {
   };
 }
 class Cubism2Model {
-  constructor(canvasId = 'l2d') {
-    this.canvasId = canvasId;
-    this.live2DMgr = new LAppLive2DManager(canvasId);
+  constructor(canvas) {
+    this.live2DMgr = new LAppLive2DManager(canvas);
     this.isDrawStart = false;
     this.gl = null;
     this.canvas = null;
@@ -36,19 +35,17 @@ class Cubism2Model {
     this.viewMatrix = null;
     this.projMatrix = null;
     this.deviceToScreen = null;
-    this.oldLen = 0;
     this._boundMouseEvent = this.mouseEvent.bind(this);
     this._boundTouchEvent = this.touchEvent.bind(this);
   }
 
-  initL2dCanvas(canvasId) {
-    this.canvas = document.getElementById(canvasId);
+  initL2dCanvas(canvas) {
+    this.canvas = canvas;
     if (!this.canvas) {
-      logger.error(`initL2dCanvas: 无法找到 canvas 元素 (id: ${canvasId})`);
+      logger.error('initL2dCanvas: canvas 元素无效');
       return;
     }
     if (this.canvas.addEventListener) {
-      this.canvas.addEventListener('mousewheel', this._boundMouseEvent, false);
       this.canvas.addEventListener('click', this._boundMouseEvent, false);
       document.addEventListener('mousemove', this._boundMouseEvent, false);
       document.addEventListener('mouseout', this._boundMouseEvent, false);
@@ -59,10 +56,10 @@ class Cubism2Model {
     }
   }
 
-  async init(canvasId, modelSettingPath, modelSetting) {
-    this.initL2dCanvas(canvasId);
+  async init(canvas, modelSettingPath, modelSetting) {
+    this.initL2dCanvas(canvas);
     if (!this.canvas) {
-      logger.error(`无法找到 canvas 元素 (id: ${canvasId})`);
+      logger.error('canvas 元素无效');
       return;
     }
     const width = this.canvas.width;
@@ -96,7 +93,6 @@ class Cubism2Model {
 
   destroy() {
     if (this.canvas) {
-      this.canvas.removeEventListener('mousewheel', this._boundMouseEvent, false);
       this.canvas.removeEventListener('click', this._boundMouseEvent, false);
       document.removeEventListener('mousemove', this._boundMouseEvent, false);
       document.removeEventListener('mouseout', this._boundMouseEvent, false);
@@ -161,20 +157,8 @@ class Cubism2Model {
     await this.live2DMgr.changeModelWithJSON(this.gl, modelSettingPath, modelSetting);
   }
 
-  modelScaling(scale) {
-    const isMaxScale = this.viewMatrix.isMaxScale();
-    const isMinScale = this.viewMatrix.isMinScale();
-    this.viewMatrix.adjustScale(0, 0, scale);
-    if (!isMaxScale) {
-      if (this.viewMatrix.isMaxScale()) {
-        this.live2DMgr.maxScaleEvent();
-      }
-    }
-    if (!isMinScale) {
-      if (this.viewMatrix.isMinScale()) {
-        this.live2DMgr.minScaleEvent();
-      }
-    }
+  setPosition(x, y) {
+    this.viewMatrix.translate(x, y);
   }
 
   modelTurnHead(event) {
@@ -222,13 +206,7 @@ class Cubism2Model {
 
   mouseEvent(e) {
     e.preventDefault();
-    if (e.type == 'mousewheel') {
-      if (e.wheelDelta > 0)
-        this.modelScaling(1.1);
-      else
-        this.modelScaling(0.9);
-    }
-    else if (e.type == 'click' || e.type == 'contextmenu') {
+    if (e.type == 'click' || e.type == 'contextmenu') {
       this.modelTurnHead(e);
     }
     else if (e.type == 'mousemove') {
@@ -248,17 +226,6 @@ class Cubism2Model {
     }
     else if (e.type == 'touchmove') {
       this.followPointer(touch);
-      if (e.touches.length == 2) {
-        const touch1 = e.touches[0];
-        const touch2 = e.touches[1];
-        const len = (touch1.pageX - touch2.pageX) ** 2
-          + (touch1.pageY - touch2.pageY) ** 2;
-        if (this.oldLen - len < 0)
-          this.modelScaling(1.025);
-        else
-          this.modelScaling(0.975);
-        this.oldLen = len;
-      }
     }
     else if (e.type == 'touchend') {
       this.lookFront();

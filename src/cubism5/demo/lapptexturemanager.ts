@@ -9,6 +9,7 @@
 import type { iterator } from '../core/type/csmvector.js';
 import type { LAppGlManager } from './lappglmanager.js';
 import { csmVector } from '../core/type/csmvector.js';
+import logger from '../../logger.js';
 
 /**
  * テクスチャ管理クラス
@@ -48,6 +49,18 @@ export class LAppTextureManager {
     usePremultiply: boolean,
     callback: (textureInfo: TextureInfo) => void
   ): void {
+    // 检查是否是跨域 URL
+    const isCrossOrigin = (url: string): boolean => {
+      try {
+        const urlObj = new URL(url, window.location.href);
+        return urlObj.origin !== window.location.origin;
+      }
+      catch {
+        // 如果 URL 解析失败，假设是相对路径，不是跨域
+        return false;
+      }
+    };
+
     // search loaded texture already
     for (
       let ite: iterator<TextureInfo> = this._textures.begin();
@@ -62,10 +75,23 @@ export class LAppTextureManager {
         // WebKitでは同じImageのonloadを再度呼ぶには再インスタンスが必要
         // 詳細：https://stackoverflow.com/a/5024181
         ite.ptr().img = new Image();
+        // 跨域图片需要设置 crossOrigin（必须在设置 src 之前）
+        if (isCrossOrigin(fileName)) {
+          ite.ptr().img.crossOrigin = 'anonymous';
+        }
         ite
           .ptr()
           .img
           .addEventListener('load', (): void => callback(ite.ptr()), {
+            passive: true
+          });
+        ite
+          .ptr()
+          .img
+          .addEventListener('error', (e): void => {
+            logger.error(`Failed to load image: ${fileName}. This may be a CORS issue. Please ensure the server returns 'Access-Control-Allow-Origin' header.`);
+            console.error('Image load error:', e);
+          }, {
             passive: true
           });
         ite.ptr().img.src = fileName;
@@ -75,6 +101,20 @@ export class LAppTextureManager {
 
     // データのオンロードをトリガーにする
     const img = new Image();
+    // 跨域图片需要设置 crossOrigin（必须在设置 src 之前）
+    if (isCrossOrigin(fileName)) {
+      img.crossOrigin = 'anonymous';
+    }
+    img.addEventListener(
+      'error',
+      (e): void => {
+        logger.error(`Failed to load image: ${fileName}. This may be a CORS issue. Please ensure the server returns 'Access-Control-Allow-Origin' header.`);
+        console.error('Image load error:', e);
+        console.error('Image URL:', fileName);
+        console.error('Is cross-origin:', isCrossOrigin(fileName));
+      },
+      { passive: true }
+    );
     img.addEventListener(
       'load',
       (): void => {
@@ -113,16 +153,32 @@ export class LAppTextureManager {
         }
 
         // テクスチャにピクセルを書き込む
-        this._glManager
-          .getGl()
-          .texImage2D(
-            this._glManager.getGl().TEXTURE_2D,
-            0,
-            this._glManager.getGl().RGBA,
-            this._glManager.getGl().RGBA,
-            this._glManager.getGl().UNSIGNED_BYTE,
-            img
-          );
+        try {
+          this._glManager
+            .getGl()
+            .texImage2D(
+              this._glManager.getGl().TEXTURE_2D,
+              0,
+              this._glManager.getGl().RGBA,
+              this._glManager.getGl().RGBA,
+              this._glManager.getGl().UNSIGNED_BYTE,
+              img
+            );
+        }
+        catch (error) {
+          logger.error(`Failed to upload image to WebGL texture: ${fileName}`);
+          logger.error('Error details:', error);
+          logger.error('This is likely a CORS issue. Please ensure:');
+          logger.error('1. The image server returns "Access-Control-Allow-Origin" header');
+          logger.error('2. The image was loaded with crossOrigin="anonymous"');
+          logger.error('3. The image URL is correct and accessible');
+          console.error('WebGL texImage2D error:', error);
+          console.error('Image element:', img);
+          console.error('Image complete:', img.complete);
+          console.error('Image naturalWidth:', img.naturalWidth);
+          console.error('Image naturalHeight:', img.naturalHeight);
+          return;
+        }
 
         // ミップマップを生成
         this._glManager

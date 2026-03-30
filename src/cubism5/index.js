@@ -124,6 +124,14 @@ class AppSubdelegate extends LAppSubdelegate {
 // Main application delegate class, responsible for managing the main loop, canvas, model switching, and other global logic
 export class AppDelegate extends LAppDelegate {
   /**
+   * @param {HTMLCanvasElement} canvas The canvas element to render into
+   */
+  constructor(canvas) {
+    super();
+    this._canvas = canvas;
+  }
+
+  /**
    * Start the main loop.
    */
   run() {
@@ -231,6 +239,10 @@ export class AppDelegate extends LAppDelegate {
     });
   }
 
+  initialize() {
+    return super.initialize();
+  }
+
   /**
    * Create canvas and initialize all Subdelegates
    */
@@ -239,8 +251,7 @@ export class AppDelegate extends LAppDelegate {
     this._canvases.prepareCapacity(LAppDefine.CanvasNum);
     this._subdelegates.prepareCapacity(LAppDefine.CanvasNum);
 
-    // Get the live2d canvas element from the page
-    const canvas = document.getElementById('live2d');
+    const canvas = this._canvas;
     this._canvases.pushBack(canvas);
 
     // Set canvas style size to match actual size
@@ -286,6 +297,13 @@ export class AppDelegate extends LAppDelegate {
     instance.loadAssets(modelPath, modelJsonName);
     // Add the new model to the model list
     live2dManager._models.pushBack(instance);
+  }
+
+  setPosition(x, y) {
+    const subdelegate = this._subdelegates.at(0);
+    const view = subdelegate._view;
+    view._viewMatrix.translate(x, y);
+    subdelegate.getLive2DManager().setViewMatrix(view._viewMatrix);
   }
 
   get subdelegates() {
