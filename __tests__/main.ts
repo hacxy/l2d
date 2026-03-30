@@ -6,9 +6,10 @@ import { init } from '../dist/index.js';
 async function main() {
   const l2d = init(document.getElementById('l2d1') as HTMLCanvasElement);
   l2d.create({
-    // path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
-    path: 'https://model.hacxy.cn/cat-black/model.json',
-    position: [0.5, -0.5]
+    path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
+    // path: 'https://model.hacxy.cn/cat-black/model.json',
+    // position: [0.5, -0.5]
+    scale: 2
   });
 }
 

@@ -79,7 +79,12 @@ class AppSubdelegate extends LAppSubdelegate {
   onResize() {
     this.resizeCanvas();
     this._view.initialize(this);
-    // this._view.initializeSprite();
+    if (this._userScale !== undefined) {
+      this._view._viewMatrix.adjustScale(0, 0, this._userScale);
+    }
+    if (this._userPosition !== undefined) {
+      this._view._viewMatrix.translate(this._userPosition[0], this._userPosition[1]);
+    }
   }
 
   /**
@@ -301,8 +306,17 @@ export class AppDelegate extends LAppDelegate {
 
   setPosition(x, y) {
     const subdelegate = this._subdelegates.at(0);
+    subdelegate._userPosition = [x, y];
     const view = subdelegate._view;
     view._viewMatrix.translate(x, y);
+    subdelegate.getLive2DManager().setViewMatrix(view._viewMatrix);
+  }
+
+  setScale(scale) {
+    const subdelegate = this._subdelegates.at(0);
+    subdelegate._userScale = scale;
+    const view = subdelegate._view;
+    view._viewMatrix.adjustScale(0, 0, scale);
     subdelegate.getLive2DManager().setViewMatrix(view._viewMatrix);
   }
 

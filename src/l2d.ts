@@ -26,6 +26,9 @@ class L2D {
       if (options.position) {
         this.l2d2Model.setPosition(options.position[0], options.position[1]);
       }
+      if (options.scale) {
+        this.l2d2Model.setScale(options.scale);
+      }
     }
     else {
       // 初始化 Cubism5 模型
@@ -35,6 +38,9 @@ class L2D {
       }
       if (options.position) {
         this.l2d5Model.setPosition(options.position[0], options.position[1]);
+      }
+      if (options.scale) {
+        this.l2d5Model.setScale(options.scale);
       }
       this.l2d5Model.changeModel(options.path);
       this.l2d5Model.run();

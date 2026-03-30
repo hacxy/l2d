@@ -10,5 +10,5 @@ export default defineConfig({
       fileName: format => `index.${format === 'iife' ? 'min.js' : 'js'}`
     },
   },
-  plugins: [dts()]
+  plugins: [dts({ rollupTypes: true })]
 });

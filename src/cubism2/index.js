@@ -161,6 +161,10 @@ class Cubism2Model {
     this.viewMatrix.translate(x, y);
   }
 
+  setScale(scale) {
+    this.viewMatrix.adjustScale(0, 0, scale);
+  }
+
   modelTurnHead(event) {
     const rect = this.canvas.getBoundingClientRect();
     const { vx, vy } = normalizePoint(event.clientX, event.clientY, rect.left + rect.width / 2, rect.top + rect.height / 2, window.innerWidth, window.innerHeight);
