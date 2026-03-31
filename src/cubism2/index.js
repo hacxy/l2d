@@ -285,6 +285,64 @@ class Cubism2Model {
     }
   }
 
+  getHitAreaBounds() {
+    if (!this.canvas || !this.viewMatrix) return [];
+    const model = this.live2DMgr.getModel();
+    if (!model || !model.initialized) return [];
+
+    const setting = model.modelSetting;
+    const count = setting.getHitAreaNum();
+    const result = [];
+
+    for (let i = 0; i < count; i++) {
+      const name = setting.getHitAreaName(i);
+      const drawID = setting.getHitAreaID(i);
+      const drawIndex = model.live2DModel.getDrawDataIndex(drawID);
+      if (drawIndex < 0) continue;
+
+      const points = model.live2DModel.getTransformedPoints(drawIndex);
+      if (!points || points.length === 0) continue;
+
+      let left = points[0];
+      let right = points[0];
+      let top = points[1];
+      let bottom = points[1];
+
+      for (let j = 0; j < points.length; j += 2) {
+        const x = points[j];
+        const y = points[j + 1];
+        if (x < left) left = x;
+        if (x > right) right = x;
+        if (y < top) top = y;
+        if (y > bottom) bottom = y;
+      }
+
+      // model local → view space → screen space → device (canvas pixel)
+      const toDevice = (mx, my) => {
+        const vx = model.modelMatrix.transformX(mx);
+        const vy = model.modelMatrix.transformY(my);
+        const sx = this.viewMatrix.transformX(vx);
+        const sy = this.viewMatrix.transformY(vy);
+        return {
+          x: this.deviceToScreen.invertTransformX(sx),
+          y: this.deviceToScreen.invertTransformY(sy),
+        };
+      };
+
+      const tl = toDevice(left, top);
+      const br = toDevice(right, bottom);
+
+      result.push({
+        name,
+        x: Math.min(tl.x, br.x),
+        y: Math.min(tl.y, br.y),
+        w: Math.abs(br.x - tl.x),
+        h: Math.abs(br.y - tl.y),
+      });
+    }
+    return result;
+  }
+
   transformViewX(deviceX) {
     const screenX = this.deviceToScreen.transformX(deviceX);
     return this.viewMatrix.invertTransformX(screenX);

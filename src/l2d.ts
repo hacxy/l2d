@@ -9,6 +9,8 @@ class L2D {
   private l2d5Model: Cubism5Model | null = null;
   private currentVersion: number | null = null;
   private _listeners: { [K in keyof L2DEventMap]?: L2DEventMap[K][] } = {};
+  private _hitAreaOverlay: HTMLCanvasElement | null = null;
+  private _hitAreaRAF: number | null = null;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -92,6 +94,53 @@ class L2D {
       this.canvas.style.width = `${width}px`;
       this.canvas.style.height = `${height}px`;
     }
+  }
+
+  showHitAreas(enabled: boolean) {
+    if (!enabled) {
+      this._hitAreaOverlay?.remove();
+      this._hitAreaOverlay = null;
+      if (this._hitAreaRAF !== null) {
+        cancelAnimationFrame(this._hitAreaRAF);
+        this._hitAreaRAF = null;
+      }
+      return;
+    }
+
+    const overlay = document.createElement('canvas');
+    overlay.style.cssText = 'position:absolute;pointer-events:none;';
+    overlay.width = this.canvas.width;
+    overlay.height = this.canvas.height;
+    overlay.style.width = this.canvas.style.width;
+    overlay.style.height = this.canvas.style.height;
+    overlay.style.top = `${this.canvas.offsetTop}px`;
+    overlay.style.left = `${this.canvas.offsetLeft}px`;
+    this.canvas.insertAdjacentElement('afterend', overlay);
+    this._hitAreaOverlay = overlay;
+
+    const ctx = overlay.getContext('2d')!;
+
+    const draw = () => {
+      ctx.clearRect(0, 0, overlay.width, overlay.height);
+
+      const bounds = this.currentVersion === 2
+        ? (this.l2d2Model?.getHitAreaBounds() ?? [])
+        : (this.l2d5Model?.getHitAreaBounds() ?? []);
+
+      for (const b of bounds) {
+        ctx.strokeStyle = 'rgba(0,255,0,0.9)';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(b.x, b.y, b.w, b.h);
+        ctx.fillStyle = 'rgba(0,255,0,0.15)';
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+        ctx.fillStyle = 'rgba(0,255,0,1)';
+        ctx.font = 'bold 12px monospace';
+        ctx.fillText(b.name, b.x + 4, b.y + 14);
+      }
+
+      this._hitAreaRAF = requestAnimationFrame(draw);
+    };
+    draw();
   }
 }
 

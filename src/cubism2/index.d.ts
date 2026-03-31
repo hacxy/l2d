@@ -25,6 +25,7 @@ declare class Cubism2Model {
   setPosition(x: number, y: number): void;
   setScale(scale: number): void;
   resize(width: number, height: number): void;
+  getHitAreaBounds(): Array<{ name: string; x: number; y: number; w: number; h: number }>;
   modelTurnHead(event: any): void;
   followPointer(event: any): void;
   lookFront(): void;

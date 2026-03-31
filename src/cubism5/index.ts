@@ -329,6 +329,59 @@ export class AppDelegate extends LAppDelegate {
     subdelegate.getLive2DManager().setViewMatrix(subdelegate._view._viewMatrix);
   }
 
+  public getHitAreaBounds(): Array<{ name: string; x: number; y: number; w: number; h: number }> {
+    if (!this._isModelReady()) return [];
+    const subdelegate = this._subdelegates.at(0);
+    const model = subdelegate.getLive2DManager()._models.at(0);
+    const view = subdelegate._view;
+    const count: number = model._modelSetting.getHitAreasCount();
+    const result = [];
+
+    for (let i = 0; i < count; i++) {
+      const name: string = model._modelSetting.getHitAreaName(i);
+      const drawId = model._modelSetting.getHitAreaId(i);
+      const drawIndex: number = model._model.getDrawableIndex(drawId);
+      if (drawIndex < 0) continue;
+
+      const vertCount: number = model._model.getDrawableVertexCount(drawIndex);
+      const vertices: Float32Array = model._model.getDrawableVertices(drawIndex);
+
+      let left = vertices[0];
+      let right = vertices[0];
+      let top = vertices[1];
+      let bottom = vertices[1];
+
+      for (let j = 1; j < vertCount; j++) {
+        const x = vertices[j * 2];
+        const y = vertices[j * 2 + 1];
+        if (x < left) left = x;
+        if (x > right) right = x;
+        if (y < top) top = y;
+        if (y > bottom) bottom = y;
+      }
+
+      // model space → screen space → device (canvas pixel)
+      const sl = view._viewMatrix.transformX(left);
+      const sr = view._viewMatrix.transformX(right);
+      const st = view._viewMatrix.transformY(top);
+      const sb = view._viewMatrix.transformY(bottom);
+
+      const dl = view._deviceToScreen.invertTransformX(sl);
+      const dr = view._deviceToScreen.invertTransformX(sr);
+      const dt = view._deviceToScreen.invertTransformY(st);
+      const db = view._deviceToScreen.invertTransformY(sb);
+
+      result.push({
+        name,
+        x: Math.min(dl, dr),
+        y: Math.min(dt, db),
+        w: Math.abs(dr - dl),
+        h: Math.abs(db - dt),
+      });
+    }
+    return result;
+  }
+
   public get subdelegates() {
     return this._subdelegates;
   }
