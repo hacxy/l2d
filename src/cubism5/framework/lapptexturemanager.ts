@@ -207,6 +207,7 @@ export class LAppTextureManager {
       },
       { passive: true }
     );
+    logger.info(`Load Texture: ${fileName}`);
     img.src = fileName;
   }
 

@@ -3,6 +3,7 @@ import Cubism2Model from './cubism2/index.js';
 import { AppDelegate as Cubism5Model } from './cubism5/index.js';
 import { Emitter } from './emitter.js';
 import { HitAreaOverlay } from './hit-area-overlay.js';
+import logger from './logger.js';
 import { checkModelVersion } from './utils/model.js';
 
 class L2D extends Emitter<L2DEventMap> {
@@ -109,6 +110,10 @@ class L2D extends Emitter<L2DEventMap> {
   }
 
   showHitAreas(enabled: boolean) {
+    if (enabled && this.currentVersion === null) {
+      logger.warn('showHitAreas: 模型尚未加载完成，请在 loaded 事件触发后调用。');
+      return;
+    }
     enabled ? this.hitAreaOverlay.show() : this.hitAreaOverlay.hide();
   }
 }

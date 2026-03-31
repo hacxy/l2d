@@ -13,8 +13,8 @@ async function main() {
   // });
   l2d.create({
     // path: 'https://model.hacxy.cn/tia/model.json',
-    path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
-    // path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
+    // path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
+    path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
     // path: 'https://model.hacxy.cn/cat-black/model.json',
     // path: 'https://model.hacxy.cn/Pio/model.json',
     // path: 'https://model.hacxy.cn/Pio/model.json',
@@ -23,24 +23,24 @@ async function main() {
     // height: 300,
     scale: 1
   }).then(() => {
-    console.log('模型已加载');
+    // console.log('模型已加载');
   });
-  l2d.on('tap', areaName => {
-    console.log(areaName, '被点击');
-  });
-  l2d.on('loaded', () => {
-    console.log('模型加载完成');
-  });
-  l2d.on('hover', areaName => {
-    console.log(areaName, '被hover');
-  });
-  l2d.on('modelfileloaded', () => {
-    console.log('modelfile加载完成');
-  });
-  l2d.on('texturesloaded', () => {
-    console.log('texture加载成功');
-  });
-  l2d.showHitAreas(true);
+  // l2d.on('tap', areaName => {
+  //   console.log(areaName, '被点击');
+  // });
+  // l2d.on('loaded', () => {
+  //   console.log('模型加载完成');
+  //   l2d.showHitAreas(true);
+  // });
+  // l2d.on('hover', areaName => {
+  //   console.log(areaName, '被hover');
+  // });
+  // l2d.on('modelfileloaded', () => {
+  //   console.log('modelfile加载完成');
+  // });
+  // l2d.on('texturesloaded', () => {
+  //   console.log('texture加载成功');
+  // });
 
   // setTimeout(() => {
   //   l2d.showHitAreas(false);
