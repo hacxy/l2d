@@ -4,6 +4,10 @@ import LAppLive2DManager from './LAppLive2DManager.js';
 import { L2DMatrix44, L2DTargetPoint, L2DViewMatrix } from './Live2DFramework.js';
 import MatrixStack from './utils/MatrixStack.js';
 
+// Serialize all Cubism2 model loading to avoid conflicts with global state
+// (Live2DFramework.platformManager and texCounter are module-level globals)
+let _loadQueue = Promise.resolve();
+
 function normalizePoint(x, y, x0, y0, w, h) {
   const dx = x - x0;
   const dy = y - y0;
@@ -57,38 +61,45 @@ class Cubism2Model {
   }
 
   async init(canvas, modelSettingPath, modelSetting) {
-    this.initL2dCanvas(canvas);
-    if (!this.canvas) {
-      logger.error('canvas 元素无效');
-      return;
-    }
-    const width = this.canvas.width;
-    const height = this.canvas.height;
-    this.dragMgr = new L2DTargetPoint();
-    const ratio = height / width;
-    const left = LAppDefine.VIEW_LOGICAL_LEFT;
-    const right = LAppDefine.VIEW_LOGICAL_RIGHT;
-    const bottom = -ratio;
-    const top = ratio;
-    this.viewMatrix = new L2DViewMatrix();
-    this.viewMatrix.setScreenRect(left, right, bottom, top);
-    this.viewMatrix.setMaxScreenRect(LAppDefine.VIEW_LOGICAL_MAX_LEFT, LAppDefine.VIEW_LOGICAL_MAX_RIGHT, LAppDefine.VIEW_LOGICAL_MAX_BOTTOM, LAppDefine.VIEW_LOGICAL_MAX_TOP);
-    this.viewMatrix.setMaxScale(LAppDefine.VIEW_MAX_SCALE);
-    this.viewMatrix.setMinScale(LAppDefine.VIEW_MIN_SCALE);
-    this.projMatrix = new L2DMatrix44();
-    this.projMatrix.multScale(1, width / height);
-    this.deviceToScreen = new L2DMatrix44();
-    this.deviceToScreen.multTranslate(-width / 2.0, -height / 2.0);
-    this.deviceToScreen.multScale(2 / width, -2 / width);
-    this.gl = this.canvas.getContext('webgl2', { premultipliedAlpha: true, preserveDrawingBuffer: true });
-    if (!this.gl) {
-      logger.error('Failed to create WebGL context.');
-      return;
-    }
-    Live2D.setGL(this.gl);
-    this.gl.clearColor(0.0, 0.0, 0.0, 0.0);
-    await this.changeModelWithJSON(modelSettingPath, modelSetting);
-    this.startDraw();
+    const doInit = async () => {
+      this.initL2dCanvas(canvas);
+      if (!this.canvas) {
+        logger.error('canvas 元素无效');
+        return;
+      }
+      const width = this.canvas.width;
+      const height = this.canvas.height;
+      this.dragMgr = new L2DTargetPoint();
+      const ratio = height / width;
+      const left = LAppDefine.VIEW_LOGICAL_LEFT;
+      const right = LAppDefine.VIEW_LOGICAL_RIGHT;
+      const bottom = -ratio;
+      const top = ratio;
+      this.viewMatrix = new L2DViewMatrix();
+      this.viewMatrix.setScreenRect(left, right, bottom, top);
+      this.viewMatrix.setMaxScreenRect(LAppDefine.VIEW_LOGICAL_MAX_LEFT, LAppDefine.VIEW_LOGICAL_MAX_RIGHT, LAppDefine.VIEW_LOGICAL_MAX_BOTTOM, LAppDefine.VIEW_LOGICAL_MAX_TOP);
+      this.viewMatrix.setMaxScale(LAppDefine.VIEW_MAX_SCALE);
+      this.viewMatrix.setMinScale(LAppDefine.VIEW_MIN_SCALE);
+      this.projMatrix = new L2DMatrix44();
+      this.projMatrix.multScale(1, width / height);
+      this.deviceToScreen = new L2DMatrix44();
+      this.deviceToScreen.multTranslate(-width / 2.0, -height / 2.0);
+      this.deviceToScreen.multScale(2 / width, -2 / width);
+      this.gl = this.canvas.getContext('webgl2', { premultipliedAlpha: true, preserveDrawingBuffer: true });
+      if (!this.gl) {
+        logger.error('Failed to create WebGL context.');
+        return;
+      }
+      // Activate this model's PlatformManager and GL context right before loading
+      this.live2DMgr.activatePlatformManager();
+      Live2D.setGL(this.gl);
+      this.gl.clearColor(0.0, 0.0, 0.0, 0.0);
+      await this.changeModelWithJSON(modelSettingPath, modelSetting);
+      this.startDraw();
+    };
+    // Chain onto the global queue so Cubism2 models load one at a time
+    _loadQueue = _loadQueue.then(doInit).catch(err => logger.error(err));
+    return _loadQueue;
   }
 
   destroy() {
@@ -213,7 +224,7 @@ class Cubism2Model {
     this.live2DMgr.tapEvent(vx, vy);
     const model = this.live2DMgr?.getModel();
     if (model && model.hitTest(LAppDefine.HIT_AREA_BODY, vx, vy)) {
-      window.dispatchEvent(new Event('live2d:tapbody'));
+      window.dispatchEvent(new CustomEvent('live2d:tapbody', { detail: { canvas: this.canvas } }));
     }
   }
 
@@ -232,7 +243,7 @@ class Cubism2Model {
     this.dragMgr.setPoint(vx, vy);
     const model = this.live2DMgr?.getModel();
     if (model && model.hitTest(LAppDefine.HIT_AREA_BODY, vx, vy)) {
-      window.dispatchEvent(new Event('live2d:hoverbody'));
+      window.dispatchEvent(new CustomEvent('live2d:hoverbody', { detail: { canvas: this.canvas } }));
     }
   }
 

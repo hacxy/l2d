@@ -8,8 +8,12 @@ class LAppLive2DManager {
   constructor(canvas) {
     this.model = null;
     this.reloading = false;
+    this.platformManager = new PlatformManager(canvas);
     Live2D.init();
-    Live2DFramework.setPlatformManager(new PlatformManager(canvas));
+  }
+
+  activatePlatformManager() {
+    Live2DFramework.setPlatformManager(this.platformManager);
   }
 
   getModel() {

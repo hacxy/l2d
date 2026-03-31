@@ -8,6 +8,15 @@ import { LAppSubdelegate } from './framework/lappsubdelegate.js';
 
 LAppPal.printMessage = () => {};
 
+// Ensure LAppPal.updateTime() is called only once per animation frame across all instances
+let _lastUpdateTimestamp = -1;
+function updateTimeOnce(timestamp: number) {
+  if (timestamp !== _lastUpdateTimestamp) {
+    _lastUpdateTimestamp = timestamp;
+    LAppPal.updateTime();
+  }
+}
+
 // Custom subdelegate class, responsible for Canvas-related initialization and rendering management
 class AppSubdelegate extends LAppSubdelegate {
   _userScale: number | undefined;
@@ -114,8 +123,8 @@ export class AppDelegate extends LAppDelegate {
    * Start the main loop.
    */
   public run(): void {
-    const loop = () => {
-      LAppPal.updateTime();
+    const loop = (timestamp: number) => {
+      updateTimeOnce(timestamp);
 
       for (let i = 0; i < this._subdelegates.getSize(); i++) {
         this._subdelegates.at(i).update();
@@ -177,9 +186,8 @@ export class AppDelegate extends LAppDelegate {
     const model = lapplive2dmanager._models.at(0);
 
     lapplive2dmanager.onDrag(x, y);
-    lapplive2dmanager.onTap(x, y);
     if (model.hitTest(LAppDefine.HitAreaNameBody, x, y)) {
-      window.dispatchEvent(new Event('live2d:hoverbody'));
+      window.dispatchEvent(new CustomEvent('live2d:hoverbody', { detail: { canvas: this._canvas } }));
     }
   }
 
@@ -198,7 +206,7 @@ export class AppDelegate extends LAppDelegate {
     const model = lapplive2dmanager._models.at(0);
 
     if (model.hitTest(LAppDefine.HitAreaNameBody, x, y)) {
-      window.dispatchEvent(new Event('live2d:tapbody'));
+      window.dispatchEvent(new CustomEvent('live2d:tapbody', { detail: { canvas: this._canvas } }));
     }
   }
 
