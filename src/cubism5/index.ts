@@ -186,8 +186,14 @@ export class AppDelegate extends LAppDelegate {
     const model = lapplive2dmanager._models.at(0);
 
     lapplive2dmanager.onDrag(x, y);
-    if (model.hitTest(LAppDefine.HitAreaNameBody, x, y)) {
-      window.dispatchEvent(new CustomEvent('live2d:hoverbody', { detail: { canvas: this._canvas } }));
+    const hoverCount: number = model._modelSetting.getHitAreasCount();
+    for (let i = 0; i < hoverCount; i++) {
+      const areaName: string = model._modelSetting.getHitAreaName(i);
+      if (model.hitTest(areaName, x, y)) {
+        window.dispatchEvent(new CustomEvent('live2d:hoverbody', {
+          detail: { canvas: this._canvas, areaName }
+        }));
+      }
     }
   }
 

@@ -31,5 +31,8 @@ export interface Options {
 
 export interface L2DEventMap {
   loaded: () => void
+  /** 点击命中 hit area 时触发，`areaName` 为命中的区域名称 */
   tap: (areaName: string) => void
+  /** 鼠标悬停在 hit area 上时触发，`areaName` 为命中的区域名称 */
+  hover: (areaName: string) => void
 }

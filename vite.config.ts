@@ -1,8 +1,9 @@
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   build: {
+    emptyOutDir: mode === 'production',
     lib: {
       name: 'LIVE2D',
       entry: 'src/index.ts',
@@ -11,4 +12,4 @@ export default defineConfig({
     },
   },
   plugins: [dts({ rollupTypes: true })]
-});
+}));
