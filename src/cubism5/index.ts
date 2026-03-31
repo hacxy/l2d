@@ -1,29 +1,28 @@
-/* global document, window, Event */
-
+// @ts-nocheck
 import logger from '../logger.js';
-import * as LAppDefine from './demo/lappdefine.js';
-import { LAppDelegate } from './demo/lappdelegate.js';
-import { LAppModel } from './demo/lappmodel.js';
-import { LAppPal } from './demo/lapppal.js';
-import { LAppSubdelegate } from './demo/lappsubdelegate.js';
+import * as LAppDefine from './framework/lappdefine.js';
+import { LAppDelegate } from './framework/lappdelegate.js';
+import { LAppModel } from './framework/lappmodel.js';
+import { LAppPal } from './framework/lapppal.js';
+import { LAppSubdelegate } from './framework/lappsubdelegate.js';
 
 LAppPal.printMessage = () => {};
 
 // Custom subdelegate class, responsible for Canvas-related initialization and rendering management
 class AppSubdelegate extends LAppSubdelegate {
+  _userScale: number | undefined;
+  _userPosition: [number, number] | undefined;
+
   /**
    * Initialize resources required by the application.
-   * @param {HTMLCanvasElement} canvas The canvas object passed in
    */
-  initialize(canvas) {
-    // Initialize WebGL manager, return false if failed
+  public initialize(canvas: HTMLCanvasElement): boolean {
     if (!this._glManager.initialize(canvas)) {
       return false;
     }
 
     this._canvas = canvas;
 
-    // Canvas size setting, supports auto and specified size
     if (LAppDefine.CanvasSize === 'auto') {
       this.resizeCanvas();
     }
@@ -32,40 +31,25 @@ class AppSubdelegate extends LAppSubdelegate {
       canvas.height = LAppDefine.CanvasSize.height;
     }
 
-    // Set the GL manager for the texture manager
     this._textureManager.setGlManager(this._glManager);
 
-    const gl = this._glManager.getGl();
+    const gl: WebGL2RenderingContext = this._glManager.getGl();
 
-    // If the framebuffer object is not initialized, get the current framebuffer binding
     if (!this._frameBuffer) {
       this._frameBuffer = gl.getParameter(gl.FRAMEBUFFER_BINDING);
     }
 
-    // Enable blend mode for transparency
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-    // Initialize the view (AppView)
     this._view.initialize(this);
-    this._view._gear = {
-      render: () => {},
-      isHit: () => {},
-      release: () => {}
-    };
-    this._view._back = {
-      render: () => {},
-      release: () => {}
-    };
-    // this._view.initializeSprite();
+    this._view._gear = { render: () => {}, isHit: () => {}, release: () => {} };
+    this._view._back = { render: () => {}, release: () => {} };
 
-    // Associate Live2D manager with the current subdelegate
-    // this._live2dManager.initialize(this);
     this._live2dManager._subdelegate = this;
 
-    // Listen for canvas size changes for responsive adaptation
     this._resizeObserver = new window.ResizeObserver(
-      (entries, observer) =>
+      (entries: ResizeObserverEntry[], observer: ResizeObserver) =>
         this.resizeObserverCallback.call(this, entries, observer)
     );
     this._resizeObserver.observe(this._canvas);
@@ -76,7 +60,7 @@ class AppSubdelegate extends LAppSubdelegate {
   /**
    * Adjust and reinitialize the view when the canvas size changes
    */
-  onResize() {
+  public onResize(): void {
     this.resizeCanvas();
     this._view.initialize(this);
     if (this._userScale !== undefined) {
@@ -90,48 +74,38 @@ class AppSubdelegate extends LAppSubdelegate {
   /**
    * Main render loop, called periodically to update the screen
    */
-  update() {
-    // Check if the WebGL context is lost, if so, stop rendering
+  public update(): void {
     if (this._glManager.getGl().isContextLost()) {
       return;
     }
 
-    // If resize is needed, call onResize
     if (this._needResize) {
       this.onResize();
       this._needResize = false;
     }
 
-    const gl = this._glManager.getGl();
+    const gl: WebGL2RenderingContext = this._glManager.getGl();
 
-    // Initialize the canvas as fully transparent
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
-
-    // Enable depth test to ensure correct model occlusion
     gl.enable(gl.DEPTH_TEST);
-
-    // Set depth function so nearer objects cover farther ones
     gl.depthFunc(gl.LEQUAL);
-
-    // Clear color and depth buffers
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.clearDepth(1.0);
-
-    // Enable blend mode again to ensure transparency
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-    // Render the view content
     this._view.render();
   }
 }
 
 // Main application delegate class, responsible for managing the main loop, canvas, model switching, and other global logic
 export class AppDelegate extends LAppDelegate {
-  /**
-   * @param {HTMLCanvasElement} canvas The canvas element to render into
-   */
-  constructor(canvas) {
+  _canvas: HTMLCanvasElement;
+  _drawFrameId: number | null = null;
+  _modelLoadedEmitted: boolean = false;
+  _onLoaded: (() => void) | null = null;
+
+  public constructor(canvas: HTMLCanvasElement) {
     super();
     this._canvas = canvas;
   }
@@ -139,72 +113,64 @@ export class AppDelegate extends LAppDelegate {
   /**
    * Start the main loop.
    */
-  run() {
-    // Main loop function, responsible for updating time and all subdelegates
+  public run(): void {
     const loop = () => {
-      // Update time
       LAppPal.updateTime();
 
-      // Iterate all subdelegates and call update for rendering
       for (let i = 0; i < this._subdelegates.getSize(); i++) {
         this._subdelegates.at(i).update();
       }
 
-      // Detect model initialization completion
       if (!this._modelLoadedEmitted && this._isModelReady()) {
         this._modelLoadedEmitted = true;
-        if (typeof this._onLoaded === 'function') {
+        if (this._onLoaded) {
           this._onLoaded();
         }
       }
 
-      // Recursive call for animation loop
       this._drawFrameId = window.requestAnimationFrame(loop);
     };
     loop();
   }
 
-  onLoaded(callback) {
+  public onLoaded(callback: () => void): void {
     this._onLoaded = callback;
   }
 
-  stop() {
+  public stop(): void {
     if (this._drawFrameId) {
       window.cancelAnimationFrame(this._drawFrameId);
       this._drawFrameId = null;
     }
   }
 
-  release() {
+  public release(): void {
     this.stop();
     this.releaseEventListener();
     this._subdelegates.clear();
-
     this._cubismOption = null;
   }
 
-  transformOffset(e) {
+  private transformOffset(e: MouseEvent | PointerEvent): { x: number; y: number } {
     const subdelegate = this._subdelegates.at(0);
-    const rect = subdelegate.getCanvas().getBoundingClientRect();
+    const rect: DOMRect = subdelegate.getCanvas().getBoundingClientRect();
     const localX = e.pageX - rect.left;
     const localY = e.pageY - rect.top;
     const posX = localX * window.devicePixelRatio;
     const posY = localY * window.devicePixelRatio;
-    const x = subdelegate._view.transformViewX(posX);
-    const y = subdelegate._view.transformViewY(posY);
-    return {
-      x, y
-    };
+    const x: number = subdelegate._view.transformViewX(posX);
+    const y: number = subdelegate._view.transformViewY(posY);
+    return { x, y };
   }
 
-  _isModelReady() {
+  private _isModelReady(): boolean {
     const manager = this._subdelegates.at(0)?.getLive2DManager();
     const model = manager?._models.at(0);
     // LoadStep.CompleteSetup === 22, only at this point textures are bound and model renders
     return model?._state === 22;
   }
 
-  onMouseMove(e) {
+  private onMouseMove(e: MouseEvent): void {
     if (!this._isModelReady()) return;
     const lapplive2dmanager = this._subdelegates.at(0).getLive2DManager();
     const { x, y } = this.transformOffset(e);
@@ -217,7 +183,7 @@ export class AppDelegate extends LAppDelegate {
     }
   }
 
-  onMouseEnd(e) {
+  private onMouseEnd(e: MouseEvent): void {
     if (!this._isModelReady()) return;
     const lapplive2dmanager = this._subdelegates.at(0).getLive2DManager();
     const { x, y } = this.transformOffset(e);
@@ -225,7 +191,7 @@ export class AppDelegate extends LAppDelegate {
     lapplive2dmanager.onTap(x, y);
   }
 
-  onTap(e) {
+  private onTap(e: PointerEvent): void {
     if (!this._isModelReady()) return;
     const lapplive2dmanager = this._subdelegates.at(0).getLive2DManager();
     const { x, y } = this.transformOffset(e);
@@ -236,56 +202,42 @@ export class AppDelegate extends LAppDelegate {
     }
   }
 
-  initializeEventListener() {
+  public initializeEventListener(): void {
     this.mouseMoveEventListener = this.onMouseMove.bind(this);
     this.mouseEndedEventListener = this.onMouseEnd.bind(this);
     this.tapEventListener = this.onTap.bind(this);
 
-    document.addEventListener('mousemove', this.mouseMoveEventListener, {
-      passive: true
-    });
-    document.addEventListener('mouseout', this.mouseEndedEventListener, {
-      passive: true
-    });
-    document.addEventListener('pointerdown', this.tapEventListener, {
-      passive: true
-    });
+    document.addEventListener('mousemove', this.mouseMoveEventListener, { passive: true });
+    document.addEventListener('mouseout', this.mouseEndedEventListener, { passive: true });
+    document.addEventListener('pointerdown', this.tapEventListener, { passive: true });
   }
 
-  releaseEventListener() {
-    document.removeEventListener('mousemove', this.mouseMoveEventListener, {
-      passive: true
-    });
+  public releaseEventListener(): void {
+    document.removeEventListener('mousemove', this.mouseMoveEventListener, { passive: true });
     this.mouseMoveEventListener = null;
-    document.removeEventListener('mouseout', this.mouseEndedEventListener, {
-      passive: true
-    });
+    document.removeEventListener('mouseout', this.mouseEndedEventListener, { passive: true });
     this.mouseEndedEventListener = null;
-    document.removeEventListener('pointerdown', this.tapEventListener, {
-      passive: true
-    });
+    document.removeEventListener('pointerdown', this.tapEventListener, { passive: true });
+    this.tapEventListener = null;
   }
 
-  initialize() {
+  public initialize(): boolean {
     return super.initialize();
   }
 
   /**
    * Create canvas and initialize all Subdelegates
    */
-  initializeSubdelegates() {
-    // Reserve space to improve performance
+  public initializeSubdelegates(): void {
     this._canvases.prepareCapacity(LAppDefine.CanvasNum);
     this._subdelegates.prepareCapacity(LAppDefine.CanvasNum);
 
     const canvas = this._canvas;
     this._canvases.pushBack(canvas);
 
-    // Set canvas style size to match actual size
-    canvas.style.width = canvas.width;
-    canvas.style.height = canvas.height;
+    canvas.style.width = String(canvas.width);
+    canvas.style.height = String(canvas.height);
 
-    // For each canvas, create a subdelegate and complete initialization
     for (let i = 0; i < this._canvases.getSize(); i++) {
       const subdelegate = new AppSubdelegate();
       const result = subdelegate.initialize(this._canvases.at(i));
@@ -296,7 +248,6 @@ export class AppDelegate extends LAppDelegate {
       this._subdelegates.pushBack(subdelegate);
     }
 
-    // Check if the WebGL context of each subdelegate is lost
     for (let i = 0; i < LAppDefine.CanvasNum; i++) {
       if (this._subdelegates.at(i).isContextLost()) {
         logger.error(
@@ -308,26 +259,21 @@ export class AppDelegate extends LAppDelegate {
 
   /**
    * Switch model
-   * @param {string} modelSettingPath Path to the model setting file
    */
-  changeModel(modelSettingPath) {
+  public changeModel(modelSettingPath: string): void {
     this._modelLoadedEmitted = false;
     const segments = modelSettingPath.split('/');
     const modelJsonName = segments.pop();
     const modelPath = `${segments.join('/')}/`;
-    // Get the current Live2D manager
     const live2dManager = this._subdelegates.at(0).getLive2DManager();
-    // Release all old models
     live2dManager.releaseAllModel();
-    // Create a new model instance, set subdelegate and load resources
     const instance = new LAppModel();
     instance.setSubdelegate(live2dManager._subdelegate);
     instance.loadAssets(modelPath, modelJsonName);
-    // Add the new model to the model list
     live2dManager._models.pushBack(instance);
   }
 
-  setPosition(x, y) {
+  public setPosition(x: number, y: number): void {
     const subdelegate = this._subdelegates.at(0);
     subdelegate._userPosition = [x, y];
     const view = subdelegate._view;
@@ -335,7 +281,7 @@ export class AppDelegate extends LAppDelegate {
     subdelegate.getLive2DManager().setViewMatrix(view._viewMatrix);
   }
 
-  setScale(scale) {
+  public setScale(scale: number): void {
     const subdelegate = this._subdelegates.at(0);
     subdelegate._userScale = scale;
     const view = subdelegate._view;
@@ -343,9 +289,9 @@ export class AppDelegate extends LAppDelegate {
     subdelegate.getLive2DManager().setViewMatrix(view._viewMatrix);
   }
 
-  resize(width, height) {
+  public resize(width: number, height: number): void {
     const subdelegate = this._subdelegates.at(0);
-    const canvas = subdelegate.getCanvas();
+    const canvas: HTMLCanvasElement = subdelegate.getCanvas();
     canvas.width = width;
     canvas.height = height;
     canvas.style.width = `${width}px`;
@@ -353,7 +299,7 @@ export class AppDelegate extends LAppDelegate {
 
     subdelegate._view.initialize(subdelegate);
 
-    const gl = subdelegate.getGlManager().getGl();
+    const gl: WebGL2RenderingContext = subdelegate.getGlManager().getGl();
     gl.viewport(0, 0, width, height);
 
     if (subdelegate._userScale !== undefined) {
@@ -368,7 +314,7 @@ export class AppDelegate extends LAppDelegate {
     subdelegate.getLive2DManager().setViewMatrix(subdelegate._view._viewMatrix);
   }
 
-  get subdelegates() {
+  public get subdelegates() {
     return this._subdelegates;
   }
 }
