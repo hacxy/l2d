@@ -5,13 +5,18 @@ import { init } from '../dist/index.js';
 // 确保 DOM 加载完成后再初始化
 async function main() {
   const l2d = init(document.getElementById('l2d1') as HTMLCanvasElement);
-  const l2d2 = init(document.getElementById('l2d') as HTMLCanvasElement);
-  l2d2.create({
-    path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
-    // path: 'https://model.hacxy.cn/cat-black/model.json',
-    // path: 'https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.model3.json'
-    // path: 'https://model.hacxy.cn/Pio/model.json',
-  });
+  // const l2d2 = init(document.getElementById('l2d') as HTMLCanvasElement);
+  // const l2d3 = init(document.getElementById('l2d3') as HTMLCanvasElement);
+  // l2d3.create({
+  //   // path: 'https://model.hacxy.cn/cat-black/model.json',
+  //   path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
+  // });
+  // l2d2.create({
+  //   path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
+  //   // path: 'https://model.hacxy.cn/cat-black/model.json',
+  //   // path: 'https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.model3.json'
+  //   // path: 'https://model.hacxy.cn/Pio/model.json',
+  // });
   l2d.create({
     path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
     // path: 'https://model.hacxy.cn/cat-black/model.json',
@@ -23,6 +28,9 @@ async function main() {
     scale: 1
   }).then(() => {
     console.log('模型已加载');
+  });
+  l2d.on('tap', areaName => {
+    console.log(areaName, '被点击');
   });
   l2d.on('loaded', () => {
     console.log('模型加载完成');

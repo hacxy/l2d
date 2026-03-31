@@ -8,5 +8,5 @@ export interface Options {
 
 export interface L2DEventMap {
   loaded: () => void
-  tap: () => void
+  tap: (areaName: string) => void
 }

@@ -223,8 +223,14 @@ class Cubism2Model {
     this.dragMgr.setPoint(vx, vy);
     this.live2DMgr.tapEvent(vx, vy);
     const model = this.live2DMgr?.getModel();
-    if (model && model.hitTest(LAppDefine.HIT_AREA_BODY, vx, vy)) {
-      window.dispatchEvent(new CustomEvent('live2d:tapbody', { detail: { canvas: this.canvas } }));
+    if (model) {
+      const count = model.modelSetting?.getHitAreaNum() ?? 0;
+      for (let i = 0; i < count; i++) {
+        const areaName = model.modelSetting.getHitAreaName(i);
+        if (model.hitTest(areaName, vx, vy)) {
+          window.dispatchEvent(new CustomEvent('live2d:tapbody', { detail: { canvas: this.canvas, areaName } }));
+        }
+      }
     }
   }
 

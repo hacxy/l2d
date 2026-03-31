@@ -13,8 +13,9 @@ class L2D {
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     window.addEventListener('live2d:tapbody', (e: Event) => {
-      if ((e as CustomEvent).detail?.canvas === this.canvas) {
-        this._emit('tap');
+      const detail = (e as CustomEvent).detail;
+      if (detail?.canvas === this.canvas) {
+        this._emit('tap', detail.areaName ?? '');
       }
     });
   }
@@ -27,8 +28,8 @@ class L2D {
     return this;
   }
 
-  private _emit<K extends keyof L2DEventMap>(event: K) {
-    this._listeners[event]?.forEach(fn => (fn as () => void)());
+  private _emit<K extends keyof L2DEventMap>(event: K, ...args: Parameters<L2DEventMap[K]>) {
+    this._listeners[event]?.forEach(fn => (fn as (...a: typeof args) => void)(...args));
   }
 
   async create(options: Options): Promise<void> {

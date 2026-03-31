@@ -204,10 +204,17 @@ export class AppDelegate extends LAppDelegate {
     const lapplive2dmanager = this._subdelegates.at(0).getLive2DManager();
     const { x, y } = this.transformOffset(e);
     const model = lapplive2dmanager._models.at(0);
+    const count: number = model._modelSetting.getHitAreasCount();
 
-    if (model.hitTest(LAppDefine.HitAreaNameBody, x, y)) {
-      window.dispatchEvent(new CustomEvent('live2d:tapbody', { detail: { canvas: this._canvas } }));
+    for (let i = 0; i < count; i++) {
+      const areaName: string = model._modelSetting.getHitAreaName(i);
+      if (model.hitTest(areaName, x, y)) {
+        window.dispatchEvent(new CustomEvent('live2d:tapbody', {
+          detail: { canvas: this._canvas, areaName }
+        }));
+      }
     }
+    lapplive2dmanager.onTap(x, y);
   }
 
   public initializeEventListener(): void {
