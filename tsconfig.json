@@ -4,5 +4,5 @@
     "allowJs": true
   },
   "include": ["src"],
-  "exclude": ["lib", "dist", "src/cubism5/**", "src/cubism2/**"]
+  "exclude": ["src/lib", "dist", "src/cubism5/**", "src/cubism2/**"]
 }

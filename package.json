@@ -44,7 +44,6 @@
     "@iconify/vue": "^5.0.0",
     "commitizen": "^4.3.1",
     "cz-git": "^1.11.0",
-    "emittery": "^1.1.0",
     "eslint": "^9.29.0",
     "execa": "^9.5.2",
     "lint-staged": "^15.4.3",
@@ -56,7 +55,7 @@
     "typedoc": "^0.27.7",
     "typedoc-plugin-markdown": "^4.4.2",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4",
+    "vite": "^8.0.3",
     "vite-plugin-dts": "^4.5.4",
     "vitepress": "^1.6.3",
     "vitepress-theme-mild": "0.8.4-beta.3",
@@ -68,7 +67,7 @@
   },
   "lint-staged": {
     "*": [
-      "pnpm run lint:staged"
+      "npm run lint:staged"
     ]
   },
   "config": {
