@@ -11,14 +11,9 @@ async function main() {
   //   // path: 'https://model.hacxy.cn/cat-black/model.json',
   //   path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
   // });
-  // l2d2.create({
-  //   path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
-  //   // path: 'https://model.hacxy.cn/cat-black/model.json',
-  //   // path: 'https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.model3.json'
-  //   // path: 'https://model.hacxy.cn/Pio/model.json',
-  // });
   l2d.create({
-    path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
+    path: 'https://model.hacxy.cn/tia/model.json',
+    // path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
     // path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
     // path: 'https://model.hacxy.cn/cat-black/model.json',
     // path: 'https://model.hacxy.cn/Pio/model.json',
@@ -36,11 +31,19 @@ async function main() {
   l2d.on('loaded', () => {
     console.log('模型加载完成');
   });
-  l2d.showHitAreas(true);
+  // l2d.showHitAreas(true);
 
-  setTimeout(() => {
-    l2d.showHitAreas(false);
-  }, 5000);
+  // setTimeout(() => {
+  //   l2d.showHitAreas(false);
+  // }, 5000);
+
+  // l2d2.create({
+  //   path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
+  //   // path: 'https://model.hacxy.cn/cat-black/model.json',
+  //   // path: 'https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.model3.json'
+  //   // path: 'https://model.hacxy.cn/Pio/model.json',
+  // });
+  // l2d2.showHitAreas(true);
 }
 
 main().catch(error => {

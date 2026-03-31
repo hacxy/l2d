@@ -54,6 +54,8 @@ class L2D {
         model.setScale(options.scale);
       }
       this.resize(options.width ?? 300, options.height ?? 300);
+      if (options.rotation)
+        this.setRotation(options.rotation);
       this._emit('loaded');
     }
     else {
@@ -74,10 +76,19 @@ class L2D {
       await new Promise<void>(resolve => {
         model.onLoaded(() => {
           this.resize(options.width ?? 300, options.height ?? 300);
+          if (options.rotation)
+            this.setRotation(options.rotation);
           this._emit('loaded');
           resolve();
         });
       });
+    }
+  }
+
+  setRotation(deg: number) {
+    this.canvas.style.transform = deg === 0 ? '' : `rotate(${deg}deg)`;
+    if (this._hitAreaOverlay) {
+      this._hitAreaOverlay.style.transform = this.canvas.style.transform;
     }
   }
 
@@ -115,6 +126,9 @@ class L2D {
     overlay.style.height = this.canvas.style.height;
     overlay.style.top = `${this.canvas.offsetTop}px`;
     overlay.style.left = `${this.canvas.offsetLeft}px`;
+    if (this.canvas.style.transform) {
+      overlay.style.transform = this.canvas.style.transform;
+    }
     this.canvas.insertAdjacentElement('afterend', overlay);
     this._hitAreaOverlay = overlay;
 
