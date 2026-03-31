@@ -136,6 +136,7 @@ export class LAppModel extends CubismUserModel {
         .then(arrayBuffer => {
           this.loadModel(arrayBuffer, this._mocConsistency);
           this._state = LoadStep.LoadExpression;
+          this._onModelFileLoaded?.();
 
           // callback
           loadCubismExpression();
@@ -471,6 +472,7 @@ export class LAppModel extends CubismUserModel {
           if (this._textureCount >= textureCount) {
             // ロード完了
             this._state = LoadStep.CompleteSetup;
+            this._onTexturesLoaded?.();
           }
         };
 

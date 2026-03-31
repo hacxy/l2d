@@ -34,7 +34,13 @@ async function main() {
   l2d.on('hover', areaName => {
     console.log(areaName, '被hover');
   });
-  // l2d.showHitAreas(true);
+  l2d.on('modelfileloaded', () => {
+    console.log('modelfile加载完成');
+  });
+  l2d.on('texturesloaded', () => {
+    console.log('texture加载成功');
+  });
+  l2d.showHitAreas(true);
 
   // setTimeout(() => {
   //   l2d.showHitAreas(false);

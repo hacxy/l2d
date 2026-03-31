@@ -162,11 +162,10 @@ export class AppDelegate extends LAppDelegate {
 
   private transformOffset(e: MouseEvent | PointerEvent): { x: number; y: number } {
     const subdelegate = this._subdelegates.at(0);
-    const rect: DOMRect = subdelegate.getCanvas().getBoundingClientRect();
-    const localX = e.pageX - rect.left;
-    const localY = e.pageY - rect.top;
-    const posX = localX * window.devicePixelRatio;
-    const posY = localY * window.devicePixelRatio;
+    const canvas = subdelegate.getCanvas();
+    const rect: DOMRect = canvas.getBoundingClientRect();
+    const posX = (e.clientX - rect.left) * (canvas.width / rect.width);
+    const posY = (e.clientY - rect.top) * (canvas.height / rect.height);
     const x: number = subdelegate._view.transformViewX(posX);
     const y: number = subdelegate._view.transformViewY(posY);
     return { x, y };
@@ -181,11 +180,16 @@ export class AppDelegate extends LAppDelegate {
 
   private onMouseMove(e: MouseEvent): void {
     if (!this._isModelReady()) return;
+    const canvas = this._subdelegates.at(0).getCanvas();
+    const rect = canvas.getBoundingClientRect();
+    const inCanvas = e.clientX >= rect.left && e.clientX <= rect.right
+      && e.clientY >= rect.top && e.clientY <= rect.bottom;
     const lapplive2dmanager = this._subdelegates.at(0).getLive2DManager();
     const { x, y } = this.transformOffset(e);
     const model = lapplive2dmanager._models.at(0);
 
     lapplive2dmanager.onDrag(x, y);
+    if (!inCanvas) return;
     const hoverCount: number = model._modelSetting.getHitAreasCount();
     for (let i = 0; i < hoverCount; i++) {
       const areaName: string = model._modelSetting.getHitAreaName(i);
@@ -290,6 +294,8 @@ export class AppDelegate extends LAppDelegate {
     live2dManager.releaseAllModel();
     const instance = new LAppModel();
     instance.setSubdelegate(live2dManager._subdelegate);
+    instance._onModelFileLoaded = () => window.dispatchEvent(new CustomEvent('live2d:modelfileloaded', { detail: { canvas: this._canvas } }));
+    instance._onTexturesLoaded = () => window.dispatchEvent(new CustomEvent('live2d:texturesloaded', { detail: { canvas: this._canvas } }));
     instance.loadAssets(modelPath, modelJsonName);
     live2dManager._models.pushBack(instance);
   }
@@ -366,11 +372,16 @@ export class AppDelegate extends LAppDelegate {
         if (y > bottom) bottom = y;
       }
 
-      // model space → screen space → device (canvas pixel)
-      const sl = view._viewMatrix.transformX(left);
-      const sr = view._viewMatrix.transformX(right);
-      const st = view._viewMatrix.transformY(top);
-      const sb = view._viewMatrix.transformY(bottom);
+      // model local → world (modelMatrix) → screen (viewMatrix) → device px (deviceToScreen inv)
+      const wl = model._modelMatrix.transformX(left);
+      const wr = model._modelMatrix.transformX(right);
+      const wt = model._modelMatrix.transformY(top);
+      const wb = model._modelMatrix.transformY(bottom);
+
+      const sl = view._viewMatrix.transformX(wl);
+      const sr = view._viewMatrix.transformX(wr);
+      const st = view._viewMatrix.transformY(wt);
+      const sb = view._viewMatrix.transformY(wb);
 
       const dl = view._deviceToScreen.invertTransformX(sl);
       const dr = view._deviceToScreen.invertTransformX(sr);

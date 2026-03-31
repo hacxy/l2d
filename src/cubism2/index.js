@@ -93,6 +93,8 @@ class Cubism2Model {
       // Activate this model's PlatformManager and GL context right before loading
       this.live2DMgr.activatePlatformManager();
       Live2D.setGL(this.gl);
+      this.live2DMgr.onModelFileLoaded = () => window.dispatchEvent(new CustomEvent('live2d:modelfileloaded', { detail: { canvas: this.canvas } }));
+      this.live2DMgr.onTexturesLoaded = () => window.dispatchEvent(new CustomEvent('live2d:texturesloaded', { detail: { canvas: this.canvas } }));
       this.gl.clearColor(0.0, 0.0, 0.0, 0.0);
       await this.changeModelWithJSON(modelSettingPath, modelSetting);
       this.startDraw();
@@ -224,10 +226,14 @@ class Cubism2Model {
     this.live2DMgr.tapEvent(vx, vy);
     const model = this.live2DMgr?.getModel();
     if (model) {
+      const canvasX = (event.clientX - rect.left) * (this.canvas.width / rect.width);
+      const canvasY = (event.clientY - rect.top) * (this.canvas.height / rect.height);
+      const hx = this.transformViewX(canvasX);
+      const hy = this.transformViewY(canvasY);
       const count = model.modelSetting?.getHitAreaNum() ?? 0;
       for (let i = 0; i < count; i++) {
         const areaName = model.modelSetting.getHitAreaName(i);
-        if (model.hitTest(areaName, vx, vy)) {
+        if (model.hitTest(areaName, hx, hy)) {
           window.dispatchEvent(new CustomEvent('live2d:tapbody', { detail: { canvas: this.canvas, areaName } }));
         }
       }
@@ -247,12 +253,19 @@ class Cubism2Model {
       vy
     })`);
     this.dragMgr.setPoint(vx, vy);
+    const inCanvas = event.clientX >= rect.left && event.clientX <= rect.right
+      && event.clientY >= rect.top && event.clientY <= rect.bottom;
+    if (!inCanvas) return;
     const model = this.live2DMgr?.getModel();
     if (model) {
+      const canvasX = (event.clientX - rect.left) * (this.canvas.width / rect.width);
+      const canvasY = (event.clientY - rect.top) * (this.canvas.height / rect.height);
+      const hx = this.transformViewX(canvasX);
+      const hy = this.transformViewY(canvasY);
       const count = model.modelSetting?.getHitAreaNum() ?? 0;
       for (let i = 0; i < count; i++) {
         const areaName = model.modelSetting.getHitAreaName(i);
-        if (model.hitTest(areaName, vx, vy)) {
+        if (model.hitTest(areaName, hx, hy)) {
           window.dispatchEvent(new CustomEvent('live2d:hoverbody', { detail: { canvas: this.canvas, areaName } }));
         }
       }

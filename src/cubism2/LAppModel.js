@@ -15,10 +15,12 @@ class LAppModel extends L2DBaseModel {
   loadJSON(callback) {
     const path = this.modelHomeDir + this.modelSetting.getModelFile();
     this.loadModelData(path, model => {
+      this.onModelFileLoaded?.();
       for (let i = 0; i < this.modelSetting.getTextureNum(); i++) {
         const texPaths = this.modelHomeDir + this.modelSetting.getTextureFile(i);
         this.loadTexture(i, texPaths, () => {
           if (this.isTexLoaded) {
+            this.onTexturesLoaded?.();
             if (this.modelSetting.getExpressionNum() > 0) {
               this.expressions = {};
               for (let j = 0; j < this.modelSetting.getExpressionNum(); j++) {

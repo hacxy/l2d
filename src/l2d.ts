@@ -20,6 +20,14 @@ class L2D extends Emitter<L2DEventMap> {
         ? (this.l2d2Model?.getHitAreaBounds() ?? [])
         : (this.l2d5Model?.getHitAreaBounds() ?? []);
     });
+    window.addEventListener('live2d:modelfileloaded', (e: Event) => {
+      if ((e as CustomEvent).detail?.canvas === this.canvas)
+        this.emit('modelfileloaded');
+    });
+    window.addEventListener('live2d:texturesloaded', (e: Event) => {
+      if ((e as CustomEvent).detail?.canvas === this.canvas)
+        this.emit('texturesloaded');
+    });
     window.addEventListener('live2d:tapbody', (e: Event) => {
       const detail = (e as CustomEvent).detail;
       if (detail?.canvas === this.canvas)
