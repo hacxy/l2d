@@ -7,6 +7,8 @@ class L2D {
   private canvas: HTMLCanvasElement;
   private l2d2Model: Cubism2Model;
   private l2d5Model: Cubism5Model;
+  private currentVersion: number | null = null;
+
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.l2d2Model = new Cubism2Model(this.canvas);
@@ -21,6 +23,7 @@ class L2D {
     }
     const result = await res.json();
     const version = checkModelVersion(result);
+    this.currentVersion = version;
     if (version === 2) {
       await this.l2d2Model.init(this.canvas, options.path, result);
       if (options.position) {
@@ -44,6 +47,23 @@ class L2D {
       }
       this.l2d5Model.changeModel(options.path);
       this.l2d5Model.run();
+    }
+    this.resize(options.width ?? 300, options.height ?? 300);
+  }
+
+  resize(width: number, height: number) {
+    if (this.currentVersion === 2) {
+      this.l2d2Model.resize(width, height);
+    }
+    else if (this.currentVersion !== null) {
+      this.l2d5Model.resize(width, height);
+    }
+    else {
+      // 模型尚未加载，只更新 canvas 尺寸
+      this.canvas.width = width;
+      this.canvas.height = height;
+      this.canvas.style.width = `${width}px`;
+      this.canvas.style.height = `${height}px`;
     }
   }
 }

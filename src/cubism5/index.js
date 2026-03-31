@@ -320,6 +320,31 @@ export class AppDelegate extends LAppDelegate {
     subdelegate.getLive2DManager().setViewMatrix(view._viewMatrix);
   }
 
+  resize(width, height) {
+    const subdelegate = this._subdelegates.at(0);
+    const canvas = subdelegate.getCanvas();
+    canvas.width = width;
+    canvas.height = height;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+
+    subdelegate._view.initialize(subdelegate);
+
+    const gl = subdelegate.getGlManager().getGl();
+    gl.viewport(0, 0, width, height);
+
+    if (subdelegate._userScale !== undefined) {
+      subdelegate._view._viewMatrix.adjustScale(0, 0, subdelegate._userScale);
+    }
+    if (subdelegate._userPosition !== undefined) {
+      subdelegate._view._viewMatrix.translate(
+        subdelegate._userPosition[0],
+        subdelegate._userPosition[1]
+      );
+    }
+    subdelegate.getLive2DManager().setViewMatrix(subdelegate._view._viewMatrix);
+  }
+
   get subdelegates() {
     return this._subdelegates;
   }

@@ -158,11 +158,43 @@ class Cubism2Model {
   }
 
   setPosition(x, y) {
+    this._userPosition = [x, y];
     this.viewMatrix.translate(x, y);
   }
 
   setScale(scale) {
+    this._userScale = scale;
     this.viewMatrix.adjustScale(0, 0, scale);
+  }
+
+  resize(width, height) {
+    if (!this.canvas || !this.gl) return;
+    this.canvas.width = width;
+    this.canvas.height = height;
+
+    const ratio = height / width;
+    const left = LAppDefine.VIEW_LOGICAL_LEFT;
+    const right = LAppDefine.VIEW_LOGICAL_RIGHT;
+    const bottom = -ratio;
+    const top = ratio;
+
+    this.viewMatrix.setScreenRect(left, right, bottom, top);
+
+    this.projMatrix = new L2DMatrix44();
+    this.projMatrix.multScale(1, width / height);
+
+    this.deviceToScreen = new L2DMatrix44();
+    this.deviceToScreen.multTranslate(-width / 2.0, -height / 2.0);
+    this.deviceToScreen.multScale(2 / width, -2 / width);
+
+    this.gl.viewport(0, 0, width, height);
+
+    if (this._userScale !== undefined) {
+      this.viewMatrix.adjustScale(0, 0, this._userScale);
+    }
+    if (this._userPosition !== undefined) {
+      this.viewMatrix.translate(this._userPosition[0], this._userPosition[1]);
+    }
   }
 
   modelTurnHead(event) {

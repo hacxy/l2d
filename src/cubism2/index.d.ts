@@ -24,6 +24,7 @@ declare class Cubism2Model {
   changeModelWithJSON(modelSettingPath: any, modelSetting: any): Promise<void>;
   setPosition(x: number, y: number): void;
   setScale(scale: number): void;
+  resize(width: number, height: number): void;
   modelTurnHead(event: any): void;
   followPointer(event: any): void;
   lookFront(): void;
