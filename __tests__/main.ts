@@ -12,19 +12,20 @@ async function main() {
   //   path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
   // });
   l2d.create({
-    // path: 'https://model.hacxy.cn/tia/model.json',
+    path: 'https://model.hacxy.cn/tia/model.json',
     // path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
-    path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
+    // path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
     loading: {
       background: 'red'
     },
+    height: 150
     // path: 'https://model.hacxy.cn/cat-black/model.json',
     // path: 'https://model.hacxy.cn/Pio/model.json',
     // path: 'https://model.hacxy.cn/Pio/model.json',
     // position: [0.5, -0.5]
     // width: 300,
     // height: 300,
-    scale: 1
+    // scale: 1
   }).then(() => {
     // console.log('模型已加载');
   });

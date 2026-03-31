@@ -78,9 +78,9 @@ class L2D extends Emitter<L2DEventMap> {
       await model.init(this.canvas, options.path, result);
       if (options.position)
         model.setPosition(options.position[0], options.position[1]);
-      if (options.scale)
-        model.setScale(options.scale);
       this.resize(options.width ?? 300, options.height ?? 300);
+      const scale2 = this._resolveScale(options.scale, 2);
+      model.setScale(scale2);
       if (options.rotation)
         this.setRotation(options.rotation);
       this.emit('loaded');
@@ -95,13 +95,13 @@ class L2D extends Emitter<L2DEventMap> {
       }
       if (options.position)
         model.setPosition(options.position[0], options.position[1]);
-      if (options.scale)
-        model.setScale(options.scale);
       model.changeModel(options.path);
       model.run();
       await new Promise<void>(resolve => {
         model.onLoaded(() => {
           this.resize(options.width ?? 300, options.height ?? 300);
+          const scale5 = this._resolveScale(options.scale, 5);
+          model.setScale(scale5);
           if (options.rotation)
             this.setRotation(options.rotation);
           this.emit('loaded');
@@ -110,6 +110,20 @@ class L2D extends Emitter<L2DEventMap> {
         });
       });
     }
+  }
+
+  private _resolveScale(scale: number | 'auto' | null | void, version: number): number {
+    if (typeof scale === 'number')
+      return scale;
+    const w = this.canvas.width;
+    const h = this.canvas.height;
+    if (w === h)
+      return 1;
+    // Cubism5 view X: ±(w/h), Y: ±1 — portrait causes horizontal overflow
+    // Cubism2 view X: ±1, Y: ±(h/w) — landscape causes vertical overflow
+    return version === 5
+      ? Math.min(1, w / h)
+      : Math.min(1, h / w);
   }
 
   resize(width: number, height: number) {

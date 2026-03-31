@@ -18,10 +18,11 @@ export interface Options {
    */
   position?: [x: number, y: number]
   /**
-   * 模型缩放比例，`1` 为原始大小
+   * 模型缩放比例，`1` 为原始大小，`'auto'` 根据画布宽高自动缩放确保模型完整显示
+   * @default 'auto'
    * @example 1.5
    */
-  scale?: number
+  scale?: number | 'auto'
   /**
    * 画布宽度（像素），未指定时默认 `300`
    * @default 300
