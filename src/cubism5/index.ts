@@ -296,6 +296,8 @@ export class AppDelegate extends LAppDelegate {
     instance.setSubdelegate(live2dManager._subdelegate);
     instance._onModelFileLoaded = () => window.dispatchEvent(new CustomEvent('live2d:modelfileloaded', { detail: { canvas: this._canvas } }));
     instance._onTexturesLoaded = () => window.dispatchEvent(new CustomEvent('live2d:texturesloaded', { detail: { canvas: this._canvas } }));
+    instance._onLoadStart = (total: number) => window.dispatchEvent(new CustomEvent('live2d:loadstart', { detail: { canvas: this._canvas, total } }));
+    instance._onProgress = (loaded: number, total: number, file: string) => window.dispatchEvent(new CustomEvent('live2d:loadprogress', { detail: { canvas: this._canvas, loaded, total, file } }));
     instance.loadAssets(modelPath, modelJsonName);
     live2dManager._models.pushBack(instance);
   }

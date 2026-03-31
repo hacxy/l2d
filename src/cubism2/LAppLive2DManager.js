@@ -53,6 +53,8 @@ class LAppLive2DManager {
     const newModel = new LAppModel();
     newModel.onModelFileLoaded = this.onModelFileLoaded;
     newModel.onTexturesLoaded = this.onTexturesLoaded;
+    newModel.onLoadStart = this.onLoadStart;
+    newModel.onProgress = this.onProgress;
     await newModel.loadModelSetting(modelSettingPath, modelSetting);
     if (oldModel) {
       oldModel.release(gl);

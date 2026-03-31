@@ -160,12 +160,14 @@ class L2DBaseModel {
     }
   }
 
-  loadPhysics(path) {
+  loadPhysics(path, callback) {
     const pm = Live2DFramework.getPlatformManager();
     logger.trace(`Load Physics : ${path}`);
     try {
       pm.loadBytes(path, buf => {
         this.physics = L2DPhysics.load(buf);
+        if (typeof callback === 'function')
+          callback();
       });
     }
     catch (e) {

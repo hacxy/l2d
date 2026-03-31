@@ -13,21 +13,32 @@ class LAppModel extends L2DBaseModel {
   }
 
   loadJSON(callback) {
+    const texNum = this.modelSetting.getTextureNum();
+    const expNum = this.modelSetting.getExpressionNum();
+    const physNum = this.modelSetting.getPhysicsFile() != null ? 1 : 0;
+    const poseNum = this.modelSetting.getPoseFile() != null ? 1 : 0;
+    const motionNum = this.modelSetting.getMotionNum(LAppDefine.MOTION_GROUP_IDLE);
+    const total = 1 + texNum + expNum + physNum + poseNum + motionNum;
+    let loaded = 0;
+    this._progressFn = (file) => this.onProgress?.(++loaded, total, file);
+    this.onLoadStart?.(total);
+
     const path = this.modelHomeDir + this.modelSetting.getModelFile();
     this.loadModelData(path, model => {
       this.onModelFileLoaded?.();
-      for (let i = 0; i < this.modelSetting.getTextureNum(); i++) {
+      this._progressFn?.(path);
+      for (let i = 0; i < texNum; i++) {
         const texPaths = this.modelHomeDir + this.modelSetting.getTextureFile(i);
         this.loadTexture(i, texPaths, () => {
+          this._progressFn?.(texPaths);
           if (this.isTexLoaded) {
             this.onTexturesLoaded?.();
             if (this.modelSetting.getExpressionNum() > 0) {
               this.expressions = {};
               for (let j = 0; j < this.modelSetting.getExpressionNum(); j++) {
                 const expName = this.modelSetting.getExpressionName(j);
-                const expFilePath = this.modelHomeDir
-                  + this.modelSetting.getExpressionFile(j);
-                this.loadExpression(expName, expFilePath);
+                const expFilePath = this.modelHomeDir + this.modelSetting.getExpressionFile(j);
+                this.loadExpression(expName, expFilePath, () => this._progressFn?.(expFilePath));
               }
             }
             else {
@@ -38,14 +49,17 @@ class LAppModel extends L2DBaseModel {
               this.eyeBlink = new L2DEyeBlink();
             }
             if (this.modelSetting.getPhysicsFile() != null) {
-              this.loadPhysics(this.modelHomeDir + this.modelSetting.getPhysicsFile());
+              const physFile = this.modelHomeDir + this.modelSetting.getPhysicsFile();
+              this.loadPhysics(physFile, () => this._progressFn?.(physFile));
             }
             else {
               this.physics = null;
             }
             if (this.modelSetting.getPoseFile() != null) {
-              this.loadPose(this.modelHomeDir + this.modelSetting.getPoseFile(), () => {
+              const poseFile = this.modelHomeDir + this.modelSetting.getPoseFile();
+              this.loadPose(poseFile, () => {
                 this.pose.updateParam(this.live2DModel);
+                this._progressFn?.(poseFile);
               });
             }
             else {
@@ -120,9 +134,11 @@ class LAppModel extends L2DBaseModel {
   preloadMotionGroup(name) {
     for (let i = 0; i < this.modelSetting.getMotionNum(name); i++) {
       const file = this.modelSetting.getMotionFile(name, i);
-      this.loadMotion(file, this.modelHomeDir + file, motion => {
+      const filePath = this.modelHomeDir + file;
+      this.loadMotion(file, filePath, motion => {
         motion.setFadeIn(this.modelSetting.getMotionFadeIn(name, i));
         motion.setFadeOut(this.modelSetting.getMotionFadeOut(name, i));
+        this._progressFn?.(filePath);
       });
     }
   }

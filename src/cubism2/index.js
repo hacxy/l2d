@@ -95,6 +95,8 @@ class Cubism2Model {
       Live2D.setGL(this.gl);
       this.live2DMgr.onModelFileLoaded = () => window.dispatchEvent(new CustomEvent('live2d:modelfileloaded', { detail: { canvas: this.canvas } }));
       this.live2DMgr.onTexturesLoaded = () => window.dispatchEvent(new CustomEvent('live2d:texturesloaded', { detail: { canvas: this.canvas } }));
+      this.live2DMgr.onLoadStart = (total) => window.dispatchEvent(new CustomEvent('live2d:loadstart', { detail: { canvas: this.canvas, total } }));
+      this.live2DMgr.onProgress = (loaded, total, file) => window.dispatchEvent(new CustomEvent('live2d:loadprogress', { detail: { canvas: this.canvas, loaded, total, file } }));
       this.gl.clearColor(0.0, 0.0, 0.0, 0.0);
       await this.changeModelWithJSON(modelSettingPath, modelSetting);
       this.startDraw();

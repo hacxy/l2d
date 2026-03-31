@@ -118,6 +118,19 @@ export class LAppModel extends CubismUserModel {
 
     this._modelSetting = setting;
 
+    // Calculate total file count upfront for progress tracking
+    this._loadTotal = 1; // moc3
+    this._loadTotal += setting.getExpressionCount();
+    this._loadTotal += setting.getPhysicsFileName() !== '' ? 1 : 0;
+    this._loadTotal += setting.getPoseFileName() !== '' ? 1 : 0;
+    this._loadTotal += setting.getUserDataFile() !== '' ? 1 : 0;
+    for (let g = 0; g < setting.getMotionGroupCount(); g++) {
+      this._loadTotal += setting.getMotionCount(setting.getMotionGroupName(g));
+    }
+    this._loadTotal += setting.getTextureCount();
+    this._loadedCount = 0;
+    this._onLoadStart?.(this._loadTotal);
+
     // CubismModel
     if (this._modelSetting.getModelFileName() != '') {
       const modelFileName = this._modelSetting.getModelFileName();
@@ -137,6 +150,7 @@ export class LAppModel extends CubismUserModel {
           this.loadModel(arrayBuffer, this._mocConsistency);
           this._state = LoadStep.LoadExpression;
           this._onModelFileLoaded?.();
+          this._onProgress?.(++this._loadedCount, this._loadTotal, modelFileName);
 
           // callback
           loadCubismExpression();
@@ -186,6 +200,7 @@ export class LAppModel extends CubismUserModel {
               this._expressions.setValue(expressionName, motion);
 
               this._expressionCount++;
+              this._onProgress?.(++this._loadedCount, this._loadTotal, expressionFileName);
 
               if (this._expressionCount >= count) {
                 this._state = LoadStep.LoadPhysics;
@@ -222,6 +237,7 @@ export class LAppModel extends CubismUserModel {
           })
           .then(arrayBuffer => {
             this.loadPhysics(arrayBuffer, arrayBuffer.byteLength);
+            this._onProgress?.(++this._loadedCount, this._loadTotal, physicsFileName);
 
             this._state = LoadStep.LoadPose;
 
@@ -255,6 +271,7 @@ export class LAppModel extends CubismUserModel {
           })
           .then(arrayBuffer => {
             this.loadPose(arrayBuffer, arrayBuffer.byteLength);
+            this._onProgress?.(++this._loadedCount, this._loadTotal, poseFileName);
 
             this._state = LoadStep.SetupEyeBlink;
 
@@ -335,6 +352,7 @@ export class LAppModel extends CubismUserModel {
           })
           .then(arrayBuffer => {
             this.loadUserData(arrayBuffer, arrayBuffer.byteLength);
+            this._onProgress?.(++this._loadedCount, this._loadTotal, userDataFile);
 
             this._state = LoadStep.SetupEyeBlinkIds;
 
@@ -468,6 +486,7 @@ export class LAppModel extends CubismUserModel {
           this.getRenderer().bindTexture(modelTextureNumber, textureInfo.id);
 
           this._textureCount++;
+          this._onProgress?.(++this._loadedCount, this._loadTotal, texturePath);
 
           if (this._textureCount >= textureCount) {
             // ロード完了
@@ -834,6 +853,7 @@ export class LAppModel extends CubismUserModel {
             this._motions.setValue(name, tmpMotion);
 
             this._motionCount++;
+            this._onProgress?.(++this._loadedCount, this._loadTotal, motionFileName);
           } else {
             // loadMotionできなかった場合はモーションの総数がずれるので1つ減らす
             this._allMotionCount--;

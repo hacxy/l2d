@@ -15,6 +15,9 @@ async function main() {
     // path: 'https://model.hacxy.cn/tia/model.json',
     // path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
     path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
+    loading: {
+      background: 'red'
+    },
     // path: 'https://model.hacxy.cn/cat-black/model.json',
     // path: 'https://model.hacxy.cn/Pio/model.json',
     // path: 'https://model.hacxy.cn/Pio/model.json',
