@@ -150,10 +150,22 @@ export class AppDelegate extends LAppDelegate {
         this._subdelegates.at(i).update();
       }
 
+      // Detect model initialization completion
+      if (!this._modelLoadedEmitted && this._isModelReady()) {
+        this._modelLoadedEmitted = true;
+        if (typeof this._onLoaded === 'function') {
+          this._onLoaded();
+        }
+      }
+
       // Recursive call for animation loop
       this._drawFrameId = window.requestAnimationFrame(loop);
     };
     loop();
+  }
+
+  onLoaded(callback) {
+    this._onLoaded = callback;
   }
 
   stop() {
@@ -185,7 +197,15 @@ export class AppDelegate extends LAppDelegate {
     };
   }
 
+  _isModelReady() {
+    const manager = this._subdelegates.at(0)?.getLive2DManager();
+    const model = manager?._models.at(0);
+    // LoadStep.CompleteSetup === 22, only at this point textures are bound and model renders
+    return model?._state === 22;
+  }
+
   onMouseMove(e) {
+    if (!this._isModelReady()) return;
     const lapplive2dmanager = this._subdelegates.at(0).getLive2DManager();
     const { x, y } = this.transformOffset(e);
     const model = lapplive2dmanager._models.at(0);
@@ -198,6 +218,7 @@ export class AppDelegate extends LAppDelegate {
   }
 
   onMouseEnd(e) {
+    if (!this._isModelReady()) return;
     const lapplive2dmanager = this._subdelegates.at(0).getLive2DManager();
     const { x, y } = this.transformOffset(e);
     lapplive2dmanager.onDrag(0.0, 0.0);
@@ -205,6 +226,7 @@ export class AppDelegate extends LAppDelegate {
   }
 
   onTap(e) {
+    if (!this._isModelReady()) return;
     const lapplive2dmanager = this._subdelegates.at(0).getLive2DManager();
     const { x, y } = this.transformOffset(e);
     const model = lapplive2dmanager._models.at(0);
@@ -289,6 +311,7 @@ export class AppDelegate extends LAppDelegate {
    * @param {string} modelSettingPath Path to the model setting file
    */
   changeModel(modelSettingPath) {
+    this._modelLoadedEmitted = false;
     const segments = modelSettingPath.split('/');
     const modelJsonName = segments.pop();
     const modelPath = `${segments.join('/')}/`;

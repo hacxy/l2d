@@ -1,4 +1,4 @@
-import type { Options } from './types.js';
+import type { L2DEventMap, Options } from './types.js';
 import Cubism2Model from './cubism2/index.js';
 import { AppDelegate as Cubism5Model } from './cubism5/index.js';
 import { checkModelVersion } from './utils/model.js';
@@ -8,14 +8,28 @@ class L2D {
   private l2d2Model: Cubism2Model;
   private l2d5Model: Cubism5Model;
   private currentVersion: number | null = null;
+  private _listeners: { [K in keyof L2DEventMap]?: L2DEventMap[K][] } = {};
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.l2d2Model = new Cubism2Model(this.canvas);
     this.l2d5Model = new Cubism5Model(this.canvas);
+    window.addEventListener('live2d:tapbody', () => this._emit('tap'));
   }
 
-  async create(options: Options) {
+  on<K extends keyof L2DEventMap>(event: K, listener: L2DEventMap[K]) {
+    if (!this._listeners[event]) {
+      this._listeners[event] = [];
+    }
+    (this._listeners[event] as L2DEventMap[K][]).push(listener);
+    return this;
+  }
+
+  private _emit<K extends keyof L2DEventMap>(event: K) {
+    this._listeners[event]?.forEach(fn => (fn as () => void)());
+  }
+
+  async create(options: Options): Promise<void> {
     const res = await fetch(options.path);
     if (!res.ok) {
       console.error(`获取模型配置失败: ${res.statusText}`);
@@ -32,6 +46,8 @@ class L2D {
       if (options.scale) {
         this.l2d2Model.setScale(options.scale);
       }
+      this.resize(options.width ?? 300, options.height ?? 300);
+      this._emit('loaded');
     }
     else {
       // 初始化 Cubism5 模型
@@ -47,8 +63,14 @@ class L2D {
       }
       this.l2d5Model.changeModel(options.path);
       this.l2d5Model.run();
+      await new Promise<void>(resolve => {
+        this.l2d5Model.onLoaded(() => {
+          this.resize(options.width ?? 300, options.height ?? 300);
+          this._emit('loaded');
+          resolve();
+        });
+      });
     }
-    this.resize(options.width ?? 300, options.height ?? 300);
   }
 
   resize(width: number, height: number) {

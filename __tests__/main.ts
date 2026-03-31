@@ -6,12 +6,17 @@ import { init } from '../dist/index.js';
 async function main() {
   const l2d = init(document.getElementById('l2d1') as HTMLCanvasElement);
   l2d.create({
-    // path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
-    path: 'https://model.hacxy.cn/cat-black/model.json',
+    path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
+    // path: 'https://model.hacxy.cn/cat-black/model.json',
     // position: [0.5, -0.5]
     // width: 300,
     // height: 300,
     scale: 1
+  }).then(() => {
+    console.log('模型已加载');
+  });
+  l2d.on('loaded', () => {
+    console.log('模型加载完成');
   });
 }
 

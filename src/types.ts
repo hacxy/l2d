@@ -5,3 +5,8 @@ export interface Options {
   width?: number
   height?: number
 }
+
+export interface L2DEventMap {
+  loaded: () => void
+  tap: () => void
+}
