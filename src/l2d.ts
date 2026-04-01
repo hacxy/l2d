@@ -169,6 +169,25 @@ class L2D extends Emitter<L2DEventMap> {
     }
     enabled ? this.hitAreaOverlay.show() : this.hitAreaOverlay.hide();
   }
+
+  destroy() {
+    if (this.l2d2Model) {
+      this.l2d2Model.destroy();
+      this.l2d2Model = null;
+    }
+    if (this.l2d5Model) {
+      this.l2d5Model.release();
+      this.l2d5Model = null;
+    }
+    this.currentVersion = null;
+    this.hitAreaOverlay.hide();
+    this.loadingOverlay.hide();
+    const gl = this.canvas.getContext('webgl2');
+    if (gl) {
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+    }
+  }
 }
 
 export default L2D;

@@ -12,9 +12,9 @@ async function main() {
   //   path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
   // });
   l2d.load({
-    path: 'https://model.hacxy.cn/tia/model.json',
+    // path: 'https://model.hacxy.cn/tia/model.json',
     // path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
-    // path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
+    path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
     loading: {
       background: 'pink'
     },
@@ -29,9 +29,7 @@ async function main() {
   }).then(() => {
     // console.log('模型已加载');
     setTimeout(() => {
-      l2d.load({
-        path: 'https://model.hacxy.cn/cat-black/model.json',
-      });
+      l2d.destroy();
     }, 1000);
   });
   // l2d.on('tap', areaName => {
