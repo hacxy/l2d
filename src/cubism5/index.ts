@@ -156,6 +156,9 @@ export class AppDelegate extends LAppDelegate {
   public release(): void {
     this.stop();
     this.releaseEventListener();
+    for (let i = 0; i < this._subdelegates.getSize(); i++) {
+      this._subdelegates.at(i).release();
+    }
     this._subdelegates.clear();
     this._cubismOption = null;
   }

@@ -60,7 +60,18 @@ class L2D extends Emitter<L2DEventMap> {
     });
   }
 
-  async create(options: Options): Promise<void> {
+  async load(options: Options): Promise<void> {
+    // 清理旧模型
+    if (this.l2d2Model) {
+      this.l2d2Model.destroy();
+      this.l2d2Model = null;
+    }
+    if (this.l2d5Model) {
+      this.l2d5Model.release();
+      this.l2d5Model = null;
+    }
+    this.currentVersion = null;
+
     this._loadingEnabled = options.loading !== false;
     this._loadingOpts = typeof options.loading === 'object' ? options.loading : null;
     const res = await fetch(options.path);
@@ -124,6 +135,11 @@ class L2D extends Emitter<L2DEventMap> {
     return version === 5
       ? Math.min(1, w / h)
       : Math.min(1, h / w);
+  }
+
+  /** @deprecated 请使用 `load()` */
+  create(options: Options) {
+    return this.load(options);
   }
 
   resize(width: number, height: number) {

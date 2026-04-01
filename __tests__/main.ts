@@ -11,14 +11,14 @@ async function main() {
   //   // path: 'https://model.hacxy.cn/cat-black/model.json',
   //   path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
   // });
-  l2d.create({
+  l2d.load({
     path: 'https://model.hacxy.cn/tia/model.json',
     // path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
     // path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
     loading: {
-      background: 'red'
+      background: 'pink'
     },
-    height: 150
+    // height: 150
     // path: 'https://model.hacxy.cn/cat-black/model.json',
     // path: 'https://model.hacxy.cn/Pio/model.json',
     // path: 'https://model.hacxy.cn/Pio/model.json',
@@ -28,6 +28,11 @@ async function main() {
     // scale: 1
   }).then(() => {
     // console.log('模型已加载');
+    setTimeout(() => {
+      l2d.load({
+        path: 'https://model.hacxy.cn/cat-black/model.json',
+      });
+    }, 1000);
   });
   // l2d.on('tap', areaName => {
   //   console.log(areaName, '被点击');
