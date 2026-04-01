@@ -6,7 +6,7 @@ import { init } from '../dist/index.js';
 async function main() {
   const canvasEl1 = document.getElementById('l2d1') as HTMLCanvasElement;
   const l2d = init(canvasEl1);
-  // const l2d2 = init(document.getElementById('l2d') as HTMLCanvasElement);
+  const l2d2 = init(document.getElementById('l2d2') as HTMLCanvasElement);
   // const l2d3 = init(document.getElementById('l2d3') as HTMLCanvasElement);
   // l2d3.create({
   //   // path: 'https://model.hacxy.cn/cat-black/model.json',
@@ -16,9 +16,6 @@ async function main() {
     // path: 'https://model.hacxy.cn/tia/model.json',
     path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
     // path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
-    loading: {
-      background: 'pink'
-    },
     // height: 150
     // path: 'https://model.hacxy.cn/cat-black/model.json',
     // path: 'https://model.hacxy.cn/Pio/model.json',
@@ -28,17 +25,20 @@ async function main() {
     // height: 300,
     // scale: 1
   }).then(() => {
-    // console.log('模型已加载');
     setTimeout(() => {
-      // l2d.destroy();
-      // canvasEl1.style.width = '500px';
-      // canvasEl1.style.height = '500px';
-
       l2d.load({
-        path: 'https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.model3.json',
-        // path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
+        path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json'
       });
-    }, 1000);
+    });
+  });
+  l2d.on('loadstart', total => {
+    console.log(total);
+  });
+  l2d.on('loadprogress', (loaded, total, file) => {
+    console.log(`${loaded}/${total} - ${file}`);
+  });
+  l2d.on('loaded', () => {
+    console.log('模型就绪');
   });
   // l2d.on('tap', areaName => {
   //   console.log(areaName, '被点击');
@@ -61,12 +61,12 @@ async function main() {
   //   l2d.showHitAreas(false);
   // }, 5000);
 
-  // l2d2.create({
-  //   path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
-  //   // path: 'https://model.hacxy.cn/cat-black/model.json',
-  //   // path: 'https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.model3.json'
-  //   // path: 'https://model.hacxy.cn/Pio/model.json',
-  // });
+  l2d2.load({
+    path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
+    // path: 'https://model.hacxy.cn/cat-black/model.json',
+    // path: 'https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.model3.json'
+    // path: 'https://model.hacxy.cn/Pio/model.json',
+  });
   // l2d2.showHitAreas(true);
 }
 
