@@ -4,7 +4,8 @@ import { init } from '../dist/index.js';
 
 // 确保 DOM 加载完成后再初始化
 async function main() {
-  const l2d = init(document.getElementById('l2d1') as HTMLCanvasElement);
+  const canvasEl1 = document.getElementById('l2d1') as HTMLCanvasElement;
+  const l2d = init(canvasEl1);
   // const l2d2 = init(document.getElementById('l2d') as HTMLCanvasElement);
   // const l2d3 = init(document.getElementById('l2d3') as HTMLCanvasElement);
   // l2d3.create({
@@ -13,8 +14,8 @@ async function main() {
   // });
   l2d.load({
     // path: 'https://model.hacxy.cn/tia/model.json',
-    // path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
-    path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
+    path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
+    // path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
     loading: {
       background: 'pink'
     },
@@ -29,7 +30,14 @@ async function main() {
   }).then(() => {
     // console.log('模型已加载');
     setTimeout(() => {
-      l2d.destroy();
+      // l2d.destroy();
+      // canvasEl1.style.width = '500px';
+      // canvasEl1.style.height = '500px';
+
+      l2d.load({
+        path: 'https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.model3.json',
+        // path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
+      });
     }, 1000);
   });
   // l2d.on('tap', areaName => {

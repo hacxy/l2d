@@ -321,13 +321,11 @@ export class AppDelegate extends LAppDelegate {
     subdelegate.getLive2DManager().setViewMatrix(view._viewMatrix);
   }
 
-  public resize(width: number, height: number): void {
+  public resize(): void {
     const subdelegate = this._subdelegates.at(0);
     const canvas: HTMLCanvasElement = subdelegate.getCanvas();
-    canvas.width = width;
-    canvas.height = height;
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
+    const width = canvas.width;
+    const height = canvas.height;
 
     subdelegate._view.initialize(subdelegate);
 

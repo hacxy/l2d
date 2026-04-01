@@ -67,8 +67,13 @@ export class LoadingOverlay {
     if (!ctx || !overlay)
       return;
 
-    const w = overlay.width;
-    const h = overlay.height;
+    const dpr = window.devicePixelRatio || 1;
+    const w = this.canvas.clientWidth * dpr;
+    const h = this.canvas.clientHeight * dpr;
+    if (overlay.width !== w || overlay.height !== h) {
+      overlay.width = w;
+      overlay.height = h;
+    }
     const pct = this.total > 0 ? this.loaded / this.total : 0;
 
     ctx.clearRect(0, 0, w, h);

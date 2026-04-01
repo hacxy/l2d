@@ -28,6 +28,13 @@ export class HitAreaOverlay {
 
     const ctx = overlay.getContext('2d')!;
     const draw = () => {
+      const dpr = window.devicePixelRatio || 1;
+      const w = this.canvas.clientWidth * dpr;
+      const h = this.canvas.clientHeight * dpr;
+      if (overlay.width !== w || overlay.height !== h) {
+        overlay.width = w;
+        overlay.height = h;
+      }
       ctx.clearRect(0, 0, overlay.width, overlay.height);
       for (const b of this.getBounds()) {
         ctx.strokeStyle = 'rgba(0,255,0,0.9)';

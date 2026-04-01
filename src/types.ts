@@ -24,16 +24,6 @@ export interface Options {
    */
   scale?: number | 'auto'
   /**
-   * 画布宽度（像素），未指定时默认 `300`
-   * @default 300
-   */
-  width?: number
-  /**
-   * 画布高度（像素），未指定时默认 `300`
-   * @default 300
-   */
-  height?: number
-  /**
    * 模型旋转角度（度），正值为顺时针
    * @default 0
    * @example 15

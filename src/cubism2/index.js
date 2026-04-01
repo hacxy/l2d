@@ -58,6 +58,8 @@ class Cubism2Model {
       this.canvas.addEventListener('touchend', this._boundTouchEvent, false);
       this.canvas.addEventListener('touchmove', this._boundTouchEvent, false);
     }
+    this._resizeObserver = new ResizeObserver(() => this.resize());
+    this._resizeObserver.observe(this.canvas);
   }
 
   async init(canvas, modelSettingPath, modelSetting) {
@@ -115,6 +117,10 @@ class Cubism2Model {
       this.canvas.removeEventListener('touchstart', this._boundTouchEvent, false);
       this.canvas.removeEventListener('touchend', this._boundTouchEvent, false);
       this.canvas.removeEventListener('touchmove', this._boundTouchEvent, false);
+    }
+    if (this._resizeObserver) {
+      this._resizeObserver.disconnect();
+      this._resizeObserver = null;
     }
     if (this._drawFrameId) {
       window.cancelAnimationFrame(this._drawFrameId);
@@ -182,10 +188,12 @@ class Cubism2Model {
     this.viewMatrix.adjustScale(0, 0, scale);
   }
 
-  resize(width, height) {
+  resize() {
     if (!this.canvas || !this.gl) return;
-    this.canvas.width = width;
-    this.canvas.height = height;
+    this.canvas.width = this.canvas.clientWidth * window.devicePixelRatio;
+    this.canvas.height = this.canvas.clientHeight * window.devicePixelRatio;
+    const width = this.canvas.width;
+    const height = this.canvas.height;
 
     const ratio = height / width;
     const left = LAppDefine.VIEW_LOGICAL_LEFT;

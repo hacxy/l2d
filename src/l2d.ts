@@ -60,7 +60,29 @@ class L2D extends Emitter<L2DEventMap> {
     });
   }
 
+  private _replaceCanvas() {
+    this.hitAreaOverlay.hide();
+    this.loadingOverlay.hide();
+    const old = this.canvas;
+    const next = document.createElement('canvas');
+    next.id = old.id;
+    next.className = old.className;
+    next.style.cssText = old.style.cssText;
+    next.width = old.width;
+    next.height = old.height;
+    old.parentNode?.replaceChild(next, old);
+    this.canvas = next;
+    this.hitAreaOverlay = new HitAreaOverlay(next, () => {
+      return this.currentVersion === 2
+        ? (this.l2d2Model?.getHitAreaBounds() ?? [])
+        : (this.l2d5Model?.getHitAreaBounds() ?? []);
+    });
+    this.loadingOverlay = new LoadingOverlay(next);
+  }
+
   async load(options: Options): Promise<void> {
+    const prevVersion = this.currentVersion;
+
     // 清理旧模型
     if (this.l2d2Model) {
       this.l2d2Model.destroy();
@@ -81,6 +103,11 @@ class L2D extends Emitter<L2DEventMap> {
     }
     const result = await res.json();
     const version = checkModelVersion(result);
+
+    // 框架版本切换时 canvas 的 WebGL context attributes 不兼容，需替换 canvas
+    if (prevVersion !== null && prevVersion !== version)
+      this._replaceCanvas();
+
     this.currentVersion = version;
 
     if (version === 2) {
@@ -89,7 +116,7 @@ class L2D extends Emitter<L2DEventMap> {
       await model.init(this.canvas, options.path, result);
       if (options.position)
         model.setPosition(options.position[0], options.position[1]);
-      this.resize(options.width ?? 300, options.height ?? 300);
+      this.resize();
       const scale2 = this._resolveScale(options.scale, 2);
       model.setScale(scale2);
       if (options.rotation)
@@ -110,7 +137,7 @@ class L2D extends Emitter<L2DEventMap> {
       model.run();
       await new Promise<void>(resolve => {
         model.onLoaded(() => {
-          this.resize(options.width ?? 300, options.height ?? 300);
+          this.resize();
           const scale5 = this._resolveScale(options.scale, 5);
           model.setScale(scale5);
           if (options.rotation)
@@ -142,18 +169,12 @@ class L2D extends Emitter<L2DEventMap> {
     return this.load(options);
   }
 
-  resize(width: number, height: number) {
+  resize() {
     if (this.currentVersion === 2 && this.l2d2Model) {
-      this.l2d2Model.resize(width, height);
+      this.l2d2Model.resize();
     }
     else if (this.currentVersion !== null && this.l2d5Model) {
-      this.l2d5Model.resize(width, height);
-    }
-    else {
-      this.canvas.width = width;
-      this.canvas.height = height;
-      this.canvas.style.width = `${width}px`;
-      this.canvas.style.height = `${height}px`;
+      this.l2d5Model.resize();
     }
   }
 
