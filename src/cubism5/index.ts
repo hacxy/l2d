@@ -1,14 +1,59 @@
 // @ts-nocheck
 import logger from '../logger.js';
-import * as LAppDefine from './framework/lappdefine.js';
-import { LAppDelegate } from './framework/lappdelegate.js';
-import { LAppModel } from './framework/lappmodel.js';
-import { LAppPal } from './framework/lapppal.js';
-import { LAppSubdelegate } from './framework/lappsubdelegate.js';
 
+// ----- 通过 Vite ?raw 内联 GLSL 着色器，避免运行时 fetch 加载外部文件 -----
+import _vertShaderSrc from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/vertshadersrc.vert?raw';
+import _vertShaderSrcMasked from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/vertshadersrcmasked.vert?raw';
+import _vertShaderSrcSetupMask from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/vertshadersrcsetupmask.vert?raw';
+import _fragShaderSrcSetupMask from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/fragshadersrcsetupmask.frag?raw';
+import _fragShaderSrcPremultipliedAlpha from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/fragshadersrcpremultipliedalpha.frag?raw';
+import _fragShaderSrcMaskPremultipliedAlpha from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/fragshadersrcmaskpremultipliedalpha.frag?raw';
+import _fragShaderSrcMaskInvertedPremultipliedAlpha from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/fragshadersrcmaskinvertedpremultipliedalpha.frag?raw';
+import _vertShaderSrcCopy from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/vertshadersrccopy.vert?raw';
+import _fragShaderSrcCopy from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/fragshadersrccopy.frag?raw';
+import _fragShaderSrcColorBlend from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/fragshadersrccolorblend.frag?raw';
+import _fragShaderSrcAlphaBlend from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/fragshadersrcalphablend.frag?raw';
+import _vertShaderSrcBlend from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/vertshadersrcblend.vert?raw';
+import _fragShaderSrcPremultipliedAlphaBlend from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/fragshadersrcpremultipliedalphablend.frag?raw';
+
+// 必须在导入 Framework 渲染模块之前先引入 CubismShader_WebGL，以便 patch prototype
+import { CubismShader_WebGL } from '@framework/rendering/cubismshader_webgl';
+
+// 着色器文件名 → 内联内容映射
+const _inlineShaders: Record<string, string> = {
+  'vertshadersrc.vert': _vertShaderSrc,
+  'vertshadersrcmasked.vert': _vertShaderSrcMasked,
+  'vertshadersrcsetupmask.vert': _vertShaderSrcSetupMask,
+  'fragshadersrcsetupmask.frag': _fragShaderSrcSetupMask,
+  'fragshadersrcpremultipliedalpha.frag': _fragShaderSrcPremultipliedAlpha,
+  'fragshadersrcmaskpremultipliedalpha.frag': _fragShaderSrcMaskPremultipliedAlpha,
+  'fragshadersrcmaskinvertedpremultipliedalpha.frag': _fragShaderSrcMaskInvertedPremultipliedAlpha,
+  'vertshadersrccopy.vert': _vertShaderSrcCopy,
+  'fragshadersrccopy.frag': _fragShaderSrcCopy,
+  'fragshadersrccolorblend.frag': _fragShaderSrcColorBlend,
+  'fragshadersrcalphablend.frag': _fragShaderSrcAlphaBlend,
+  'vertshadersrcblend.vert': _vertShaderSrcBlend,
+  'fragshadersrcpremultipliedalphablend.frag': _fragShaderSrcPremultipliedAlphaBlend,
+};
+
+// Patch：将 loadShader 替换为直接返回内联字符串，不再发起网络请求
+CubismShader_WebGL.prototype.loadShader = async function (url: string): Promise<string> {
+  const filename = url.split('/').pop().toLowerCase();
+  return _inlineShaders[filename] ?? '';
+};
+
+// ----- 引入官方 SDK 的 Demo 工具类 -----
+import { CubismFramework, Option } from '@framework/live2dcubismframework';
+import { LAppPal } from '../CubismSdkForWeb-5-r.5/Samples/TypeScript/Demo/src/lapppal';
+import { LAppSubdelegate } from '../CubismSdkForWeb-5-r.5/Samples/TypeScript/Demo/src/lappsubdelegate';
+import { LAppLive2DManager } from '../CubismSdkForWeb-5-r.5/Samples/TypeScript/Demo/src/lapplive2dmanager';
+import { LAppModel } from '../CubismSdkForWeb-5-r.5/Samples/TypeScript/Demo/src/lappmodel';
+import * as LAppDefine from '../CubismSdkForWeb-5-r.5/Samples/TypeScript/Demo/src/lappdefine';
+
+// 静默 SDK 内部日志
 LAppPal.printMessage = () => {};
 
-// Ensure LAppPal.updateTime() is called only once per animation frame across all instances
+// 保证每帧只调用一次 updateTime
 let _lastUpdateTimestamp = -1;
 function updateTimeOnce(timestamp: number) {
   if (timestamp !== _lastUpdateTimestamp) {
@@ -17,14 +62,15 @@ function updateTimeOnce(timestamp: number) {
   }
 }
 
-// Custom subdelegate class, responsible for Canvas-related initialization and rendering management
+/**
+ * 自定义 Subdelegate：
+ * 继承官方 LAppSubdelegate，重写 initialize / onResize / update，
+ * 跳过背景/齿轮精灵加载，跳过自动加载模型，使背景透明。
+ */
 class AppSubdelegate extends LAppSubdelegate {
   _userScale: number | undefined;
   _userPosition: [number, number] | undefined;
 
-  /**
-   * Initialize resources required by the application.
-   */
   public initialize(canvas: HTMLCanvasElement): boolean {
     if (!this._glManager.initialize(canvas)) {
       return false;
@@ -52,9 +98,12 @@ class AppSubdelegate extends LAppSubdelegate {
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     this._view.initialize(this);
-    this._view._gear = { render: () => {}, isHit: () => {}, release: () => {} };
+
+    // 设置占位精灵对象，防止 LAppView.release() / onTouchesEnded() 访问 null 时崩溃
+    this._view._gear = { render: () => {}, isHit: () => false, release: () => {} };
     this._view._back = { render: () => {}, release: () => {} };
 
+    // 手动设置 live2d 管理器的 subdelegate，绕过 initialize() 的自动模型加载
     this._live2dManager._subdelegate = this;
 
     this._resizeObserver = new window.ResizeObserver(
@@ -66,9 +115,6 @@ class AppSubdelegate extends LAppSubdelegate {
     return true;
   }
 
-  /**
-   * Adjust and reinitialize the view when the canvas size changes
-   */
   public onResize(): void {
     this.resizeCanvas();
     this._view.initialize(this);
@@ -80,9 +126,6 @@ class AppSubdelegate extends LAppSubdelegate {
     }
   }
 
-  /**
-   * Main render loop, called periodically to update the screen
-   */
   public update(): void {
     if (this._glManager.getGl().isContextLost()) {
       return;
@@ -95,6 +138,7 @@ class AppSubdelegate extends LAppSubdelegate {
 
     const gl: WebGL2RenderingContext = this._glManager.getGl();
 
+    // 透明背景（官方 Demo 默认不透明黑色）
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
@@ -103,32 +147,40 @@ class AppSubdelegate extends LAppSubdelegate {
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-    this._view.render();
+    // 仅在有模型时才触发渲染，避免 LAppLive2DManager.onUpdate() 访问空数组崩溃
+    if (this._live2dManager._models.length > 0) {
+      this._view.render();
+    }
   }
 }
 
-// Main application delegate class, responsible for managing the main loop, canvas, model switching, and other global logic
-export class AppDelegate extends LAppDelegate {
-  _canvas: HTMLCanvasElement;
+/**
+ * 主应用委托类（不再继承官方单例 LAppDelegate）
+ * 对外暴露与原版 AppDelegate 相同的接口，以保证 l2d.ts 无需改动。
+ */
+export class AppDelegate {
+  private _canvas: HTMLCanvasElement;
+  private _subdelegates: AppSubdelegate[] = [];
+  private _cubismOption: Option;
   _drawFrameId: number | null = null;
   _modelLoadedEmitted: boolean = false;
   _onLoaded: (() => void) | null = null;
   _expressionWasPlaying: boolean = false;
+  private mouseMoveEventListener: ((e: MouseEvent) => void) | null = null;
+  private mouseEndedEventListener: ((e: MouseEvent) => void) | null = null;
+  private tapEventListener: ((e: PointerEvent) => void) | null = null;
 
   public constructor(canvas: HTMLCanvasElement) {
-    super();
     this._canvas = canvas;
+    this._cubismOption = new Option();
   }
 
-  /**
-   * Start the main loop.
-   */
   public run(): void {
     const loop = (timestamp: number) => {
       updateTimeOnce(timestamp);
 
-      for (let i = 0; i < this._subdelegates.getSize(); i++) {
-        this._subdelegates.at(i).update();
+      for (const sd of this._subdelegates) {
+        sd.update();
       }
 
       if (!this._modelLoadedEmitted && this._isModelReady()) {
@@ -138,8 +190,8 @@ export class AppDelegate extends LAppDelegate {
         }
       }
 
-      // Detect expression end
-      const model = this._subdelegates.at(0)?.getLive2DManager()?._models.at(0);
+      // 检测表情结束
+      const model = this._subdelegates[0]?.getLive2DManager()?._models?.[0];
       if (model) {
         const exprFinished = model._expressionManager?.isFinished();
         if (!this._expressionWasPlaying && exprFinished === false) {
@@ -170,15 +222,16 @@ export class AppDelegate extends LAppDelegate {
   public release(): void {
     this.stop();
     this.releaseEventListener();
-    for (let i = 0; i < this._subdelegates.getSize(); i++) {
-      this._subdelegates.at(i).release();
+    for (const sd of this._subdelegates) {
+      sd.release();
     }
-    this._subdelegates.clear();
+    this._subdelegates = [];
+    CubismFramework.dispose();
     this._cubismOption = null;
   }
 
   private transformOffset(e: MouseEvent | PointerEvent): { x: number; y: number } {
-    const subdelegate = this._subdelegates.at(0);
+    const subdelegate = this._subdelegates[0];
     const canvas = subdelegate.getCanvas();
     const rect: DOMRect = canvas.getBoundingClientRect();
     const posX = (e.clientX - rect.left) * (canvas.width / rect.width);
@@ -189,37 +242,35 @@ export class AppDelegate extends LAppDelegate {
   }
 
   private _isModelReady(): boolean {
-    const manager = this._subdelegates.at(0)?.getLive2DManager();
-    const model = manager?._models.at(0);
-    // LoadStep.CompleteSetup === 22, only at this point textures are bound and model renders
-    return model?._state === 22;
+    const manager = this._subdelegates[0]?.getLive2DManager();
+    const model = manager?._models?.[0];
+    // LoadStep.CompleteSetup === 23（SDK 5-r.5 新增了 SetupLook 导致枚举值 +1）
+    return model?._state === 23;
   }
 
   private onMouseMove(e: MouseEvent): void {
     if (!this._isModelReady()) return;
     const { x, y } = this.transformOffset(e);
-    this._subdelegates.at(0).getLive2DManager().onDrag(x, y);
+    this._subdelegates[0].getLive2DManager().onDrag(x, y);
   }
 
   private onMouseEnd(e: MouseEvent): void {
     if (!this._isModelReady()) return;
-    const lapplive2dmanager = this._subdelegates.at(0).getLive2DManager();
-    const { x, y } = this.transformOffset(e);
-    lapplive2dmanager.onDrag(0.0, 0.0);
+    this._subdelegates[0].getLive2DManager().onDrag(0.0, 0.0);
   }
 
   private onTap(e: PointerEvent): void {
     if (!this._isModelReady()) return;
-    const lapplive2dmanager = this._subdelegates.at(0).getLive2DManager();
+    const lapplive2dmanager = this._subdelegates[0].getLive2DManager();
     const { x, y } = this.transformOffset(e);
-    const model = lapplive2dmanager._models.at(0);
+    const model = lapplive2dmanager._models[0];
     const count: number = model._modelSetting.getHitAreasCount();
 
     for (let i = 0; i < count; i++) {
       const areaName: string = model._modelSetting.getHitAreaName(i);
       if (model.hitTest(areaName, x, y)) {
         window.dispatchEvent(new CustomEvent('live2d:tapbody', {
-          detail: { canvas: this._canvas, areaName }
+          detail: { canvas: this._canvas, areaName },
         }));
       }
     }
@@ -236,72 +287,68 @@ export class AppDelegate extends LAppDelegate {
   }
 
   public releaseEventListener(): void {
-    document.removeEventListener('mousemove', this.mouseMoveEventListener, { passive: true });
-    this.mouseMoveEventListener = null;
-    document.removeEventListener('mouseout', this.mouseEndedEventListener, { passive: true });
-    this.mouseEndedEventListener = null;
-    document.removeEventListener('pointerdown', this.tapEventListener, { passive: true });
-    this.tapEventListener = null;
+    if (this.mouseMoveEventListener) {
+      document.removeEventListener('mousemove', this.mouseMoveEventListener);
+      this.mouseMoveEventListener = null;
+    }
+    if (this.mouseEndedEventListener) {
+      document.removeEventListener('mouseout', this.mouseEndedEventListener);
+      this.mouseEndedEventListener = null;
+    }
+    if (this.tapEventListener) {
+      document.removeEventListener('pointerdown', this.tapEventListener);
+      this.tapEventListener = null;
+    }
   }
 
   public initialize(): boolean {
-    return super.initialize();
+    LAppPal.updateTime();
+    this._cubismOption.logFunction = LAppPal.printMessage;
+    this._cubismOption.loggingLevel = LAppDefine.CubismLoggingLevel;
+    CubismFramework.startUp(this._cubismOption);
+    CubismFramework.initialize();
+
+    this.initializeSubdelegates();
+    this.initializeEventListener();
+
+    return true;
   }
 
-  /**
-   * Create canvas and initialize all Subdelegates
-   */
   public initializeSubdelegates(): void {
-    this._canvases.prepareCapacity(LAppDefine.CanvasNum);
-    this._subdelegates.prepareCapacity(LAppDefine.CanvasNum);
-
-    const canvas = this._canvas;
-    this._canvases.pushBack(canvas);
-
-    canvas.style.width = String(canvas.width);
-    canvas.style.height = String(canvas.height);
-
-    for (let i = 0; i < this._canvases.getSize(); i++) {
-      const subdelegate = new AppSubdelegate();
-      const result = subdelegate.initialize(this._canvases.at(i));
-      if (!result) {
-        logger.error('Failed to initialize AppSubdelegate');
-        return;
-      }
-      this._subdelegates.pushBack(subdelegate);
+    const subdelegate = new AppSubdelegate();
+    const result = subdelegate.initialize(this._canvas);
+    if (!result) {
+      logger.error('Failed to initialize AppSubdelegate');
+      return;
     }
+    this._subdelegates.push(subdelegate);
 
-    for (let i = 0; i < LAppDefine.CanvasNum; i++) {
-      if (this._subdelegates.at(i).isContextLost()) {
-        logger.error(
-          `The context for Canvas at index ${i} was lost, possibly because the acquisition limit for WebGLRenderingContext was reached.`
-        );
-      }
+    if (subdelegate.isContextLost()) {
+      logger.error('WebGL context was lost, possibly because the acquisition limit for WebGLRenderingContext was reached.');
     }
   }
 
-  /**
-   * Switch model
-   */
   public changeModel(modelSettingPath: string): void {
     this._modelLoadedEmitted = false;
     const segments = modelSettingPath.split('/');
     const modelJsonName = segments.pop();
     const modelPath = `${segments.join('/')}/`;
-    const live2dManager = this._subdelegates.at(0).getLive2DManager();
+    const live2dManager = this._subdelegates[0].getLive2DManager();
+
+    // 释放旧模型
     live2dManager.releaseAllModel();
+
     const instance = new LAppModel();
-    instance.setSubdelegate(live2dManager._subdelegate);
-    instance._onLoadStart = (total: number) => window.dispatchEvent(new CustomEvent('live2d:loadstart', { detail: { canvas: this._canvas, total } }));
-    instance._onProgress = (loaded: number, total: number, file: string) => window.dispatchEvent(new CustomEvent('live2d:loadprogress', { detail: { canvas: this._canvas, loaded, total, file } }));
-    instance._onMotionBegan = (group: string, index: number | undefined, duration: number) => window.dispatchEvent(new CustomEvent('live2d:motionstart', { detail: { canvas: this._canvas, group, index, duration } }));
-    instance._onMotionEnded = (group: string, index: number | undefined) => window.dispatchEvent(new CustomEvent('live2d:motionend', { detail: { canvas: this._canvas, group, index } }));
+    instance.setSubdelegate(this._subdelegates[0]);
+
+    window.dispatchEvent(new CustomEvent('live2d:loadstart', { detail: { canvas: this._canvas, total: 0 } }));
+
     instance.loadAssets(modelPath, modelJsonName);
-    live2dManager._models.pushBack(instance);
+    live2dManager._models.push(instance);
   }
 
   public setPosition(x: number, y: number): void {
-    const subdelegate = this._subdelegates.at(0);
+    const subdelegate = this._subdelegates[0];
     subdelegate._userPosition = [x, y];
     const view = subdelegate._view;
     view._viewMatrix.translate(x, y);
@@ -309,7 +356,7 @@ export class AppDelegate extends LAppDelegate {
   }
 
   public setScale(scale: number): void {
-    const subdelegate = this._subdelegates.at(0);
+    const subdelegate = this._subdelegates[0];
     subdelegate._userScale = scale;
     const view = subdelegate._view;
     view._viewMatrix.adjustScale(0, 0, scale);
@@ -317,7 +364,7 @@ export class AppDelegate extends LAppDelegate {
   }
 
   public resize(): void {
-    const subdelegate = this._subdelegates.at(0);
+    const subdelegate = this._subdelegates[0];
     const canvas: HTMLCanvasElement = subdelegate.getCanvas();
     const width = canvas.width;
     const height = canvas.height;
@@ -333,7 +380,7 @@ export class AppDelegate extends LAppDelegate {
     if (subdelegate._userPosition !== undefined) {
       subdelegate._view._viewMatrix.translate(
         subdelegate._userPosition[0],
-        subdelegate._userPosition[1]
+        subdelegate._userPosition[1],
       );
     }
     subdelegate.getLive2DManager().setViewMatrix(subdelegate._view._viewMatrix);
@@ -341,8 +388,8 @@ export class AppDelegate extends LAppDelegate {
 
   public getHitAreaBounds(): Array<{ name: string; x: number; y: number; w: number; h: number }> {
     if (!this._isModelReady()) return [];
-    const subdelegate = this._subdelegates.at(0);
-    const model = subdelegate.getLive2DManager()._models.at(0);
+    const subdelegate = this._subdelegates[0];
+    const model = subdelegate.getLive2DManager()._models[0];
     const view = subdelegate._view;
     const count: number = model._modelSetting.getHitAreasCount();
     const result = [];
@@ -398,18 +445,23 @@ export class AppDelegate extends LAppDelegate {
   }
 
   public playMotion(group: string, index?: number, priority: number = 2): void {
-    const model = this._subdelegates.at(0)?.getLive2DManager()?._models.at(0);
+    const model = this._subdelegates[0]?.getLive2DManager()?._models?.[0];
     if (!model) return;
     const resolvedIndex = index !== undefined
       ? index
       : Math.floor(Math.random() * model._modelSetting.getMotionCount(group));
-    const onBegan = (_motion: any) => model._onMotionBegan?.(group, resolvedIndex, _motion.getLoopDuration());
-    const onFinished = (_motion: any) => model._onMotionEnded?.(group, resolvedIndex);
+    const canvas = this._canvas;
+    const onBegan = (_motion: any) => window.dispatchEvent(new CustomEvent('live2d:motionstart', {
+      detail: { canvas, group, index: resolvedIndex, duration: _motion.getLoopDuration() },
+    }));
+    const onFinished = (_motion: any) => window.dispatchEvent(new CustomEvent('live2d:motionend', {
+      detail: { canvas, group, index: resolvedIndex },
+    }));
     model.startMotion(group, resolvedIndex, priority, onFinished, onBegan);
   }
 
   public getMotionGroups(): Record<string, number> {
-    const model = this._subdelegates.at(0)?.getLive2DManager()?._models.at(0);
+    const model = this._subdelegates[0]?.getLive2DManager()?._models?.[0];
     if (!model?._modelSetting) return {};
     const result: Record<string, number> = {};
     const count: number = model._modelSetting.getMotionGroupCount();
@@ -421,24 +473,25 @@ export class AppDelegate extends LAppDelegate {
   }
 
   public setExpression(id?: string): void {
-    const model = this._subdelegates.at(0)?.getLive2DManager()?._models.at(0);
+    const model = this._subdelegates[0]?.getLive2DManager()?._models?.[0];
     if (!model) return;
     if (id) {
       model.setExpression(id);
     }
     else {
-      if (model._expressions.getSize() === 0) return;
-      const no = Math.floor(Math.random() * model._expressions.getSize());
-      id = model._expressions._keyValues[no].first;
+      if (model._expressions.size === 0) return;
+      const keys = [...model._expressions.keys()];
+      const no = Math.floor(Math.random() * keys.length);
+      id = keys[no];
       model.setExpression(id);
     }
     window.dispatchEvent(new CustomEvent('live2d:expressionstart', {
-      detail: { canvas: this._canvas, id }
+      detail: { canvas: this._canvas, id },
     }));
   }
 
   public getExpressions(): string[] {
-    const model = this._subdelegates.at(0)?.getLive2DManager()?._models.at(0);
+    const model = this._subdelegates[0]?.getLive2DManager()?._models?.[0];
     if (!model?._modelSetting) return [];
     const result: string[] = [];
     const count: number = model._modelSetting.getExpressionCount();

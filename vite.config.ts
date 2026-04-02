@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { createLogger, defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
@@ -12,6 +13,11 @@ logger.warn = (msg, options) => {
 
 export default defineConfig({
   customLogger: logger,
+  resolve: {
+    alias: {
+      '@framework': path.resolve(__dirname, 'src/CubismSdkForWeb-5-r.5/Framework/src'),
+    },
+  },
   build: {
     lib: {
       name: 'L2D',
@@ -20,5 +26,5 @@ export default defineConfig({
       fileName: format => `index.${format === 'iife' ? 'min.js' : 'js'}`,
     },
   },
-  plugins: [dts()]
+  plugins: [dts()],
 });

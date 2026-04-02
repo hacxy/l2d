@@ -1,5 +1,5 @@
 import './lib/cubism2.js';
-import './lib/cubism5.js';
+import './lib/live2dcubismcore.js';
 // eslint-disable-next-line perfectionist/sort-imports
 import L2D from './l2d.js';
 
