@@ -1,93 +1,85 @@
-// eslint-disable-next-line antfu/no-import-dist
-import { init } from '../dist/index.js';
-// import { tts } from './tts';
+import './demo/c2';
+// import './demo/c4';
 
 // 确保 DOM 加载完成后再初始化
-async function main() {
-  const canvasEl1 = document.getElementById('l2d1') as HTMLCanvasElement;
-  const l2d = init(canvasEl1);
-  const l2d2 = init(document.getElementById('l2d2') as HTMLCanvasElement);
-  // const l2d3 = init(document.getElementById('l2d3') as HTMLCanvasElement);
-  // l2d3.create({
-  //   // path: 'https://model.hacxy.cn/cat-black/model.json',
-  //   path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
-  // });
-  l2d.load({
-    // path: 'https://model.hacxy.cn/tia/model.json',
-    path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
-    // path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
-    // height: 150
-    // path: 'https://model.hacxy.cn/cat-black/model.json',
-    // path: 'https://model.hacxy.cn/Pio/model.json',
-    // path: 'https://model.hacxy.cn/Pio/model.json',
-    // position: [0.5, -0.5]
-    // width: 300,
-    // height: 300,
-    // scale: 1
-  }).then(() => {
-    const expressions = l2d.getExpressions();
-    const motionGroups = l2d.getMotionGroups();
-    console.log(expressions);
-    console.log(motionGroups);
+// async function main() {
+//   // const l2d3 = init(document.getElementById('l2d3') as HTMLCanvasElement);
+//   // l2d3.create({
+//   //   // path: 'https://model.hacxy.cn/cat-black/model.json',
+//   //   path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
+//   // });
+//   // l2d.load({
+//   //   // path: 'https://model.hacxy.cn/tia/model.json',
+//   //   path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
+//   //   // path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
+//   //   // height: 150
+//   //   // path: 'https://model.hacxy.cn/cat-black/model.json',
+//   //   // path: 'https://model.hacxy.cn/Pio/model.json',
+//   //   // path: 'https://model.hacxy.cn/Pio/model.json',
+//   //   // position: [0.5, -0.5]
+//   //   // width: 300,
+//   //   // height: 300,
+//   //   // scale: 1
+//   // }).then(() => {
+//   //   const expressions = l2d.getExpressions();
+//   //   const motionGroups = l2d.getMotionGroups();
+//   //   console.log(expressions);
+//   //   console.log(motionGroups);
 
-    // setInterval(() => {
-    //   l2d.playMotion('pinch_out', 1, 9);
-    // }, 1000);
-    // setTimeout(() => {
-    //   l2d.playMotion('tap_body');
-    // }, 1000);
-    // setTimeout(() => {
-    //   l2d.load({
-    //     path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json'
-    //   });
-    // });
-  });
-  l2d.on('motionstart', (group, index) => {
-    console.log(`开始播放动作: ${group}[${index}]`);
-  // → '开始播放动作: TapBody[1]'
-  });
-  l2d.on('loadstart', total => {
-    console.log(total);
-  });
-  l2d.on('loadprogress', (loaded, total, file) => {
-    console.log(`${loaded}/${total} - ${file}`);
-  });
-  l2d.on('loaded', () => {
-    console.log('模型就绪');
-  });
-  // l2d.on('tap', areaName => {
-  //   console.log(areaName, '被点击');
-  // });
-  // l2d.on('loaded', () => {
-  //   console.log('模型加载完成');
-  //   l2d.showHitAreas(true);
-  // });
-  // l2d.on('hover', areaName => {
-  //   console.log(areaName, '被hover');
-  // });
-  // l2d.on('modelfileloaded', () => {
-  //   console.log('modelfile加载完成');
-  // });
-  // l2d.on('texturesloaded', () => {
-  //   console.log('texture加载成功');
-  // });
+//   //   // setInterval(() => {
+//   //   //   l2d.playMotion('pinch_out', 1, 9);
+//   //   // }, 1000);
+//   //   // setTimeout(() => {
+//   //   //   l2d.playMotion('tap_body');
+//   //   // }, 1000);
+//   //   // setTimeout(() => {
+//   //   //   l2d.load({
+//   //   //     path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json'
+//   //   //   });
+//   //   // });
+//   // });
+//   // l2d.on('motionstart', (group, index) => {
+//   //   console.log(`开始播放动作: ${group}[${index}]`);
+//   // // → '开始播放动作: TapBody[1]'
+//   // });
+//   // l2d.on('loadstart', total => {
+//   //   console.log(total);
+//   // });
+//   // l2d.on('loadprogress', (loaded, total, file) => {
+//   //   console.log(`${loaded}/${total} - ${file}`);
+//   // });
+//   // l2d.on('loaded', () => {
+//   //   console.log('模型就绪');
+//   // });
+//   // l2d.on('tap', areaName => {
+//   //   console.log(areaName, '被点击');
+//   // });
+//   // l2d.on('loaded', () => {
+//   //   console.log('模型加载完成');
+//   //   l2d.showHitAreas(true);
+//   // });
+//   // l2d.on('hover', areaName => {
+//   //   console.log(areaName, '被hover');
+//   // });
+//   // l2d.on('modelfileloaded', () => {
+//   //   console.log('modelfile加载完成');
+//   // });
+//   // l2d.on('texturesloaded', () => {
+//   //   console.log('texture加载成功');
+//   // });
 
-  // setTimeout(() => {
-  //   l2d.showHitAreas(false);
-  // }, 5000);
+//   // setTimeout(() => {
+//   //   l2d.showHitAreas(false);
+//   // }, 5000);
 
-  l2d2.load({
-    path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
-    // path: 'https://model.hacxy.cn/cat-black/model.json',
-    // path: 'https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.model3.json'
-    // path: 'https://model.hacxy.cn/Pio/model.json',
-  });
-  // l2d2.showHitAreas(true);
-}
-
-main().catch(error => {
-  console.error('初始化失败:', error);
-});
+//   // l2d2.load({
+//   //   path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json',
+//   //   // path: 'https://model.hacxy.cn/cat-black/model.json',
+//   //   // path: 'https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.model3.json'
+//   //   // path: 'https://model.hacxy.cn/Pio/model.json',
+//   // });
+//   // l2d2.showHitAreas(true);
+// }
 
 // async function main() {
 //   const model = l2d.createSync({

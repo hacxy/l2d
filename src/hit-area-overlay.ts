@@ -13,28 +13,26 @@ export class HitAreaOverlay {
 
   show() {
     const overlay = document.createElement('canvas');
-    overlay.style.cssText = 'position:absolute;pointer-events:none;';
-    overlay.width = this.canvas.width;
-    overlay.height = this.canvas.height;
-    overlay.style.width = this.canvas.style.width;
-    overlay.style.height = this.canvas.style.height;
-    overlay.style.top = `${this.canvas.offsetTop}px`;
-    overlay.style.left = `${this.canvas.offsetLeft}px`;
-    if (this.canvas.style.transform) {
-      overlay.style.transform = this.canvas.style.transform;
-    }
-    this.canvas.insertAdjacentElement('afterend', overlay);
+    overlay.style.cssText = 'position:fixed;pointer-events:none;top:0;left:0;';
+    document.body.appendChild(overlay);
     this.overlay = overlay;
 
     const ctx = overlay.getContext('2d')!;
     const draw = () => {
+      const rect = this.canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
-      const w = this.canvas.clientWidth * dpr;
-      const h = this.canvas.clientHeight * dpr;
+      const w = rect.width * dpr;
+      const h = rect.height * dpr;
+
       if (overlay.width !== w || overlay.height !== h) {
         overlay.width = w;
         overlay.height = h;
       }
+      overlay.style.left = `${rect.left}px`;
+      overlay.style.top = `${rect.top}px`;
+      overlay.style.width = `${rect.width}px`;
+      overlay.style.height = `${rect.height}px`;
+
       ctx.clearRect(0, 0, overlay.width, overlay.height);
       for (const b of this.getBounds()) {
         ctx.strokeStyle = 'rgba(0,255,0,0.9)';
@@ -60,9 +58,5 @@ export class HitAreaOverlay {
     }
   }
 
-  syncTransform(transform: string) {
-    if (this.overlay) {
-      this.overlay.style.transform = transform;
-    }
-  }
+  syncTransform(_transform: string) {}
 }
