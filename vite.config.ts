@@ -15,7 +15,7 @@ export default defineConfig({
   customLogger: logger,
   resolve: {
     alias: {
-      '@framework': path.resolve(__dirname, 'src/CubismSdkForWeb-5-r.5/Framework/src'),
+      '@framework': path.resolve(__dirname, 'src/cubism6/Framework/src'),
     },
   },
   build: {

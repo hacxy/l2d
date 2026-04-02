@@ -4,5 +4,5 @@
     "allowJs": true
   },
   "include": ["src"],
-  "exclude": ["src/lib", "dist", "src/cubism5/**", "src/cubism2/**", "src/CubismSdkForWeb-5-r.5/**"]
+  "exclude": ["src/lib", "dist", "src/cubism6/**", "src/cubism2/**"]
 }

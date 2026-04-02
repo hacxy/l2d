@@ -1,6 +1,6 @@
 import type { L2DEventMap, Options } from './types.js';
 import Cubism2Model from './cubism2/index.js';
-import { AppDelegate as Cubism5Model } from './cubism5/index.js';
+import { AppDelegate as Cubism5Model } from './cubism6/index.js';
 import { Emitter } from './emitter.js';
 import { HitAreaOverlay } from './hit-area-overlay.js';
 import logger from './logger.js';

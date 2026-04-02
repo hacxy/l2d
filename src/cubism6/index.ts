@@ -2,19 +2,19 @@
 import logger from '../logger.js';
 
 // ----- 通过 Vite ?raw 内联 GLSL 着色器，避免运行时 fetch 加载外部文件 -----
-import _vertShaderSrc from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/vertshadersrc.vert?raw';
-import _vertShaderSrcMasked from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/vertshadersrcmasked.vert?raw';
-import _vertShaderSrcSetupMask from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/vertshadersrcsetupmask.vert?raw';
-import _fragShaderSrcSetupMask from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/fragshadersrcsetupmask.frag?raw';
-import _fragShaderSrcPremultipliedAlpha from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/fragshadersrcpremultipliedalpha.frag?raw';
-import _fragShaderSrcMaskPremultipliedAlpha from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/fragshadersrcmaskpremultipliedalpha.frag?raw';
-import _fragShaderSrcMaskInvertedPremultipliedAlpha from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/fragshadersrcmaskinvertedpremultipliedalpha.frag?raw';
-import _vertShaderSrcCopy from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/vertshadersrccopy.vert?raw';
-import _fragShaderSrcCopy from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/fragshadersrccopy.frag?raw';
-import _fragShaderSrcColorBlend from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/fragshadersrccolorblend.frag?raw';
-import _fragShaderSrcAlphaBlend from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/fragshadersrcalphablend.frag?raw';
-import _vertShaderSrcBlend from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/vertshadersrcblend.vert?raw';
-import _fragShaderSrcPremultipliedAlphaBlend from '../CubismSdkForWeb-5-r.5/Framework/Shaders/WebGL/fragshadersrcpremultipliedalphablend.frag?raw';
+import _vertShaderSrc from './Framework/Shaders/WebGL/vertshadersrc.vert?raw';
+import _vertShaderSrcMasked from './Framework/Shaders/WebGL/vertshadersrcmasked.vert?raw';
+import _vertShaderSrcSetupMask from './Framework/Shaders/WebGL/vertshadersrcsetupmask.vert?raw';
+import _fragShaderSrcSetupMask from './Framework/Shaders/WebGL/fragshadersrcsetupmask.frag?raw';
+import _fragShaderSrcPremultipliedAlpha from './Framework/Shaders/WebGL/fragshadersrcpremultipliedalpha.frag?raw';
+import _fragShaderSrcMaskPremultipliedAlpha from './Framework/Shaders/WebGL/fragshadersrcmaskpremultipliedalpha.frag?raw';
+import _fragShaderSrcMaskInvertedPremultipliedAlpha from './Framework/Shaders/WebGL/fragshadersrcmaskinvertedpremultipliedalpha.frag?raw';
+import _vertShaderSrcCopy from './Framework/Shaders/WebGL/vertshadersrccopy.vert?raw';
+import _fragShaderSrcCopy from './Framework/Shaders/WebGL/fragshadersrccopy.frag?raw';
+import _fragShaderSrcColorBlend from './Framework/Shaders/WebGL/fragshadersrccolorblend.frag?raw';
+import _fragShaderSrcAlphaBlend from './Framework/Shaders/WebGL/fragshadersrcalphablend.frag?raw';
+import _vertShaderSrcBlend from './Framework/Shaders/WebGL/vertshadersrcblend.vert?raw';
+import _fragShaderSrcPremultipliedAlphaBlend from './Framework/Shaders/WebGL/fragshadersrcpremultipliedalphablend.frag?raw';
 
 // 必须在导入 Framework 渲染模块之前先引入 CubismShader_WebGL，以便 patch prototype
 import { CubismShader_WebGL } from '@framework/rendering/cubismshader_webgl';
@@ -44,11 +44,11 @@ CubismShader_WebGL.prototype.loadShader = async function (url: string): Promise<
 
 // ----- 引入官方 SDK 的 Demo 工具类 -----
 import { CubismFramework, Option } from '@framework/live2dcubismframework';
-import { LAppPal } from '../CubismSdkForWeb-5-r.5/Samples/TypeScript/Demo/src/lapppal';
-import { LAppSubdelegate } from '../CubismSdkForWeb-5-r.5/Samples/TypeScript/Demo/src/lappsubdelegate';
-import { LAppLive2DManager } from '../CubismSdkForWeb-5-r.5/Samples/TypeScript/Demo/src/lapplive2dmanager';
-import { LAppModel } from '../CubismSdkForWeb-5-r.5/Samples/TypeScript/Demo/src/lappmodel';
-import * as LAppDefine from '../CubismSdkForWeb-5-r.5/Samples/TypeScript/Demo/src/lappdefine';
+import { LAppPal } from './Samples/TypeScript/Demo/src/lapppal';
+import { LAppSubdelegate } from './Samples/TypeScript/Demo/src/lappsubdelegate';
+import { LAppLive2DManager } from './Samples/TypeScript/Demo/src/lapplive2dmanager';
+import { LAppModel } from './Samples/TypeScript/Demo/src/lappmodel';
+import * as LAppDefine from './Samples/TypeScript/Demo/src/lappdefine';
 
 // 静默 SDK 内部日志
 LAppPal.printMessage = () => {};
