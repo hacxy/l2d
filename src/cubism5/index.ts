@@ -206,7 +206,6 @@ export class AppDelegate extends LAppDelegate {
     const lapplive2dmanager = this._subdelegates.at(0).getLive2DManager();
     const { x, y } = this.transformOffset(e);
     lapplive2dmanager.onDrag(0.0, 0.0);
-    lapplive2dmanager.onTap(x, y);
   }
 
   private onTap(e: PointerEvent): void {
@@ -224,7 +223,6 @@ export class AppDelegate extends LAppDelegate {
         }));
       }
     }
-    lapplive2dmanager.onTap(x, y);
   }
 
   public initializeEventListener(): void {

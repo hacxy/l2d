@@ -6,7 +6,6 @@
  * that can be found at https://www.live2d.com/eula/live2d-open-software-license-agreement_en.html.
  */
 
-import type { ACubismMotion } from '../core/motion/acubismmotion.js';
 import type { LAppSubdelegate } from './lappsubdelegate.js';
 import { CubismMatrix44 } from '../core/math/cubismmatrix44.js';
 
@@ -46,33 +45,6 @@ export class LAppLive2DManager {
    * @param x 画面のX座標
    * @param y 画面のY座標
    */
-  public onTap(x: number, y: number): void {
-    if (LAppDefine.DebugLogEnable) {
-      LAppPal.printMessage(
-        `[APP]tap point: {x: ${x.toFixed(2)} y: ${y.toFixed(2)}}`
-      );
-    }
-
-    const model: LAppModel = this._models.at(0);
-
-    if (model.hitTest(LAppDefine.HitAreaNameHead, x, y)) {
-      if (LAppDefine.DebugLogEnable) {
-        LAppPal.printMessage(`[APP]hit area: [${LAppDefine.HitAreaNameHead}]`);
-      }
-      model.setRandomExpression();
-    }
-    else if (model.hitTest(LAppDefine.HitAreaNameBody, x, y)) {
-      if (LAppDefine.DebugLogEnable) {
-        LAppPal.printMessage(`[APP]hit area: [${LAppDefine.HitAreaNameBody}]`);
-      }
-      model.startRandomMotion(
-        LAppDefine.MotionGroupTapBody,
-        LAppDefine.PriorityNormal,
-        this.finishedMotion,
-        this.beganMotion
-      );
-    }
-  }
 
   /**
    * 画面を更新するときの処理
@@ -186,16 +158,4 @@ export class LAppLive2DManager {
   _viewMatrix: CubismMatrix44; // モデル描画に用いるview行列
   _models: csmVector<LAppModel>; // モデルインスタンスのコンテナ
   private _sceneIndex: number; // 表示するシーンのインデックス値
-
-  // モーション再生開始のコールバック関数
-  beganMotion = (self: ACubismMotion): void => {
-    LAppPal.printMessage('Motion Began:');
-    console.log(self);
-  };
-
-  // モーション再生終了のコールバック関数
-  finishedMotion = (self: ACubismMotion): void => {
-    LAppPal.printMessage('Motion Finished:');
-    console.log(self);
-  };
 }

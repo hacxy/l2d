@@ -249,7 +249,6 @@ class Cubism2Model {
     const canvasY = (event.clientY - rect.top) * (this.canvas.height / rect.height);
     const hx = this.transformViewX(canvasX);
     const hy = this.transformViewY(canvasY);
-    this.live2DMgr.tapEvent(hx, hy);
     const model = this.live2DMgr?.getModel();
     if (model) {
       const count = model.modelSetting?.getHitAreaNum() ?? 0;

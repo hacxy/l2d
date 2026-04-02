@@ -85,19 +85,5 @@ class LAppLive2DManager {
     }
   }
 
-  tapEvent(x, y) {
-    logger.trace(`tapEvent view x:${x} y:${y}`);
-    if (!this.model)
-      return false;
-    if (this.model.hitTest(LAppDefine.HIT_AREA_HEAD, x, y)) {
-      logger.trace('Tap face.');
-      this.model.setRandomExpression();
-    }
-    else if (this.model.hitTest(LAppDefine.HIT_AREA_BODY, x, y)) {
-      logger.trace('Tap body.');
-      this.model.startRandomMotion(LAppDefine.MOTION_GROUP_TAP_BODY, LAppDefine.PRIORITY_NORMAL);
-    }
-    return true;
-  }
 }
 export default LAppLive2DManager;

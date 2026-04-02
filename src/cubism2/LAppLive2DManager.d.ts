@@ -11,5 +11,4 @@ declare class LAppLive2DManager {
   setDrag(x: any, y: any): void;
   maxScaleEvent(): void;
   minScaleEvent(): void;
-  tapEvent(x: any, y: any): boolean;
 }

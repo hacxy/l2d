@@ -228,8 +228,6 @@ export class LAppView {
     if (LAppDefine.DebugTouchLogEnable) {
       LAppPal.printMessage(`[APP]touchesEnded x: ${x} y: ${y}`);
     }
-    lapplive2dmanager.onTap(x, y);
-
     // 歯車にタップしたか
     if (this._gear.isHit(posX, posY)) {
       lapplive2dmanager.nextScene();

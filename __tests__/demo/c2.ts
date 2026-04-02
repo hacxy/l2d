@@ -27,7 +27,9 @@ l2d2.load({
 }).then(() => {
   l2d2.showHitAreas(true);
 });
-
+l2d.on('tap', () => {
+  l2d.playMotion('tap_body', 0);
+});
 l2d.on('loaded', () => {
   console.log('模型已准备就绪, ===> event');
 });
