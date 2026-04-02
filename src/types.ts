@@ -33,12 +33,6 @@ export interface L2DEventMap {
   loadstart: (total: number) => void
   /** 单个文件加载完成 */
   loadprogress: (loaded: number, total: number, file: string) => void
-  /** `.moc3` / `.moc` 模型文件加载完成，模型骨架就绪（纹理尚未加载） */
-  modelfileloaded: () => void
-  /** 所有纹理绑定完成，模型首次可见 */
-  texturesloaded: () => void
   /** 点击命中 hit area 时触发，`areaName` 为命中的区域名称 */
   tap: (areaName: string) => void
-  /** 鼠标悬停在 hit area 上时触发，`areaName` 为命中的区域名称 */
-  hover: (areaName: string) => void
 }

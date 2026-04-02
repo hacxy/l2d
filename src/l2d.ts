@@ -45,23 +45,10 @@ class L2D extends Emitter<L2DEventMap> {
       if (detail?.canvas === this.canvas)
         this.emit('loadprogress', detail.loaded, detail.total, detail.file);
     });
-    window.addEventListener('live2d:modelfileloaded', (e: Event) => {
-      if ((e as CustomEvent).detail?.canvas === this.canvas)
-        this.emit('modelfileloaded');
-    });
-    window.addEventListener('live2d:texturesloaded', (e: Event) => {
-      if ((e as CustomEvent).detail?.canvas === this.canvas)
-        this.emit('texturesloaded');
-    });
     window.addEventListener('live2d:tapbody', (e: Event) => {
       const detail = (e as CustomEvent).detail;
       if (detail?.canvas === this.canvas)
         this.emit('tap', detail.areaName ?? '');
-    });
-    window.addEventListener('live2d:hoverbody', (e: Event) => {
-      const detail = (e as CustomEvent).detail;
-      if (detail?.canvas === this.canvas)
-        this.emit('hover', detail.areaName ?? '');
     });
   }
 

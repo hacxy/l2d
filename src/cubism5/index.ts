@@ -197,25 +197,8 @@ export class AppDelegate extends LAppDelegate {
 
   private onMouseMove(e: MouseEvent): void {
     if (!this._isModelReady()) return;
-    const canvas = this._subdelegates.at(0).getCanvas();
-    const rect = canvas.getBoundingClientRect();
-    const inCanvas = e.clientX >= rect.left && e.clientX <= rect.right
-      && e.clientY >= rect.top && e.clientY <= rect.bottom;
-    const lapplive2dmanager = this._subdelegates.at(0).getLive2DManager();
     const { x, y } = this.transformOffset(e);
-    const model = lapplive2dmanager._models.at(0);
-
-    lapplive2dmanager.onDrag(x, y);
-    if (!inCanvas) return;
-    const hoverCount: number = model._modelSetting.getHitAreasCount();
-    for (let i = 0; i < hoverCount; i++) {
-      const areaName: string = model._modelSetting.getHitAreaName(i);
-      if (model.hitTest(areaName, x, y)) {
-        window.dispatchEvent(new CustomEvent('live2d:hoverbody', {
-          detail: { canvas: this._canvas, areaName }
-        }));
-      }
-    }
+    this._subdelegates.at(0).getLive2DManager().onDrag(x, y);
   }
 
   private onMouseEnd(e: MouseEvent): void {
@@ -311,8 +294,6 @@ export class AppDelegate extends LAppDelegate {
     live2dManager.releaseAllModel();
     const instance = new LAppModel();
     instance.setSubdelegate(live2dManager._subdelegate);
-    instance._onModelFileLoaded = () => window.dispatchEvent(new CustomEvent('live2d:modelfileloaded', { detail: { canvas: this._canvas } }));
-    instance._onTexturesLoaded = () => window.dispatchEvent(new CustomEvent('live2d:texturesloaded', { detail: { canvas: this._canvas } }));
     instance._onLoadStart = (total: number) => window.dispatchEvent(new CustomEvent('live2d:loadstart', { detail: { canvas: this._canvas, total } }));
     instance._onProgress = (loaded: number, total: number, file: string) => window.dispatchEvent(new CustomEvent('live2d:loadprogress', { detail: { canvas: this._canvas, loaded, total, file } }));
     instance.loadAssets(modelPath, modelJsonName);
