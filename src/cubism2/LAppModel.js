@@ -14,11 +14,8 @@ class LAppModel extends L2DBaseModel {
 
   loadJSON(callback) {
     const texNum = this.modelSetting.getTextureNum();
-    const expNum = this.modelSetting.getExpressionNum();
-    const physNum = this.modelSetting.getPhysicsFile() != null ? 1 : 0;
     const poseNum = this.modelSetting.getPoseFile() != null ? 1 : 0;
-    const motionNum = this.modelSetting.getMotionNum(LAppDefine.MOTION_GROUP_IDLE);
-    const total = 1 + texNum + expNum + physNum + poseNum + motionNum;
+    const total = 1 + texNum + poseNum;
     let loaded = 0;
     this._progressFn = (file) => this.onProgress?.(++loaded, total, file);
     this.onLoadStart?.(total);
@@ -38,7 +35,7 @@ class LAppModel extends L2DBaseModel {
               for (let j = 0; j < this.modelSetting.getExpressionNum(); j++) {
                 const expName = this.modelSetting.getExpressionName(j);
                 const expFilePath = this.modelHomeDir + this.modelSetting.getExpressionFile(j);
-                this.loadExpression(expName, expFilePath, () => this._progressFn?.(expFilePath));
+                this.loadExpression(expName, expFilePath);
               }
             }
             else {
@@ -50,7 +47,7 @@ class LAppModel extends L2DBaseModel {
             }
             if (this.modelSetting.getPhysicsFile() != null) {
               const physFile = this.modelHomeDir + this.modelSetting.getPhysicsFile();
-              this.loadPhysics(physFile, () => this._progressFn?.(physFile));
+              this.loadPhysics(physFile);
             }
             else {
               this.physics = null;
@@ -146,7 +143,6 @@ class LAppModel extends L2DBaseModel {
       this.loadMotion(key, filePath, motion => {
         motion.setFadeIn(this.modelSetting.getMotionFadeIn(name, i));
         motion.setFadeOut(this.modelSetting.getMotionFadeOut(name, i));
-        this._progressFn?.(filePath);
       });
     }
   }

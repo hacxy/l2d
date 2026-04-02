@@ -1,5 +1,5 @@
-// import './demo/c2';
-import './demo/c4';
+import './demo/c2';
+// import './demo/c4';
 
 // 确保 DOM 加载完成后再初始化
 // async function main() {
