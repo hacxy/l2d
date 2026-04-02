@@ -1,2 +1,2 @@
-import './demo/c2';
-// import './demo/c4';
+// import './demo/c2';
+import './demo/c6';
