@@ -26,6 +26,10 @@ declare class Cubism2Model {
   setScale(scale: number): void;
   resize(): void;
   getHitAreaBounds(): Array<{ name: string; x: number; y: number; w: number; h: number }>;
+  playMotion(group: string, index?: number, priority?: number): void;
+  getMotionGroups(): Record<string, number>;
+  setExpression(id?: string): void;
+  getExpressions(): string[];
   modelTurnHead(event: any): void;
   followPointer(event: any): void;
   lookFront(): void;

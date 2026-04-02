@@ -99,6 +99,7 @@ class Cubism2Model {
       this.live2DMgr.onTexturesLoaded = () => window.dispatchEvent(new CustomEvent('live2d:texturesloaded', { detail: { canvas: this.canvas } }));
       this.live2DMgr.onLoadStart = (total) => window.dispatchEvent(new CustomEvent('live2d:loadstart', { detail: { canvas: this.canvas, total } }));
       this.live2DMgr.onProgress = (loaded, total, file) => window.dispatchEvent(new CustomEvent('live2d:loadprogress', { detail: { canvas: this.canvas, loaded, total, file } }));
+      this.live2DMgr.onMotionStart = ({ group, index }) => window.dispatchEvent(new CustomEvent('live2d:motionstart', { detail: { canvas: this.canvas, group, index } }));
       this.gl.clearColor(0.0, 0.0, 0.0, 0.0);
       await this.changeModelWithJSON(modelSettingPath, modelSetting);
       this.startDraw();
@@ -368,6 +369,44 @@ class Cubism2Model {
         w: Math.abs(br.x - tl.x),
         h: Math.abs(br.y - tl.y),
       });
+    }
+    return result;
+  }
+
+  playMotion(group, index, priority = LAppDefine.PRIORITY_NORMAL) {
+    const model = this.live2DMgr.getModel();
+    if (!model) return;
+    if (index === undefined) {
+      model.startRandomMotion(group, priority);
+    }
+    else {
+      model.startMotion(group, index, priority);
+    }
+  }
+
+  getMotionGroups() {
+    const model = this.live2DMgr.getModel();
+    if (!model?.modelSetting) return {};
+    const motions = model.modelSetting.json[model.modelSetting.MOTION_GROUPS] ?? {};
+    const result = {};
+    for (const group of Object.keys(motions)) {
+      result[group] = model.modelSetting.getMotionNum(group);
+    }
+    return result;
+  }
+
+  setExpression(id) {
+    const model = this.live2DMgr.getModel();
+    if (!model) return;
+    id ? model.setExpression(id) : model.setRandomExpression();
+  }
+
+  getExpressions() {
+    const model = this.live2DMgr.getModel();
+    if (!model?.modelSetting) return [];
+    const result = [];
+    for (let i = 0; i < model.modelSetting.getExpressionNum(); i++) {
+      result.push(model.modelSetting.getExpressionName(i));
     }
     return result;
   }

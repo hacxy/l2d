@@ -402,6 +402,51 @@ export class AppDelegate extends LAppDelegate {
     return result;
   }
 
+  public playMotion(group: string, index?: number, priority: number = 2): void {
+    const model = this._subdelegates.at(0)?.getLive2DManager()?._models.at(0);
+    if (!model) return;
+    const onBegan = (_motion: any) => {
+      window.dispatchEvent(new CustomEvent('live2d:motionstart', {
+        detail: { canvas: this._canvas, group, index }
+      }));
+    };
+    if (index === undefined) {
+      model.startRandomMotion(group, priority, undefined, onBegan);
+    }
+    else {
+      model.startMotion(group, index, priority, undefined, onBegan);
+    }
+  }
+
+  public getMotionGroups(): Record<string, number> {
+    const model = this._subdelegates.at(0)?.getLive2DManager()?._models.at(0);
+    if (!model?._modelSetting) return {};
+    const result: Record<string, number> = {};
+    const count: number = model._modelSetting.getMotionGroupCount();
+    for (let i = 0; i < count; i++) {
+      const name: string = model._modelSetting.getMotionGroupName(i);
+      result[name] = model._modelSetting.getMotionCount(name);
+    }
+    return result;
+  }
+
+  public setExpression(id?: string): void {
+    const model = this._subdelegates.at(0)?.getLive2DManager()?._models.at(0);
+    if (!model) return;
+    id ? model.setExpression(id) : model.setRandomExpression();
+  }
+
+  public getExpressions(): string[] {
+    const model = this._subdelegates.at(0)?.getLive2DManager()?._models.at(0);
+    if (!model?._modelSetting) return [];
+    const result: string[] = [];
+    const count: number = model._modelSetting.getExpressionCount();
+    for (let i = 0; i < count; i++) {
+      result.push(model._modelSetting.getExpressionName(i));
+    }
+    return result;
+  }
+
   public get subdelegates() {
     return this._subdelegates;
   }

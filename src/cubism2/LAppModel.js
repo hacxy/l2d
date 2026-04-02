@@ -55,16 +55,6 @@ class LAppModel extends L2DBaseModel {
             else {
               this.physics = null;
             }
-            if (this.modelSetting.getPoseFile() != null) {
-              const poseFile = this.modelHomeDir + this.modelSetting.getPoseFile();
-              this.loadPose(poseFile, () => {
-                this.pose.updateParam(this.live2DModel);
-                this._progressFn?.(poseFile);
-              });
-            }
-            else {
-              this.pose = null;
-            }
             if (this.modelSetting.getLayout() != null) {
               const layout = this.modelSetting.getLayout();
               if (layout.width != null)
@@ -97,10 +87,27 @@ class LAppModel extends L2DBaseModel {
             this.live2DModel.saveParam();
             this.preloadMotionGroup(LAppDefine.MOTION_GROUP_IDLE);
             this.mainMotionManager.stopAllMotions();
-            this.setUpdating(false);
-            this.setInitialized(true);
-            if (typeof callback === 'function')
-              callback();
+            // finalize 必须在 pose 加载完成后调用。
+            // loadPose 是异步 fetch，若提前调用 setInitialized(true) 启动渲染循环，
+            // pose 尚未应用会导致所有服装部件默认全显示叠在一起，出现短暂的错误画面。
+            const finalize = () => {
+              this.setUpdating(false);
+              this.setInitialized(true);
+              if (typeof callback === 'function')
+                callback();
+            };
+            if (this.modelSetting.getPoseFile() != null) {
+              const poseFile = this.modelHomeDir + this.modelSetting.getPoseFile();
+              this.loadPose(poseFile, () => {
+                this.pose.updateParam(this.live2DModel);
+                this._progressFn?.(poseFile);
+                finalize();
+              });
+            }
+            else {
+              this.pose = null;
+              finalize();
+            }
           }
         });
       }
@@ -135,7 +142,8 @@ class LAppModel extends L2DBaseModel {
     for (let i = 0; i < this.modelSetting.getMotionNum(name); i++) {
       const file = this.modelSetting.getMotionFile(name, i);
       const filePath = this.modelHomeDir + file;
-      this.loadMotion(file, filePath, motion => {
+      const key = `${name}_${i}`;
+      this.loadMotion(key, filePath, motion => {
         motion.setFadeIn(this.modelSetting.getMotionFadeIn(name, i));
         motion.setFadeOut(this.modelSetting.getMotionFadeOut(name, i));
         this._progressFn?.(filePath);
@@ -217,16 +225,15 @@ class LAppModel extends L2DBaseModel {
       logger.trace('Motion is running.');
       return;
     }
-    let motion;
-    if (this.motions[name] == null) {
-      this.loadMotion(null, this.modelHomeDir + motionName, mtn => {
-        motion = mtn;
-        this.setFadeInFadeOut(name, no, priority, motion);
+    this.onMotionStart?.({ group: name, index: no });
+    const key = `${name}_${no}`;
+    if (this.motions[key] == null) {
+      this.loadMotion(key, this.modelHomeDir + motionName, mtn => {
+        this.setFadeInFadeOut(name, no, priority, mtn);
       });
     }
     else {
-      motion = this.motions[name];
-      this.setFadeInFadeOut(name, no, priority, motion);
+      this.setFadeInFadeOut(name, no, priority, this.motions[key]);
     }
   }
 

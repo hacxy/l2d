@@ -21,6 +21,11 @@ class L2D extends Emitter<L2DEventMap> {
         ? (this.l2d2Model?.getHitAreaBounds() ?? [])
         : (this.l2d5Model?.getHitAreaBounds() ?? []);
     });
+    window.addEventListener('live2d:motionstart', (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.canvas === this.canvas)
+        this.emit('motionstart', detail.group, detail.index);
+    });
     window.addEventListener('live2d:loadstart', (e: Event) => {
       const detail = (e as CustomEvent).detail;
       if (detail?.canvas === this.canvas)
@@ -168,12 +173,52 @@ class L2D extends Emitter<L2DEventMap> {
     this.hitAreaOverlay.syncTransform(this.canvas.style.transform);
   }
 
-  showHitAreas(enabled: boolean) {
-    if (enabled && this.currentVersion === null) {
-      logger.warn('showHitAreas: 模型尚未加载完成，请在 loaded 事件触发后调用。');
-      return;
+  private _isReady(method: string): boolean {
+    if (this.currentVersion === null) {
+      logger.warn(`${method}: 模型尚未加载完成，请在 loaded 事件触发后调用。`);
+      return false;
     }
+    return true;
+  }
+
+  showHitAreas(enabled: boolean) {
+    if (enabled && !this._isReady('showHitAreas'))
+      return;
     enabled ? this.hitAreaOverlay.show() : this.hitAreaOverlay.hide();
+  }
+
+  playMotion(group: string, index?: number, priority?: number) {
+    if (!this._isReady('playMotion'))
+      return;
+    if (this.currentVersion === 2)
+      this.l2d2Model!.playMotion(group, index, priority);
+    else
+      this.l2d5Model!.playMotion(group, index, priority);
+  }
+
+  getMotionGroups(): Record<string, number> {
+    if (!this._isReady('getMotionGroups'))
+      return {};
+    return this.currentVersion === 2
+      ? this.l2d2Model!.getMotionGroups()
+      : this.l2d5Model!.getMotionGroups();
+  }
+
+  setExpression(id?: string) {
+    if (!this._isReady('setExpression'))
+      return;
+    if (this.currentVersion === 2)
+      this.l2d2Model!.setExpression(id);
+    else
+      this.l2d5Model!.setExpression(id);
+  }
+
+  getExpressions(): string[] {
+    if (!this._isReady('getExpressions'))
+      return [];
+    return this.currentVersion === 2
+      ? this.l2d2Model!.getExpressions()
+      : this.l2d5Model!.getExpressions();
   }
 
   destroy() {

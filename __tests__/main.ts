@@ -25,11 +25,26 @@ async function main() {
     // height: 300,
     // scale: 1
   }).then(() => {
-    setTimeout(() => {
-      l2d.load({
-        path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json'
-      });
-    });
+    const expressions = l2d.getExpressions();
+    const motionGroups = l2d.getMotionGroups();
+    console.log(expressions);
+    console.log(motionGroups);
+
+    // setInterval(() => {
+    //   l2d.playMotion('pinch_out', 1, 9);
+    // }, 1000);
+    // setTimeout(() => {
+    //   l2d.playMotion('tap_body');
+    // }, 1000);
+    // setTimeout(() => {
+    //   l2d.load({
+    //     path: 'https://model.hacxy.cn/Senko_Normals/senko.model3.json'
+    //   });
+    // });
+  });
+  l2d.on('motionstart', (group, index) => {
+    console.log(`开始播放动作: ${group}[${index}]`);
+  // → '开始播放动作: TapBody[1]'
   });
   l2d.on('loadstart', total => {
     console.log(total);
