@@ -260,6 +260,7 @@ class LAppModel extends L2DBaseModel {
     const motion = this.expressions[name];
     logger.trace(`Expression : ${name}`);
     (_a = this.expressionManager) === null || _a === void 0 ? void 0 : _a.startMotion(motion, false);
+    this.onExpressionStart?.({ id: name });
   }
 
   draw(gl) {

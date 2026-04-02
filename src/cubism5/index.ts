@@ -113,6 +113,7 @@ export class AppDelegate extends LAppDelegate {
   _drawFrameId: number | null = null;
   _modelLoadedEmitted: boolean = false;
   _onLoaded: (() => void) | null = null;
+  _expressionWasPlaying: boolean = false;
 
   public constructor(canvas: HTMLCanvasElement) {
     super();
@@ -134,6 +135,19 @@ export class AppDelegate extends LAppDelegate {
         this._modelLoadedEmitted = true;
         if (this._onLoaded) {
           this._onLoaded();
+        }
+      }
+
+      // Detect expression end
+      const model = this._subdelegates.at(0)?.getLive2DManager()?._models.at(0);
+      if (model) {
+        const exprFinished = model._expressionManager?.isFinished();
+        if (!this._expressionWasPlaying && exprFinished === false) {
+          this._expressionWasPlaying = true;
+        }
+        else if (this._expressionWasPlaying && exprFinished === true) {
+          this._expressionWasPlaying = false;
+          window.dispatchEvent(new CustomEvent('live2d:expressionend', { detail: { canvas: this._canvas } }));
         }
       }
 
@@ -433,7 +447,18 @@ export class AppDelegate extends LAppDelegate {
   public setExpression(id?: string): void {
     const model = this._subdelegates.at(0)?.getLive2DManager()?._models.at(0);
     if (!model) return;
-    id ? model.setExpression(id) : model.setRandomExpression();
+    if (id) {
+      model.setExpression(id);
+    }
+    else {
+      if (model._expressions.getSize() === 0) return;
+      const no = Math.floor(Math.random() * model._expressions.getSize());
+      id = model._expressions._keyValues[no].first;
+      model.setExpression(id);
+    }
+    window.dispatchEvent(new CustomEvent('live2d:expressionstart', {
+      detail: { canvas: this._canvas, id }
+    }));
   }
 
   public getExpressions(): string[] {

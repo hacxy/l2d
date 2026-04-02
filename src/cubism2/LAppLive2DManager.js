@@ -56,6 +56,7 @@ class LAppLive2DManager {
     newModel.onLoadStart = this.onLoadStart;
     newModel.onProgress = this.onProgress;
     newModel.onMotionStart = this.onMotionStart;
+    newModel.onExpressionStart = this.onExpressionStart;
     await newModel.loadModelSetting(modelSettingPath, modelSetting);
     if (oldModel) {
       oldModel.release(gl);

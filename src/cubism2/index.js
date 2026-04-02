@@ -100,6 +100,7 @@ class Cubism2Model {
       this.live2DMgr.onLoadStart = (total) => window.dispatchEvent(new CustomEvent('live2d:loadstart', { detail: { canvas: this.canvas, total } }));
       this.live2DMgr.onProgress = (loaded, total, file) => window.dispatchEvent(new CustomEvent('live2d:loadprogress', { detail: { canvas: this.canvas, loaded, total, file } }));
       this.live2DMgr.onMotionStart = ({ group, index }) => window.dispatchEvent(new CustomEvent('live2d:motionstart', { detail: { canvas: this.canvas, group, index } }));
+      this.live2DMgr.onExpressionStart = ({ id }) => window.dispatchEvent(new CustomEvent('live2d:expressionstart', { detail: { canvas: this.canvas, id } }));
       this.gl.clearColor(0.0, 0.0, 0.0, 0.0);
       await this.changeModelWithJSON(modelSettingPath, modelSetting);
       this.startDraw();
@@ -169,6 +170,18 @@ class Cubism2Model {
       model.draw(this.gl);
     }
     MatrixStack.pop();
+
+    // Detect expression end
+    if (model?.expressionManager) {
+      const finished = model.expressionManager.isFinished();
+      if (!this._expressionWasPlaying && !finished) {
+        this._expressionWasPlaying = true;
+      }
+      else if (this._expressionWasPlaying && finished) {
+        this._expressionWasPlaying = false;
+        window.dispatchEvent(new CustomEvent('live2d:expressionend', { detail: { canvas: this.canvas } }));
+      }
+    }
   }
 
   async changeModel(modelSettingPath) {
@@ -234,7 +247,11 @@ class Cubism2Model {
       vy
     })`);
     this.dragMgr.setPoint(vx, vy);
-    this.live2DMgr.tapEvent(vx, vy);
+    const canvasX = (event.clientX - rect.left) * (this.canvas.width / rect.width);
+    const canvasY = (event.clientY - rect.top) * (this.canvas.height / rect.height);
+    const hx = this.transformViewX(canvasX);
+    const hy = this.transformViewY(canvasY);
+    this.live2DMgr.tapEvent(hx, hy);
     const model = this.live2DMgr?.getModel();
     if (model) {
       const canvasX = (event.clientX - rect.left) * (this.canvas.width / rect.width);

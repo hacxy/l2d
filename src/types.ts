@@ -25,6 +25,10 @@ export interface L2DEventMap {
   loaded: () => void
   /** 动作开始播放，`group` 为动作组名，`index` 为动作索引 */
   motionstart: (group: string, index: number | undefined) => void
+  /** 表情开始播放，`id` 为表情 ID */
+  expressionstart: (id: string) => void
+  /** 表情播放结束 */
+  expressionend: () => void
   /** 开始加载，`total` 为需要加载的文件总数 */
   loadstart: (total: number) => void
   /** 单个文件加载完成 */

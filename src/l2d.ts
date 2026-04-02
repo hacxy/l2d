@@ -26,6 +26,15 @@ class L2D extends Emitter<L2DEventMap> {
       if (detail?.canvas === this.canvas)
         this.emit('motionstart', detail.group, detail.index);
     });
+    window.addEventListener('live2d:expressionstart', (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.canvas === this.canvas)
+        this.emit('expressionstart', detail.id);
+    });
+    window.addEventListener('live2d:expressionend', (e: Event) => {
+      if ((e as CustomEvent).detail?.canvas === this.canvas)
+        this.emit('expressionend');
+    });
     window.addEventListener('live2d:loadstart', (e: Event) => {
       const detail = (e as CustomEvent).detail;
       if (detail?.canvas === this.canvas)

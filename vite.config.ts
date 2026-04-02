@@ -14,7 +14,7 @@ export default defineConfig({
   customLogger: logger,
   build: {
     lib: {
-      name: 'LIVE2D',
+      name: 'L2D',
       entry: 'src/index.ts',
       formats: ['es', 'iife'],
       fileName: format => `index.${format === 'iife' ? 'min.js' : 'js'}`,

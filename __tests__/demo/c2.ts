@@ -12,6 +12,14 @@ l2d.load({
   l2d.showHitAreas(true);
 });
 
+l2d.on('motionstart', (group, index) => {
+  console.log(group, index);
+});
+
+l2d.on('expressionstart', id => {
+  console.log(id);
+});
+
 l2d2.load({
   path: 'https://model.hacxy.cn/cat-black/model.json',
 }).then(() => {
