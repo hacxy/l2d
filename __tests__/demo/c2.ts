@@ -28,7 +28,16 @@ l2d2.load({
   l2d2.showHitAreas(true);
 });
 l2d.on('tap', () => {
-  l2d.playMotion('tap_body', 0);
+  l2d.playMotion('tap_body', 1);
+});
+l2d.on('motionstart', (group, index, duration) => {
+  console.log(`motion  ${group} - ${index} start`, duration);
+  setTimeout(() => {
+    console.log(`motion ${group} - ${index} end ======>`);
+  }, duration ? duration * 1000 : 0);
+});
+l2d.on('motionend', (group, index) => {
+  console.log(group, index);
 });
 l2d.on('loaded', () => {
   console.log('模型已准备就绪, ===> event');

@@ -97,7 +97,8 @@ class Cubism2Model {
       Live2D.setGL(this.gl);
       this.live2DMgr.onLoadStart = (total) => window.dispatchEvent(new CustomEvent('live2d:loadstart', { detail: { canvas: this.canvas, total } }));
       this.live2DMgr.onProgress = (loaded, total, file) => window.dispatchEvent(new CustomEvent('live2d:loadprogress', { detail: { canvas: this.canvas, loaded, total, file } }));
-      this.live2DMgr.onMotionStart = ({ group, index }) => window.dispatchEvent(new CustomEvent('live2d:motionstart', { detail: { canvas: this.canvas, group, index } }));
+      this.live2DMgr.onMotionStart = ({ group, index, duration }) => window.dispatchEvent(new CustomEvent('live2d:motionstart', { detail: { canvas: this.canvas, group, index, duration } }));
+      this.live2DMgr.onMotionEnd = ({ group, index }) => window.dispatchEvent(new CustomEvent('live2d:motionend', { detail: { canvas: this.canvas, group, index } }));
       this.live2DMgr.onExpressionStart = ({ id }) => window.dispatchEvent(new CustomEvent('live2d:expressionstart', { detail: { canvas: this.canvas, id } }));
       this.gl.clearColor(0.0, 0.0, 0.0, 0.0);
       await this.changeModelWithJSON(modelSettingPath, modelSetting);

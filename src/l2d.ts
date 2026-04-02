@@ -24,7 +24,7 @@ class L2D extends Emitter<L2DEventMap> {
     window.addEventListener('live2d:motionstart', (e: Event) => {
       const detail = (e as CustomEvent).detail;
       if (detail?.canvas === this.canvas)
-        this.emit('motionstart', detail.group, detail.index);
+        this.emit('motionstart', detail.group, detail.index, detail.duration ?? null);
     });
     window.addEventListener('live2d:expressionstart', (e: Event) => {
       const detail = (e as CustomEvent).detail;
@@ -49,6 +49,11 @@ class L2D extends Emitter<L2DEventMap> {
       const detail = (e as CustomEvent).detail;
       if (detail?.canvas === this.canvas)
         this.emit('tap', detail.areaName ?? '');
+    });
+    window.addEventListener('live2d:motionend', (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.canvas === this.canvas)
+        this.emit('motionend', detail.group, detail.index);
     });
   }
 

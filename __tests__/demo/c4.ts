@@ -9,4 +9,13 @@ l2d.load({
 }).then(() => {
   console.log('模型已准备就绪');
   l2d.showHitAreas(true);
+  const motionGroup = l2d.getMotionGroups();
+  console.log(motionGroup);
+});
+
+l2d.on('tap', () => {
+  l2d.playMotion('Tap');
+});
+l2d.on('motionstart', (group, index, duration) => {
+  console.log(group, index, duration);
 });

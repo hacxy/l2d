@@ -535,9 +535,14 @@ export class LAppModel extends CubismUserModel {
     this._model.loadParameters(); // 前回セーブされた状態をロード
     if (this._motionManager.isFinished()) {
       // モーションの再生がない場合、待機モーションの中からランダムで再生する
-      this.startRandomMotion(
+      const idleCount = this._modelSetting.getMotionCount(LAppDefine.MotionGroupIdle);
+      const idleNo = Math.floor(Math.random() * idleCount);
+      this.startMotion(
         LAppDefine.MotionGroupIdle,
-        LAppDefine.PriorityIdle
+        idleNo,
+        LAppDefine.PriorityIdle,
+        (_m) => this._onMotionEnded?.(LAppDefine.MotionGroupIdle, idleNo),
+        (_m) => this._onMotionBegan?.(LAppDefine.MotionGroupIdle, idleNo, _m.getLoopDuration())
       );
     } else {
       motionUpdated = this._motionManager.updateMotion(
@@ -1039,4 +1044,7 @@ export class LAppModel extends CubismUserModel {
   _allMotionCount: number; // モーション総数
   _wavFileHandler: LAppWavFileHandler; //wavファイルハンドラ
   _consistency: boolean; // MOC3整合性チェック管理用
+
+  _onMotionBegan: ((group: string, index: number | undefined, duration: number) => void) | null = null;
+  _onMotionEnded: ((group: string, index: number | undefined) => void) | null = null;
 }

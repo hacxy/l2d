@@ -294,6 +294,8 @@ export class AppDelegate extends LAppDelegate {
     instance.setSubdelegate(live2dManager._subdelegate);
     instance._onLoadStart = (total: number) => window.dispatchEvent(new CustomEvent('live2d:loadstart', { detail: { canvas: this._canvas, total } }));
     instance._onProgress = (loaded: number, total: number, file: string) => window.dispatchEvent(new CustomEvent('live2d:loadprogress', { detail: { canvas: this._canvas, loaded, total, file } }));
+    instance._onMotionBegan = (group: string, index: number | undefined, duration: number) => window.dispatchEvent(new CustomEvent('live2d:motionstart', { detail: { canvas: this._canvas, group, index, duration } }));
+    instance._onMotionEnded = (group: string, index: number | undefined) => window.dispatchEvent(new CustomEvent('live2d:motionend', { detail: { canvas: this._canvas, group, index } }));
     instance.loadAssets(modelPath, modelJsonName);
     live2dManager._models.pushBack(instance);
   }
@@ -398,17 +400,12 @@ export class AppDelegate extends LAppDelegate {
   public playMotion(group: string, index?: number, priority: number = 2): void {
     const model = this._subdelegates.at(0)?.getLive2DManager()?._models.at(0);
     if (!model) return;
-    const onBegan = (_motion: any) => {
-      window.dispatchEvent(new CustomEvent('live2d:motionstart', {
-        detail: { canvas: this._canvas, group, index }
-      }));
-    };
-    if (index === undefined) {
-      model.startRandomMotion(group, priority, undefined, onBegan);
-    }
-    else {
-      model.startMotion(group, index, priority, undefined, onBegan);
-    }
+    const resolvedIndex = index !== undefined
+      ? index
+      : Math.floor(Math.random() * model._modelSetting.getMotionCount(group));
+    const onBegan = (_motion: any) => model._onMotionBegan?.(group, resolvedIndex, _motion.getLoopDuration());
+    const onFinished = (_motion: any) => model._onMotionEnded?.(group, resolvedIndex);
+    model.startMotion(group, resolvedIndex, priority, onFinished, onBegan);
   }
 
   public getMotionGroups(): Record<string, number> {
