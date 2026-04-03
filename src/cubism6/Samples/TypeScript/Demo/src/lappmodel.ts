@@ -80,6 +80,58 @@ enum LoadStep {
 }
 
 /**
+ * motion3.json の ArrayBuffer を前処理する。
+ * Meta の TotalSegmentCount / TotalPointCount を実際の Curves データから
+ * 再計算して上書きする（一致性チェック通過 + parse 配列オーバーフロー防止）。
+ */
+function preprocessMotionJson(buffer: ArrayBuffer): ArrayBuffer {
+  try {
+    const text = new TextDecoder().decode(buffer);
+    const json = JSON.parse(text);
+    const curves = json?.Curves;
+    if (!curves || !json.Meta) return buffer;
+    let segs = 0, pts = 0;
+    for (const curve of curves) {
+      const s: number[] = curve.Segments;
+      let pos = 0;
+      pts++;   // start point
+      pos += 2;
+      while (pos < s.length) {
+        const type = s[pos];
+        segs++;
+        if (type === 1) { pts += 3; pos += 7; }
+        else             { pts += 1; pos += 3; }
+      }
+    }
+    json.Meta.TotalSegmentCount = segs;
+    json.Meta.TotalPointCount   = pts;
+    return new TextEncoder().encode(JSON.stringify(json)).buffer;
+  } catch {
+    return buffer;
+  }
+}
+
+/**
+ * model3.json の ArrayBuffer を前処理する。
+ * 動作グループ "" に動作が 1 つだけあり Idle グループが未定義の場合、
+ * "" グループを "Idle" としてコピーする（非標準モデルの互換対応）。
+ */
+function preprocessModelJson(buffer: ArrayBuffer): ArrayBuffer {
+  try {
+    const text = new TextDecoder().decode(buffer);
+    const json = JSON.parse(text);
+    const motions = json?.FileReferences?.Motions;
+    if (motions && !motions['Idle']?.[0] && motions['']?.length === 1) {
+      motions['Idle'] = motions[''].map((m: object) => ({ ...m }));
+      delete motions[''];
+    }
+    return new TextEncoder().encode(JSON.stringify(json)).buffer;
+  } catch {
+    return buffer;
+  }
+}
+
+/**
  * ユーザーが実際に使用するモデルの実装クラス<br>
  * モデル生成、機能コンポーネント生成、更新処理とレンダリングの呼び出しを行う。
  */
@@ -95,9 +147,10 @@ export class LAppModel extends CubismUserModel {
     fetch(`${this._modelHomeDir}${fileName}`)
       .then(response => response.arrayBuffer())
       .then(arrayBuffer => {
+        const processedBuffer = preprocessModelJson(arrayBuffer);
         const setting: ICubismModelSetting = new CubismModelSettingJson(
-          arrayBuffer,
-          arrayBuffer.byteLength
+          processedBuffer,
+          processedBuffer.byteLength
         );
 
         // ステートを更新
@@ -506,8 +559,8 @@ export class LAppModel extends CubismUserModel {
         this.preLoadMotionGroup(group[i]);
       }
 
-      // モーションがない場合
-      if (motionGroupCount == 0) {
+      // モーションがない場合（グループが存在しない、またはグループは存在するが全て空の場合）
+      if (this._allMotionCount == 0) {
         this._state = LoadStep.LoadTexture;
 
         // 全てのモーションを停止する
@@ -669,9 +722,10 @@ export class LAppModel extends CubismUserModel {
           }
         })
         .then(arrayBuffer => {
+          const processedBuffer = preprocessMotionJson(arrayBuffer);
           motion = this.loadMotion(
-            arrayBuffer,
-            arrayBuffer.byteLength,
+            processedBuffer,
+            processedBuffer.byteLength,
             null,
             onFinishedMotionHandler,
             onBeganMotionHandler,
@@ -849,9 +903,10 @@ export class LAppModel extends CubismUserModel {
           }
         })
         .then(arrayBuffer => {
+          const processedBuffer = preprocessMotionJson(arrayBuffer);
           const tmpMotion: CubismMotion = this.loadMotion(
-            arrayBuffer,
-            arrayBuffer.byteLength,
+            processedBuffer,
+            processedBuffer.byteLength,
             name,
             null,
             null,
