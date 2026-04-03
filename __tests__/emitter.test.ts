@@ -13,7 +13,7 @@ class TestEmitter extends Emitter<TestEventMap> {
   }
 }
 
-describe('Emitter', () => {
+describe('emitter', () => {
   it('on() 注册监听器后 emit() 触发回调', () => {
     const emitter = new TestEmitter();
     const fn = vi.fn();

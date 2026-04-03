@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+/* eslint-disable style/max-statements-per-line */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 // ---------------------------------------------------------------------------
@@ -26,6 +28,7 @@ const mockCubism5Instance = vi.hoisted(() => ({
 }));
 
 const mockCubism2Instance = vi.hoisted(() => ({
+  // eslint-disable-next-line no-undefined
   init: vi.fn().mockResolvedValue(undefined),
   destroy: vi.fn(),
   resize: vi.fn(),
@@ -124,7 +127,7 @@ describe('init()', () => {
   });
 });
 
-describe('L2D — 未加载模型时的守卫行为', () => {
+describe('l2D — 未加载模型时的守卫行为', () => {
   let canvas: HTMLCanvasElement;
 
   beforeEach(async () => {
@@ -164,7 +167,7 @@ describe('L2D — 未加载模型时的守卫行为', () => {
   });
 });
 
-describe('L2D.setRotation()', () => {
+describe('l2D.setRotation()', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     vi.clearAllMocks();
@@ -196,7 +199,7 @@ describe('L2D.setRotation()', () => {
   });
 });
 
-describe('L2D.load() — Cubism5', () => {
+describe('l2D.load() — Cubism5', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     vi.restoreAllMocks();
@@ -260,7 +263,7 @@ describe('L2D.load() — Cubism5', () => {
   });
 });
 
-describe('L2D.load() — Cubism2', () => {
+describe('l2D.load() — Cubism2', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     vi.restoreAllMocks();
@@ -291,7 +294,7 @@ describe('L2D.load() — Cubism2', () => {
   });
 });
 
-describe('L2D.destroy()', () => {
+describe('l2D.destroy()', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     vi.restoreAllMocks();
@@ -332,7 +335,7 @@ describe('L2D.destroy()', () => {
   });
 });
 
-describe('L2D — CustomEvent 事件桥接', () => {
+describe('l2D — CustomEvent 事件桥接', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     vi.restoreAllMocks();
@@ -478,7 +481,7 @@ describe('L2D — CustomEvent 事件桥接', () => {
   });
 });
 
-describe('L2D.load() — Cubism5 补充分支', () => {
+describe('l2D.load() — Cubism5 补充分支', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     vi.restoreAllMocks();
@@ -533,7 +536,7 @@ describe('L2D.load() — Cubism5 补充分支', () => {
   });
 });
 
-describe('L2D.load() — Cubism2 补充分支', () => {
+describe('l2D.load() — Cubism2 补充分支', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     vi.restoreAllMocks();
@@ -581,7 +584,7 @@ describe('L2D.load() — Cubism2 补充分支', () => {
   });
 });
 
-describe('L2D.load() — 版本切换替换 canvas', () => {
+describe('l2D.load() — 版本切换替换 canvas', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     vi.restoreAllMocks();
@@ -616,14 +619,14 @@ describe('L2D.load() — 版本切换替换 canvas', () => {
   });
 });
 
-describe('L2D.resize()', () => {
+describe('l2D.resize()', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     vi.restoreAllMocks();
     vi.clearAllMocks();
   });
 
-  it('Cubism5 加载后 resize() 调用底层 resize', async () => {
+  it('cubism5 加载后 resize() 调用底层 resize', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
     const { init } = await import('../src/index.ts');
     const canvas = makeCanvas();
@@ -635,7 +638,7 @@ describe('L2D.resize()', () => {
     expect(mockCubism5Instance.resize).toHaveBeenCalledOnce();
   });
 
-  it('Cubism2 加载后 resize() 调用底层 resize', async () => {
+  it('cubism2 加载后 resize() 调用底层 resize', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
     const { init } = await import('../src/index.ts');
     const canvas = makeCanvas();
@@ -654,14 +657,14 @@ describe('L2D.resize()', () => {
   });
 });
 
-describe('L2D.setExpression()', () => {
+describe('l2D.setExpression()', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     vi.restoreAllMocks();
     vi.clearAllMocks();
   });
 
-  it('Cubism5 加载后 setExpression() 调用底层', async () => {
+  it('cubism5 加载后 setExpression() 调用底层', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
     const { init } = await import('../src/index.ts');
     const canvas = makeCanvas();
@@ -672,7 +675,7 @@ describe('L2D.setExpression()', () => {
     expect(mockCubism5Instance.setExpression).toHaveBeenCalledWith('happy');
   });
 
-  it('Cubism2 加载后 setExpression() 调用底层', async () => {
+  it('cubism2 加载后 setExpression() 调用底层', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
     const { init } = await import('../src/index.ts');
     const canvas = makeCanvas();
@@ -690,14 +693,14 @@ describe('L2D.setExpression()', () => {
   });
 });
 
-describe('L2D.playMotion() — 加载后', () => {
+describe('l2D.playMotion() — 加载后', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     vi.restoreAllMocks();
     vi.clearAllMocks();
   });
 
-  it('Cubism5 加载后 playMotion() 调用底层', async () => {
+  it('cubism5 加载后 playMotion() 调用底层', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
     const { init } = await import('../src/index.ts');
     const canvas = makeCanvas();
@@ -708,7 +711,7 @@ describe('L2D.playMotion() — 加载后', () => {
     expect(mockCubism5Instance.playMotion).toHaveBeenCalledWith('Idle', 0, 2);
   });
 
-  it('Cubism2 加载后 playMotion() 调用底层', async () => {
+  it('cubism2 加载后 playMotion() 调用底层', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
     const { init } = await import('../src/index.ts');
     const canvas = makeCanvas();
@@ -716,11 +719,12 @@ describe('L2D.playMotion() — 加载后', () => {
     await l2d.load({ path: '/models/test.model.json' });
 
     l2d.playMotion('Tap', 1);
+    // eslint-disable-next-line no-undefined
     expect(mockCubism2Instance.playMotion).toHaveBeenCalledWith('Tap', 1, undefined);
   });
 });
 
-describe('L2D.showHitAreas() — 加载后', () => {
+describe('l2D.showHitAreas() — 加载后', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     vi.restoreAllMocks();
@@ -752,7 +756,7 @@ describe('L2D.showHitAreas() — 加载后', () => {
   });
 });
 
-describe('L2D.destroy() — Cubism2', () => {
+describe('l2D.destroy() — Cubism2', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     vi.restoreAllMocks();
@@ -771,14 +775,14 @@ describe('L2D.destroy() — Cubism2', () => {
   });
 });
 
-describe('L2D.load() — 二次加载清理旧模型', () => {
+describe('l2D.load() — 二次加载清理旧模型', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     vi.restoreAllMocks();
     vi.clearAllMocks();
   });
 
-  it('Cubism2 → Cubism2 二次 load 时调用旧模型的 destroy()', async () => {
+  it('cubism2 → Cubism2 二次 load 时调用旧模型的 destroy()', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
     const { init } = await import('../src/index.ts');
     const canvas = makeCanvas();
@@ -791,7 +795,7 @@ describe('L2D.load() — 二次加载清理旧模型', () => {
     expect(mockCubism2Instance.destroy).toHaveBeenCalledOnce();
   });
 
-  it('Cubism5 → Cubism5 二次 load 时调用旧模型的 release()', async () => {
+  it('cubism5 → Cubism5 二次 load 时调用旧模型的 release()', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
     const { init } = await import('../src/index.ts');
     const canvas = makeCanvas();
@@ -805,7 +809,7 @@ describe('L2D.load() — 二次加载清理旧模型', () => {
   });
 });
 
-describe('L2D.create() deprecated', () => {
+describe('l2D.create() deprecated', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     vi.restoreAllMocks();

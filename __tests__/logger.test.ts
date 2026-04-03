@@ -13,7 +13,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe('Logger — 默认 level: info', () => {
+describe('logger — 默认 level: info', () => {
   it('error() 输出 [L2D][ERROR]', () => {
     logger.error('something broke');
     expect(console.error).toHaveBeenCalledWith('[L2D][ERROR]', 'something broke');
@@ -41,8 +41,9 @@ describe('Logger — 默认 level: info', () => {
   });
 });
 
-describe('Logger.setLevel()', () => {
+describe('logger.setLevel()', () => {
   it('setLevel(undefined) 不改变当前 level', () => {
+    // eslint-disable-next-line no-undefined
     logger.setLevel(undefined);
     logger.trace('should not appear');
     expect(console.log).not.toHaveBeenCalled();

@@ -11,7 +11,7 @@ describe('checkModelVersion()', () => {
     expect(checkModelVersion({ Version: 3, FileReferences: {} })).toBe(3);
   });
 
-  it('Version 为 5 时返回 5', () => {
+  it('version 为 5 时返回 5', () => {
     expect(checkModelVersion({ Version: 5 })).toBe(5);
   });
 

@@ -47,13 +47,13 @@ afterEach(() => {
 // Tests
 // ---------------------------------------------------------------------------
 
-describe('HitAreaOverlay — constructor', () => {
+describe('hitAreaOverlay — constructor', () => {
   it('构造时不抛出错误', () => {
     expect(() => new HitAreaOverlay(canvas, () => [])).not.toThrow();
   });
 });
 
-describe('HitAreaOverlay.show()', () => {
+describe('hitAreaOverlay.show()', () => {
   it('向 document.body 追加 overlay canvas', () => {
     const overlay = new HitAreaOverlay(canvas, () => []);
     overlay.show();
@@ -136,7 +136,7 @@ describe('HitAreaOverlay.show()', () => {
   });
 });
 
-describe('HitAreaOverlay.hide()', () => {
+describe('hitAreaOverlay.hide()', () => {
   it('show 后 hide，overlay canvas 从 DOM 中移除', () => {
     const overlay = new HitAreaOverlay(canvas, () => []);
     overlay.show();
@@ -176,7 +176,7 @@ describe('HitAreaOverlay.hide()', () => {
   });
 });
 
-describe('HitAreaOverlay.syncTransform()', () => {
+describe('hitAreaOverlay.syncTransform()', () => {
   it('传入任意字符串不抛出错误', () => {
     const overlay = new HitAreaOverlay(canvas, () => []);
     expect(() => overlay.syncTransform('rotate(30deg)')).not.toThrow();
