@@ -389,6 +389,21 @@ class Cubism2Model {
     return result;
   }
 
+  getMotionFiles() {
+    const model = this.live2DMgr.getModel();
+    if (!model?.modelSetting) return {};
+    const motions = model.modelSetting.json[model.modelSetting.MOTION_GROUPS] ?? {};
+    const result = {};
+    for (const group of Object.keys(motions)) {
+      const count = model.modelSetting.getMotionNum(group);
+      result[group] = [];
+      for (let i = 0; i < count; i++) {
+        result[group].push(model.modelSetting.getMotionFile(group, i));
+      }
+    }
+    return result;
+  }
+
   setExpression(id) {
     const model = this.live2DMgr.getModel();
     if (!model) return;

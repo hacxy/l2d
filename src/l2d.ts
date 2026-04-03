@@ -205,6 +205,25 @@ class L2D extends Emitter<L2DEventMap> {
       : this.l2d5Model!.getMotionGroups();
   }
 
+  getMotionFiles(): Record<string, string[]> {
+    if (!this._isReady('getMotionFiles'))
+      return {};
+    return this.currentVersion === 2
+      ? this.l2d2Model!.getMotionFiles()
+      : this.l2d5Model!.getMotionFiles();
+  }
+
+  playMotionByFile(file: string, priority?: number) {
+    const motionFiles = this.getMotionFiles();
+    for (const [group, files] of Object.entries(motionFiles)) {
+      const index = files.findIndex(f => f === file || f.startsWith(`${file}.`));
+      if (index !== -1) {
+        this.playMotion(group, index, priority);
+        return;
+      }
+    }
+  }
+
   setExpression(id?: string) {
     if (!this._isReady('setExpression'))
       return;

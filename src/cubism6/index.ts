@@ -472,6 +472,22 @@ export class AppDelegate {
     return result;
   }
 
+  public getMotionFiles(): Record<string, string[]> {
+    const model = this._subdelegates[0]?.getLive2DManager()?._models?.[0];
+    if (!model?._modelSetting) return {};
+    const result: Record<string, string[]> = {};
+    const count: number = model._modelSetting.getMotionGroupCount();
+    for (let i = 0; i < count; i++) {
+      const name: string = model._modelSetting.getMotionGroupName(i);
+      const motionCount: number = model._modelSetting.getMotionCount(name);
+      result[name] = [];
+      for (let j = 0; j < motionCount; j++) {
+        result[name].push(model._modelSetting.getMotionFileName(name, j));
+      }
+    }
+    return result;
+  }
+
   public setExpression(id?: string): void {
     const model = this._subdelegates[0]?.getLive2DManager()?._models?.[0];
     if (!model) return;

@@ -28,6 +28,7 @@ declare class Cubism2Model {
   getHitAreaBounds(): Array<{ name: string; x: number; y: number; w: number; h: number }>;
   playMotion(group: string, index?: number, priority?: number): void;
   getMotionGroups(): Record<string, number>;
+  getMotionFiles(): Record<string, string[]>;
   setExpression(id?: string): void;
   getExpressions(): string[];
   modelTurnHead(event: any): void;
