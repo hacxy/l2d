@@ -15,6 +15,7 @@ module.exports = {
   // expandObjects: true,
   expandParameters: true,
   outputFileStrategy: 'members',
+  sort: ['source-order'],
   // flattenOutputFiles: true,
   textContentMappings: {
     'label.name': '',

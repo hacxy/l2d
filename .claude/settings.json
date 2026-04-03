@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node -e \":*)"
+      "Bash(node -e \":*)",
+      "Bash(ls /Users/hacxy/Projects/l2d/*.json /Users/hacxy/Projects/l2d/typedoc*)"
     ]
   }
 }

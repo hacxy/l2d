@@ -22,4 +22,4 @@ model.on('hit', areas => {
 });
 ```
 
-<!--@include: ../../api/interfaces/Emits.md-->
+<!--@include: ../../api/interfaces/L2DEventMap.md-->

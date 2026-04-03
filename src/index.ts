@@ -22,3 +22,8 @@ export function init(canvasEl: HTMLCanvasElement | null) {
 
   return new L2D(canvasEl);
 }
+export type { L2DEventMap, Options } from './types.js';
+
+export type {
+  L2D
+};

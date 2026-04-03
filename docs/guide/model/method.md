@@ -15,7 +15,6 @@ const l2d = init(document.getElementById('l2d') as HTMLCanvasElement);
 async function main() {
   const model = await l2d.create({
     path: 'https://model.hacxy.cn/HK416-1-normal/model.json',
-    position: 'center'
   });
 
   // ...模型创建完成
@@ -24,4 +23,4 @@ async function main() {
 }
 ```
 
-<!--@include: ../../api/classes/Model.md-->
+<!--@include: ../../api/interfaces/L2D.md-->
