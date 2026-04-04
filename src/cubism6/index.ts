@@ -343,6 +343,12 @@ export class AppDelegate {
 
     window.dispatchEvent(new CustomEvent('live2d:loadstart', { detail: { canvas: this._canvas, total: 0 } }));
 
+    instance.onProgress = (loaded, total, file) => {
+      window.dispatchEvent(new CustomEvent('live2d:loadprogress', {
+        detail: { canvas: this._canvas, loaded, total, file },
+      }));
+    };
+
     instance.loadAssets(modelPath, modelJsonName);
     live2dManager._models.push(instance);
   }

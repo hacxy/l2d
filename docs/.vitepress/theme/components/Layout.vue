@@ -58,6 +58,7 @@ function onLoadStart(total: number) {
 }
 
 function onLoadProgress(loaded: number, total: number, file: string) {
+  console.log('onLoadProgress', loaded, total, file);
   loadedCount.value = loaded;
   totalCount.value = total;
   currentFile.value = file.split('/').pop() || file;

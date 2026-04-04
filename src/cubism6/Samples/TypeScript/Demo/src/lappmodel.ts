@@ -153,6 +153,22 @@ export class LAppModel extends CubismUserModel {
           processedBuffer.byteLength
         );
 
+        // 総ファイル数を計算してロード進捗を初期化
+        let motionTotal = 0;
+        for (let gi = 0; gi < setting.getMotionGroupCount(); gi++) {
+          motionTotal += setting.getMotionCount(setting.getMotionGroupName(gi));
+        }
+        this._progressTotal = 1 // model3.json
+          + 1 // .moc3
+          + setting.getExpressionCount()
+          + (setting.getPhysicsFileName() !== '' ? 1 : 0)
+          + (setting.getPoseFileName() !== '' ? 1 : 0)
+          + (setting.getUserDataFile() !== '' ? 1 : 0)
+          + motionTotal
+          + setting.getTextureCount();
+        this._progressLoaded = 1; // model3.json ロード済み
+        this._notifyProgress(fileName);
+
         // ステートを更新
         this._state = LoadStep.LoadModel;
 
@@ -194,6 +210,8 @@ export class LAppModel extends CubismUserModel {
         })
         .then(arrayBuffer => {
           this.loadModel(arrayBuffer, this._mocConsistency);
+          this._progressLoaded++;
+          this._notifyProgress(modelFileName);
           this._state = LoadStep.LoadExpression;
 
           // callback
@@ -242,6 +260,8 @@ export class LAppModel extends CubismUserModel {
               this._expressions.set(expressionName, motion);
 
               this._expressionCount++;
+              this._progressLoaded++;
+              this._notifyProgress(expressionFileName);
 
               if (this._expressionCount >= count) {
                 // Expression Updaterの追加
@@ -293,6 +313,8 @@ export class LAppModel extends CubismUserModel {
               this._updateScheduler.addUpdatableList(physicsUpdater);
             }
 
+            this._progressLoaded++;
+            this._notifyProgress(physicsFileName);
             this._state = LoadStep.LoadPose;
 
             // callback
@@ -332,6 +354,8 @@ export class LAppModel extends CubismUserModel {
               this._updateScheduler.addUpdatableList(poseUpdater);
             }
 
+            this._progressLoaded++;
+            this._notifyProgress(poseFileName);
             this._state = LoadStep.SetupEyeBlink;
 
             // callback
@@ -419,6 +443,8 @@ export class LAppModel extends CubismUserModel {
           .then(arrayBuffer => {
             this.loadUserData(arrayBuffer, arrayBuffer.byteLength);
 
+            this._progressLoaded++;
+            this._notifyProgress(userDataFile);
             this._state = LoadStep.SetupEyeBlinkIds;
 
             // callback
@@ -612,6 +638,8 @@ export class LAppModel extends CubismUserModel {
           this.getRenderer().bindTexture(modelTextureNumber, textureInfo.id);
 
           this._textureCount++;
+          this._progressLoaded++;
+          this._notifyProgress(texturePath);
 
           if (this._textureCount >= textureCount) {
             // ロード完了
@@ -926,9 +954,14 @@ export class LAppModel extends CubismUserModel {
             this._motions.set(name, tmpMotion);
 
             this._motionCount++;
+            this._progressLoaded++;
+            this._notifyProgress(motionFileName);
           } else {
             // loadMotionできなかった場合はモーションの総数がずれるので1つ減らす
             this._allMotionCount--;
+            this._progressTotal--;
+            this._progressLoaded++;
+            this._notifyProgress(motionFileName);
           }
 
           if (this._motionCount >= this._allMotionCount) {
@@ -1090,6 +1123,8 @@ export class LAppModel extends CubismUserModel {
     this._textureCount = 0;
     this._motionCount = 0;
     this._allMotionCount = 0;
+    this._progressLoaded = 0;
+    this._progressTotal = 0;
     this._wavFileHandler = new LAppWavFileHandler();
     this._consistency = false;
     this._look = null;
@@ -1127,5 +1162,16 @@ export class LAppModel extends CubismUserModel {
   _motionCount: number; // モーションデータカウント
   _allMotionCount: number; // モーション総数
   _wavFileHandler: LAppWavFileHandler; //wavファイルハンドラ
+
+  // ロード進捗コールバック
+  onProgress: ((loaded: number, total: number, file: string) => void) | null = null;
+  private _progressLoaded: number = 0;
+  private _progressTotal: number = 0;
+
+  private _notifyProgress(file: string): void {
+    if (this.onProgress) {
+      this.onProgress(this._progressLoaded, this._progressTotal, file);
+    }
+  }
   _consistency: boolean; // MOC3整合性チェック管理用
 }
