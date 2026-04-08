@@ -11,7 +11,7 @@ const { Layout } = MildTheme;
 const { frontmatter } = useData();
 
 const isHomePage = computed(() => frontmatter.value.layout === 'home');
-const path = ref('ankeleiqi_2/ankeleiqi_2.model3.json');
+const path = ref('chaijun_3/chaijun_3.model3.json');
 const live2dRef = ref<Live2DInstance | null>(null);
 
 const hasLoaded = ref(false);
@@ -37,7 +37,7 @@ function onScroll() {
 watch(isHomePage, val => {
   document.body.classList.toggle('home-live2d', val);
   if (!val)
-    document.body.classList.remove('nav-scrolled');
+    document.body.classList.remove('nav-scrolled', 'features-visible');
 });
 
 onMounted(() => {
@@ -50,7 +50,7 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('resize', onResize);
   window.removeEventListener('scroll', onScroll);
-  document.body.classList.remove('home-live2d', 'nav-scrolled');
+  document.body.classList.remove('home-live2d', 'nav-scrolled', 'features-visible');
 });
 
 function onLoadStart(total: number) {
@@ -58,7 +58,6 @@ function onLoadStart(total: number) {
 }
 
 function onLoadProgress(loaded: number, total: number, file: string) {
-  console.log('onLoadProgress', loaded, total, file);
   loadedCount.value = loaded;
   totalCount.value = total;
   currentFile.value = file.split('/').pop() || file;
@@ -66,9 +65,18 @@ function onLoadProgress(loaded: number, total: number, file: string) {
 
 function onLoaded() {
   hasLoaded.value = true;
-  console.log('l2d instance:', live2dRef.value?.l2d);
-  console.log(live2dRef.value?.l2d?.getMotionFiles());
-  live2dRef.value?.l2d?.playMotionByFile('motions/login.motion3');
+  const l2d = live2dRef.value?.l2d;
+  if (!l2d)
+    return;
+
+  let featuresShown = false;
+  l2d.on('motionend', () => {
+    if (featuresShown)
+      return;
+    featuresShown = true;
+    document.body.classList.add('features-visible');
+  });
+  l2d.playMotionByFile('motions/login.motion3');
 }
 </script>
 
@@ -156,6 +164,40 @@ function onLoaded() {
   .home-live2d .VPHomeFeatures .item {
     width: 100% !important;
   }
+}
+
+.home-live2d .VPHomeFeatures {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.home-live2d.features-visible .VPHomeFeatures {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.home-live2d .VPFeature {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+.home-live2d.features-visible .VPFeature:nth-child(1) {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0s;
+}
+.home-live2d.features-visible .VPFeature:nth-child(2) {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.1s;
+}
+.home-live2d.features-visible .VPFeature:nth-child(3) {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.2s;
 }
 
 .home-live2d .VPFeature {

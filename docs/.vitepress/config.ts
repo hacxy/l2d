@@ -14,7 +14,7 @@ export default defineConfigWithTheme<ThemeConfig>({
     // https://vitepress.dev/reference/default-theme-config
     logo: '/logo.svg',
     nav: [
-      { text: '指南', link: '/guide/', activeMatch: '/guide/' },
+      { text: '指南', link: '/guide/model/', activeMatch: '/guide/' },
       // { text: '参考', link: '/api/interfaces/Options.md' , activeMatch: '/api/'},
       { text: pkgInfo.version, items: [
         {

@@ -5,7 +5,9 @@
       "Bash(ls /Users/hacxy/Projects/l2d/*.json /Users/hacxy/Projects/l2d/typedoc*)",
       "Bash(find /Users/hacxy/Projects/l2d/__tests__/public/models -type f -name \"*.model3.json\" -exec grep -l '\"Idle\"' {} \\\\;)",
       "Bash(npx eslint:*)",
-      "Bash(grep -v \"^$\")"
+      "Bash(grep -v \"^$\")",
+      "Bash(node -e \"require.resolve\\('shiki'\\)\")",
+      "Bash(node -e \"require.resolve\\('naive-ui'\\)\")"
     ]
   }
 }

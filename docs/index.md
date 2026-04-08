@@ -5,42 +5,23 @@ markdownStyles: false
 
 hero:
   name: "L2D"
-  text: "在浏览器中加载Live2D模型"
-  tagline: 将Live2D模型加入至个人网站, 仅需两步
+  text: "为浏览器而生的 Live2D 加载库"
+  tagline: 零依赖 · 全版本兼容 · 开箱即用
   actions:
     - theme: brand
       text: 快速开始
       link: /guide/intro/quick-start.md
+    - theme: alt
+      text: 什么是 l2d？
+      link: /guide/intro/index.md
 
 features:
   - title: 开箱即用
-    details: 在浏览器中加载Live2D模型仅需两步
-  - title: 零依赖
-    details: 基于 Vite 现代构建链实现极简交付，源码依赖与生产包完全解耦, 意味着这是一个可以被独立使用的纯js文件
-  - title: 高兼容
-    details: 默认集成 cubism2 与 cubism5 支持目前所有模型版本, 无需额外引入SDK
+    details: 无需手动引入 SDK，传入模型路径即可加载，自动识别版本
+  - title: 全版本兼容
+    details: 内置 Cubism 2 & 6 运行时，覆盖所有Live2D模型版本
+  - title: 丰富的交互能力
+    details: 支持播放动作、切换表情、点击区域检测，提供完整的加载与交互事件回调
+  - title: 零依赖，轻量
+    details: 单一 JS 文件，不绑定任何框架，Vue、React、原生项目均可直接使用
 ---
-
-<style>
-:root {
-  --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #bd34fe 30%, #41d1ff);
-  --vp-home-hero-image-background-image: linear-gradient(-45deg,rgba(131, 222, 253, 0.6) 50%, #47caff 50%);
-  --vp-home-hero-image-filter: blur(44px);
-  .image-bg{
-    z-index: -1;
-  }
-}
-
-@media (min-width: 640px) {
-  :root {
-    --vp-home-hero-image-filter: blur(56px);
-  }
-}
-
-@media (min-width: 960px) {
-  :root {
-    --vp-home-hero-image-filter: blur(68px);
-  }
-}
-</style>

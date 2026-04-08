@@ -1,7 +1,3 @@
----
-sidebar:
-  icon: line-md:telegram
----
 
 # 模型事件
 
