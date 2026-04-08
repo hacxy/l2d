@@ -8,7 +8,6 @@ export interface LoadContext {
   canvas: HTMLCanvasElement
   state: ModelState
   resize: () => void
-  setRotation: (deg: number) => void
   emit: (event: 'loaded') => void
   replaceCanvas: () => void
 }
@@ -48,8 +47,6 @@ export async function loadModel(ctx: LoadContext, options: Options): Promise<voi
       model.setPosition(options.position[0], options.position[1]);
     ctx.resize();
     model.setScale(resolveScale(canvas, options.scale, 2));
-    if (options.rotation)
-      ctx.setRotation(options.rotation);
     ctx.emit('loaded');
   }
   else {
@@ -67,8 +64,6 @@ export async function loadModel(ctx: LoadContext, options: Options): Promise<voi
       model.onLoaded(() => {
         ctx.resize();
         model.setScale(resolveScale(ctx.canvas, options.scale, version));
-        if (options.rotation)
-          ctx.setRotation(options.rotation);
         ctx.emit('loaded');
         resolve();
       });

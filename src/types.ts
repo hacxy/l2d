@@ -12,12 +12,6 @@ export interface Options {
    * @example 1.5
    */
   scale?: number | 'auto'
-  /**
-   * 模型旋转角度（度），正值为顺时针
-   * @default 0
-   * @example 15
-   */
-  rotation?: number
 }
 
 export interface L2DEventMap {

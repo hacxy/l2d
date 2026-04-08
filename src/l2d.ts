@@ -54,7 +54,6 @@ class L2D extends Emitter<L2DEventMap> {
       canvas: this.canvas,
       state: this._state,
       resize: () => this.resize(),
-      setRotation: (deg: number) => this.setRotation(deg),
       emit: () => this.emit('loaded'),
       replaceCanvas: () => this._replaceCanvas(),
     }, options);
@@ -75,19 +74,6 @@ class L2D extends Emitter<L2DEventMap> {
       this._state.l2d2Model.resize();
     else if (this._state.currentVersion !== null && this._state.l2d6Model)
       this._state.l2d6Model.resize();
-  }
-
-  /**
-   * 对整个画布应用 CSS 旋转变换。
-   *
-   * 此旋转为 CSS `transform: rotate()` 层面的 2D 变换，不影响模型骨骼或物理演算。
-   * Hit area 检测区域会同步跟随旋转。
-   *
-   * @param deg - 旋转角度（度），正值为顺时针，`0` 清除旋转
-   */
-  setRotation(deg: number) {
-    this.canvas.style.transform = deg === 0 ? '' : `rotate(${deg}deg)`;
-    this.hitAreaOverlay.syncTransform(this.canvas.style.transform);
   }
 
   /**

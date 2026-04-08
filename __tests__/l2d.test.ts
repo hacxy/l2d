@@ -167,38 +167,6 @@ describe('l2D — 未加载模型时的守卫行为', () => {
   });
 });
 
-describe('l2D.setRotation()', () => {
-  afterEach(() => {
-    document.body.innerHTML = '';
-    vi.clearAllMocks();
-  });
-
-  it('非零角度时设置 canvas.style.transform', async () => {
-    const { init } = await import('../src/index.ts');
-    const canvas = makeCanvas();
-    const l2d = init(canvas);
-    l2d.setRotation(45);
-    expect(canvas.style.transform).toBe('rotate(45deg)');
-  });
-
-  it('角度为 0 时清除 canvas.style.transform', async () => {
-    const { init } = await import('../src/index.ts');
-    const canvas = makeCanvas();
-    const l2d = init(canvas);
-    l2d.setRotation(90);
-    l2d.setRotation(0);
-    expect(canvas.style.transform).toBe('');
-  });
-
-  it('设置旋转后同步到 HitAreaOverlay', async () => {
-    const { init } = await import('../src/index.ts');
-    const canvas = makeCanvas();
-    const l2d = init(canvas);
-    l2d.setRotation(30);
-    expect(mockHitAreaOverlayInstance.syncTransform).toHaveBeenCalledWith('rotate(30deg)');
-  });
-});
-
 describe('l2D.load() — Cubism5', () => {
   afterEach(() => {
     document.body.innerHTML = '';
@@ -502,16 +470,6 @@ describe('l2D.load() — Cubism5 补充分支', () => {
     expect(onLoaded).not.toHaveBeenCalled();
   });
 
-  it('传入 rotation 选项后设置 canvas transform', async () => {
-    vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
-    const canvas = makeCanvas();
-    const l2d = init(canvas);
-
-    await l2d.load({ path: '/models/test.model3.json', rotation: 15 });
-    expect(canvas.style.transform).toBe('rotate(15deg)');
-  });
-
   it('传入数字 scale 时直接调用 setScale', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
     const { init } = await import('../src/index.ts');
@@ -561,16 +519,6 @@ describe('l2D.load() — Cubism2 补充分支', () => {
 
     await l2d.load({ path: '/models/test.model.json', scale: 0.8 });
     expect(mockCubism2Instance.setScale).toHaveBeenCalledWith(0.8);
-  });
-
-  it('传入 rotation 选项后设置 canvas transform', async () => {
-    vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
-    const { init } = await import('../src/index.ts');
-    const canvas = makeCanvas();
-    const l2d = init(canvas);
-
-    await l2d.load({ path: '/models/test.model.json', rotation: 90 });
-    expect(canvas.style.transform).toBe('rotate(90deg)');
   });
 
   it('加载后 getExpressions() 返回表情列表', async () => {

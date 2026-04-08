@@ -7,8 +7,8 @@ const l2d = init(canvasEl1);
 
 l2d.load({
   path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
-  position: [1, 0],
-  scale: 0.5
+  position: [0, 0],
+  scale: 0.4
 }).then(() => {
   console.log('模型已准备就绪, ===> then');
   l2d.showHitAreas(true);
