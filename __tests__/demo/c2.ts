@@ -7,13 +7,18 @@ const l2d = init(canvasEl1);
 
 l2d.load({
   path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
+  position: [1, 0],
+  scale: 0.5
 }).then(() => {
   console.log('模型已准备就绪, ===> then');
   l2d.showHitAreas(true);
   console.log(l2d.getMotionFiles());
   setTimeout(() => {
-    l2d.playMotionByFile('motions/flickHead_00');
   }, 1000);
+});
+
+l2d.on('tap', () => {
+  l2d.playMotionByFile('motions/flickHead_00');
 });
 
 // l2d.on('motionstart', (group, index) => {
