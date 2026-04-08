@@ -21,20 +21,20 @@ export interface Options {
 }
 
 export interface L2DEventMap {
-  /** 所有资源就绪，模型开始渲染 */
-  loaded: () => void
-  /** 动作开始播放，`group` 为动作组名，`index` 为动作索引 */
-  motionstart: (group: string, index: number | undefined, duration: number | null) => void
-  /** 表情开始播放，`id` 为表情 ID */
-  expressionstart: (id: string) => void
-  /** 表情播放结束 */
-  expressionend: () => void
   /** 开始加载，`total` 为需要加载的文件总数 */
   loadstart: (total: number) => void
   /** 单个文件加载完成 */
   loadprogress: (loaded: number, total: number, file: string) => void
+  /** 所有资源就绪，模型开始渲染 */
+  loaded: () => void
   /** 点击命中 hit area 时触发，`areaName` 为命中的区域名称 */
   tap: (areaName: string) => void
+  /** 表情开始播放，`id` 为表情 ID */
+  expressionstart: (id: string) => void
+  /** 表情播放结束 */
+  expressionend: () => void
+  /** 动作开始播放，`group` 为动作组名，`index` 为动作索引 */
+  motionstart: (group: string, index: number | undefined, duration: number | null) => void
   /** 动作播放结束，`group` 为动作组名，`index` 为动作索引 */
   motionend: (group: string, index: number | undefined) => void
 }
