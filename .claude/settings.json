@@ -8,7 +8,8 @@
       "Bash(grep -v \"^$\")",
       "Bash(node -e \"require.resolve\\('shiki'\\)\")",
       "Bash(node -e \"require.resolve\\('naive-ui'\\)\")",
-      "WebFetch(domain:model.hacxy.cn)"
+      "WebFetch(domain:model.hacxy.cn)",
+      "Bash(grep -v \":$\")"
     ]
   }
 }

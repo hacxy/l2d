@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { EVENTS } from '../const.js';
 import logger from '../logger.js';
 
 // ----- 通过 Vite ?raw 内联 GLSL 着色器，避免运行时 fetch 加载外部文件 -----
@@ -199,7 +200,7 @@ export class AppDelegate {
         }
         else if (this._expressionWasPlaying && exprFinished === true) {
           this._expressionWasPlaying = false;
-          window.dispatchEvent(new CustomEvent('live2d:expressionend', { detail: { canvas: this._canvas } }));
+          window.dispatchEvent(new CustomEvent(EVENTS.EXPRESSION_END, { detail: { canvas: this._canvas } }));
         }
       }
 
@@ -269,7 +270,7 @@ export class AppDelegate {
     for (let i = 0; i < count; i++) {
       const areaName: string = model._modelSetting.getHitAreaName(i);
       if (model.hitTest(areaName, x, y)) {
-        window.dispatchEvent(new CustomEvent('live2d:tapbody', {
+        window.dispatchEvent(new CustomEvent(EVENTS.TAP_BODY, {
           detail: { canvas: this._canvas, areaName },
         }));
       }
@@ -341,10 +342,10 @@ export class AppDelegate {
     const instance = new LAppModel();
     instance.setSubdelegate(this._subdelegates[0]);
 
-    window.dispatchEvent(new CustomEvent('live2d:loadstart', { detail: { canvas: this._canvas, total: 0 } }));
+    window.dispatchEvent(new CustomEvent(EVENTS.LOAD_START, { detail: { canvas: this._canvas, total: 0 } }));
 
     instance.onProgress = (loaded, total, file) => {
-      window.dispatchEvent(new CustomEvent('live2d:loadprogress', {
+      window.dispatchEvent(new CustomEvent(EVENTS.LOAD_PROGRESS, {
         detail: { canvas: this._canvas, loaded, total, file },
       }));
     };
@@ -457,10 +458,10 @@ export class AppDelegate {
       ? index
       : Math.floor(Math.random() * model._modelSetting.getMotionCount(group));
     const canvas = this._canvas;
-    const onBegan = (_motion: any) => window.dispatchEvent(new CustomEvent('live2d:motionstart', {
+    const onBegan = (_motion: any) => window.dispatchEvent(new CustomEvent(EVENTS.MOTION_START, {
       detail: { canvas, group, index: resolvedIndex, duration: _motion.getLoopDuration() },
     }));
-    const onFinished = (_motion: any) => window.dispatchEvent(new CustomEvent('live2d:motionend', {
+    const onFinished = (_motion: any) => window.dispatchEvent(new CustomEvent(EVENTS.MOTION_END, {
       detail: { canvas, group, index: resolvedIndex },
     }));
     model.startMotion(group, resolvedIndex, priority, onFinished, onBegan);
@@ -507,7 +508,7 @@ export class AppDelegate {
       id = keys[no];
       model.setExpression(id);
     }
-    window.dispatchEvent(new CustomEvent('live2d:expressionstart', {
+    window.dispatchEvent(new CustomEvent(EVENTS.EXPRESSION_START, {
       detail: { canvas: this._canvas, id },
     }));
   }

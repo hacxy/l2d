@@ -1,3 +1,4 @@
+import { EVENTS } from '../const.js';
 import logger from '../logger.js';
 import LAppDefine from './LAppDefine.js';
 import LAppLive2DManager from './LAppLive2DManager.js';
@@ -95,11 +96,11 @@ class Cubism2Model {
       // Activate this model's PlatformManager and GL context right before loading
       this.live2DMgr.activatePlatformManager();
       Live2D.setGL(this.gl);
-      this.live2DMgr.onLoadStart = (total) => window.dispatchEvent(new CustomEvent('live2d:loadstart', { detail: { canvas: this.canvas, total } }));
-      this.live2DMgr.onProgress = (loaded, total, file) => window.dispatchEvent(new CustomEvent('live2d:loadprogress', { detail: { canvas: this.canvas, loaded, total, file } }));
-      this.live2DMgr.onMotionStart = ({ group, index, duration }) => window.dispatchEvent(new CustomEvent('live2d:motionstart', { detail: { canvas: this.canvas, group, index, duration } }));
-      this.live2DMgr.onMotionEnd = ({ group, index }) => window.dispatchEvent(new CustomEvent('live2d:motionend', { detail: { canvas: this.canvas, group, index } }));
-      this.live2DMgr.onExpressionStart = ({ id }) => window.dispatchEvent(new CustomEvent('live2d:expressionstart', { detail: { canvas: this.canvas, id } }));
+      this.live2DMgr.onLoadStart = (total) => window.dispatchEvent(new CustomEvent(EVENTS.LOAD_START, { detail: { canvas: this.canvas, total } }));
+      this.live2DMgr.onProgress = (loaded, total, file) => window.dispatchEvent(new CustomEvent(EVENTS.LOAD_PROGRESS, { detail: { canvas: this.canvas, loaded, total, file } }));
+      this.live2DMgr.onMotionStart = ({ group, index, duration }) => window.dispatchEvent(new CustomEvent(EVENTS.MOTION_START, { detail: { canvas: this.canvas, group, index, duration } }));
+      this.live2DMgr.onMotionEnd = ({ group, index }) => window.dispatchEvent(new CustomEvent(EVENTS.MOTION_END, { detail: { canvas: this.canvas, group, index } }));
+      this.live2DMgr.onExpressionStart = ({ id }) => window.dispatchEvent(new CustomEvent(EVENTS.EXPRESSION_START, { detail: { canvas: this.canvas, id } }));
       this.gl.clearColor(0.0, 0.0, 0.0, 0.0);
       await this.changeModelWithJSON(modelSettingPath, modelSetting);
       this.startDraw();
@@ -178,7 +179,7 @@ class Cubism2Model {
       }
       else if (this._expressionWasPlaying && finished) {
         this._expressionWasPlaying = false;
-        window.dispatchEvent(new CustomEvent('live2d:expressionend', { detail: { canvas: this.canvas } }));
+        window.dispatchEvent(new CustomEvent(EVENTS.EXPRESSION_END, { detail: { canvas: this.canvas } }));
       }
     }
   }
@@ -256,7 +257,7 @@ class Cubism2Model {
       for (let i = 0; i < count; i++) {
         const areaName = model.modelSetting.getHitAreaName(i);
         if (model.hitTest(areaName, hx, hy)) {
-          window.dispatchEvent(new CustomEvent('live2d:tapbody', { detail: { canvas: this.canvas, areaName } }));
+          window.dispatchEvent(new CustomEvent(EVENTS.TAP_BODY, { detail: { canvas: this.canvas, areaName } }));
         }
       }
     }

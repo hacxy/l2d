@@ -1,33 +1,32 @@
+import type { HitAreaOverlay } from './hit-area-overlay.js';
+import type { ModelState } from './motion-controller.js';
 import type { L2DEventMap, Options } from './types.js';
-import Cubism2Model from './cubism2/index.js';
-import { AppDelegate as Cubism6Model } from './cubism6/index.js';
+import { cloneCanvas, createHitAreaOverlay } from './canvas-manager.js';
+import { EVENTS } from './const.js';
 import { Emitter } from './emitter.js';
-import { HitAreaOverlay } from './hit-area-overlay.js';
+import { ExpressionController } from './expression-controller.js';
 import logger from './logger.js';
-import { checkModelVersion } from './utils/model.js';
+import { loadModel } from './model-loader.js';
+import { MotionController } from './motion-controller.js';
 
 class L2D extends Emitter<L2DEventMap> {
   private canvas: HTMLCanvasElement;
-  private l2d2Model: Cubism2Model | null = null;
-  private l2d6Model: Cubism6Model | null = null;
-  private currentVersion: number | null = null;
   private hitAreaOverlay: HitAreaOverlay;
+  private _state: ModelState = { currentVersion: null, l2d2Model: null, l2d6Model: null };
+  private _motionCtrl = new MotionController(this._state);
+  private _exprCtrl = new ExpressionController(this._state);
 
   constructor(canvas: HTMLCanvasElement) {
     super();
     this.canvas = canvas;
-    this.hitAreaOverlay = new HitAreaOverlay(canvas, () => {
-      return this.currentVersion === 2
-        ? (this.l2d2Model?.getHitAreaBounds() ?? [])
-        : (this.l2d6Model?.getHitAreaBounds() ?? []);
-    });
-    this._on('live2d:motionstart', d => this.emit('motionstart', d.group, d.index, d.duration ?? null));
-    this._on('live2d:expressionstart', d => this.emit('expressionstart', d.id));
-    this._on('live2d:expressionend', () => this.emit('expressionend'));
-    this._on('live2d:loadstart', d => this.emit('loadstart', d.total));
-    this._on('live2d:loadprogress', d => this.emit('loadprogress', d.loaded, d.total, d.file));
-    this._on('live2d:tapbody', d => this.emit('tap', d.areaName ?? ''));
-    this._on('live2d:motionend', d => this.emit('motionend', d.group, d.index));
+    this.hitAreaOverlay = createHitAreaOverlay(canvas, this._state);
+    this._on(EVENTS.MOTION_START, d => this.emit('motionstart', d.group, d.index, d.duration ?? null));
+    this._on(EVENTS.EXPRESSION_START, d => this.emit('expressionstart', d.id));
+    this._on(EVENTS.EXPRESSION_END, () => this.emit('expressionend'));
+    this._on(EVENTS.LOAD_START, d => this.emit('loadstart', d.total));
+    this._on(EVENTS.LOAD_PROGRESS, d => this.emit('loadprogress', d.loaded, d.total, d.file));
+    this._on(EVENTS.TAP_BODY, d => this.emit('tap', d.areaName ?? ''));
+    this._on(EVENTS.MOTION_END, d => this.emit('motionend', d.group, d.index));
   }
 
   private _on(type: string, handler: (detail: any) => void) {
@@ -40,20 +39,8 @@ class L2D extends Emitter<L2DEventMap> {
 
   private _replaceCanvas() {
     this.hitAreaOverlay.hide();
-    const old = this.canvas;
-    const next = document.createElement('canvas');
-    next.id = old.id;
-    next.className = old.className;
-    next.style.cssText = old.style.cssText;
-    next.width = old.width;
-    next.height = old.height;
-    old.parentNode?.replaceChild(next, old);
-    this.canvas = next;
-    this.hitAreaOverlay = new HitAreaOverlay(next, () => {
-      return this.currentVersion === 2
-        ? (this.l2d2Model?.getHitAreaBounds() ?? [])
-        : (this.l2d6Model?.getHitAreaBounds() ?? []);
-    });
+    this.canvas = cloneCanvas(this.canvas);
+    this.hitAreaOverlay = createHitAreaOverlay(this.canvas, this._state);
   }
 
   /**
@@ -62,89 +49,18 @@ class L2D extends Emitter<L2DEventMap> {
    * 加载完成后触发 `loaded` 事件。
    * @param options - 模型加载选项，参见 {@link Options}
    */
-  async load(options: Options): Promise<void> {
-    const prevVersion = this.currentVersion;
-
-    // 清理旧模型
-    if (this.l2d2Model) {
-      this.l2d2Model.destroy();
-      this.l2d2Model = null;
-    }
-    if (this.l2d6Model) {
-      this.l2d6Model.release();
-      this.l2d6Model = null;
-    }
-    this.currentVersion = null;
-
-    const res = await fetch(options.path);
-    if (!res.ok) {
-      console.error(`获取模型配置失败: ${res.statusText}`);
-      return;
-    }
-    const result = await res.json();
-    const version = checkModelVersion(result);
-
-    // 框架版本切换时 canvas 的 WebGL context attributes 不兼容，需替换 canvas
-    if (prevVersion !== null && prevVersion !== version)
-      this._replaceCanvas();
-
-    this.currentVersion = version;
-
-    if (version === 2) {
-      const model = new Cubism2Model(this.canvas);
-      this.l2d2Model = model;
-      await model.init(this.canvas, options.path, result);
-      if (options.position)
-        model.setPosition(options.position[0], options.position[1]);
-      this.resize();
-      const scale2 = this._resolveScale(options.scale, 2);
-      model.setScale(scale2);
-      if (options.rotation)
-        this.setRotation(options.rotation);
-      this.emit('loaded');
-    }
-    else {
-      const model = new Cubism6Model(this.canvas);
-      this.l2d6Model = model;
-      if (!model.initialize()) {
-        console.error('Failed to initialize Cubism6 model');
-        return;
-      }
-      if (options.position)
-        model.setPosition(options.position[0], options.position[1]);
-      model.changeModel(options.path);
-      model.run();
-      await new Promise<void>(resolve => {
-        model.onLoaded(() => {
-          this.resize();
-          const scale6 = this._resolveScale(options.scale, version);
-          model.setScale(scale6);
-          if (options.rotation)
-            this.setRotation(options.rotation);
-          this.emit('loaded');
-          resolve();
-        });
-      });
-    }
+  load(options: Options): Promise<void> {
+    return loadModel({
+      canvas: this.canvas,
+      state: this._state,
+      resize: () => this.resize(),
+      setRotation: (deg: number) => this.setRotation(deg),
+      emit: () => this.emit('loaded'),
+      replaceCanvas: () => this._replaceCanvas(),
+    }, options);
   }
 
-  private _resolveScale(scale: number | 'auto' | null | void, version: number): number {
-    if (typeof scale === 'number')
-      return scale;
-    const w = this.canvas.width;
-    const h = this.canvas.height;
-    if (w === h)
-      return 1;
-    // Cubism 3+ (Cubism6) view X: ±(w/h), Y: ±1 — portrait causes horizontal overflow
-    // Cubism2 view X: ±1, Y: ±(h/w) — landscape causes vertical overflow
-    return version !== 2
-      ? Math.min(1, w / h)
-      : Math.min(1, h / w);
-  }
-
-  /**
-   * @deprecated 请使用 {@link load} 代替
-   */
+  /** @deprecated 请使用 {@link load} 代替 */
   create(options: Options) {
     return this.load(options);
   }
@@ -155,12 +71,10 @@ class L2D extends Emitter<L2DEventMap> {
    * 当 canvas 的 `width` / `height` 属性发生变化后调用此方法，使模型填满新尺寸。
    */
   resize() {
-    if (this.currentVersion === 2 && this.l2d2Model) {
-      this.l2d2Model.resize();
-    }
-    else if (this.currentVersion !== null && this.l2d6Model) {
-      this.l2d6Model.resize();
-    }
+    if (this._state.currentVersion === 2 && this._state.l2d2Model)
+      this._state.l2d2Model.resize();
+    else if (this._state.currentVersion !== null && this._state.l2d6Model)
+      this._state.l2d6Model.resize();
   }
 
   /**
@@ -176,22 +90,15 @@ class L2D extends Emitter<L2DEventMap> {
     this.hitAreaOverlay.syncTransform(this.canvas.style.transform);
   }
 
-  private _isReady(method: string): boolean {
-    if (this.currentVersion === null) {
-      logger.warn(`${method}: 模型尚未加载完成，请在 loaded 事件触发后调用。`);
-      return false;
-    }
-    return true;
-  }
-
   /**
    * 显示或隐藏 hit area 的可视化边界框，用于调试可交互区域。
-   *
    * @param enabled - `true` 显示边界框，`false` 隐藏
    */
   showHitAreas(enabled: boolean) {
-    if (enabled && !this._isReady('showHitAreas'))
+    if (enabled && this._state.currentVersion === null) {
+      logger.warn('showHitAreas: 模型尚未加载完成，请在 loaded 事件触发后调用。');
       return;
+    }
     enabled ? this.hitAreaOverlay.show() : this.hitAreaOverlay.hide();
   }
 
@@ -202,21 +109,12 @@ class L2D extends Emitter<L2DEventMap> {
    * @param priority - 播放优先级，数值越大越优先
    */
   playMotion(group: string, index?: number, priority?: number) {
-    if (!this._isReady('playMotion'))
-      return;
-    if (this.currentVersion === 2)
-      this.l2d2Model!.playMotion(group, index, priority);
-    else
-      this.l2d6Model!.playMotion(group, index, priority);
+    this._motionCtrl.playMotion(group, index, priority);
   }
 
   /** 获取所有动作组及其动作数量的映射，`{ 组名: 动作数 }` */
   getMotionGroups(): Record<string, number> {
-    if (!this._isReady('getMotionGroups'))
-      return {};
-    return this.currentVersion === 2
-      ? this.l2d2Model!.getMotionGroups()
-      : this.l2d6Model!.getMotionGroups();
+    return this._motionCtrl.getMotionGroups();
   }
 
   /**
@@ -224,11 +122,7 @@ class L2D extends Emitter<L2DEventMap> {
    * 可用于配合 {@link playMotionByFile} 按文件路径播放动作。
    */
   getMotionFiles(): Record<string, string[]> {
-    if (!this._isReady('getMotionFiles'))
-      return {};
-    return this.currentVersion === 2
-      ? this.l2d2Model!.getMotionFiles()
-      : this.l2d6Model!.getMotionFiles();
+    return this._motionCtrl.getMotionFiles();
   }
 
   /**
@@ -237,23 +131,12 @@ class L2D extends Emitter<L2DEventMap> {
    * @param priority - 播放优先级
    */
   playMotionByFile(file: string, priority?: number) {
-    const motionFiles = this.getMotionFiles();
-    for (const [group, files] of Object.entries(motionFiles)) {
-      const index = files.findIndex(f => f === file || f.startsWith(`${file}.`));
-      if (index !== -1) {
-        this.playMotion(group, index, priority);
-        return;
-      }
-    }
+    this._motionCtrl.playMotionByFile(file, priority);
   }
 
   /** 获取所有可用表情的 ID 列表 */
   getExpressions(): string[] {
-    if (!this._isReady('getExpressions'))
-      return [];
-    return this.currentVersion === 2
-      ? this.l2d2Model!.getExpressions()
-      : this.l2d6Model!.getExpressions();
+    return this._exprCtrl.getExpressions();
   }
 
   /**
@@ -261,12 +144,7 @@ class L2D extends Emitter<L2DEventMap> {
    * @param id - 表情 ID，省略时随机切换
    */
   setExpression(id?: string) {
-    if (!this._isReady('setExpression'))
-      return;
-    if (this.currentVersion === 2)
-      this.l2d2Model!.setExpression(id);
-    else
-      this.l2d6Model!.setExpression(id);
+    this._exprCtrl.setExpression(id);
   }
 
   /**
@@ -274,15 +152,15 @@ class L2D extends Emitter<L2DEventMap> {
    * 画布 DOM 节点本身不会被移除。
    */
   destroy() {
-    if (this.l2d2Model) {
-      this.l2d2Model.destroy();
-      this.l2d2Model = null;
+    if (this._state.l2d2Model) {
+      this._state.l2d2Model.destroy();
+      this._state.l2d2Model = null;
     }
-    if (this.l2d6Model) {
-      this.l2d6Model.release();
-      this.l2d6Model = null;
+    if (this._state.l2d6Model) {
+      this._state.l2d6Model.release();
+      this._state.l2d6Model = null;
     }
-    this.currentVersion = null;
+    this._state.currentVersion = null;
     this.hitAreaOverlay.hide();
     const gl = this.canvas.getContext('webgl2');
     if (gl) {
