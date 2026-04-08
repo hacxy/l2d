@@ -4,6 +4,7 @@ import { createDiscreteApi, darkTheme, NButton, NConfigProvider, NModal, NProgre
 import { useData } from 'vitepress';
 import { computed, onBeforeUnmount, ref, shallowRef } from 'vue';
 import * as demos from '../../../demos/index';
+import Live2D from './Live2D.vue';
 
 const props = defineProps<{
   demo: string
@@ -21,7 +22,8 @@ const totalCount = ref(0);
 const currentFile = ref('');
 const cleanup = shallowRef<(() => void) | null>(null);
 
-const canvasRef = ref<HTMLCanvasElement | null>(null);
+const live2dRef = ref<InstanceType<typeof Live2D> | null>(null);
+const canvasRef = computed(() => live2dRef.value?.l2dCanvas ?? null);
 const progress = ref(0);
 const isLoading = ref(false);
 
@@ -110,7 +112,7 @@ onBeforeUnmount(() => {
         @after-leave="onClose"
       >
         <div class="demo-preview">
-          <canvas ref="canvasRef" width="720" height="480" class="demo-canvas" />
+          <Live2D ref="live2dRef" class="demo-canvas" />
           <Transition name="progress-fade">
             <div v-if="isLoading" class="demo-loading">
               <NProgress
