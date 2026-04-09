@@ -6,15 +6,13 @@ const l2d = init(canvasEl1);
 // const l2d2 = init(canvasEl2);
 
 l2d.load({
-  path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
-  position: [0, 0],
-  scale: 0.4
+  // path: 'https://model.hacxy.cn/HK416-1-normal/model.json',
+  // scale: 0.8,
+  path: 'https://model.hacxy.cn/bilibili-22/index.json',
+  position: [-1, 0],
 }).then(() => {
   console.log('模型已准备就绪, ===> then');
   l2d.showHitAreas(true);
-  console.log(l2d.getMotionFiles());
-  setTimeout(() => {
-  }, 1000);
 });
 
 l2d.on('tap', () => {

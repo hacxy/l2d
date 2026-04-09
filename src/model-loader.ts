@@ -46,7 +46,8 @@ export async function loadModel(ctx: LoadContext, options: Options): Promise<voi
     if (options.position)
       model.setPosition(options.position[0], options.position[1]);
     ctx.resize();
-    model.setScale(resolveScale(canvas, options.scale, 2));
+    if (typeof options.scale === 'number')
+      model.setScale(options.scale);
     ctx.emit('loaded');
   }
   else {
@@ -63,24 +64,11 @@ export async function loadModel(ctx: LoadContext, options: Options): Promise<voi
     await new Promise<void>(resolve => {
       model.onLoaded(() => {
         ctx.resize();
-        model.setScale(resolveScale(ctx.canvas, options.scale, version));
+        if (typeof options.scale === 'number')
+          model.setScale(options.scale);
         ctx.emit('loaded');
         resolve();
       });
     });
   }
-}
-
-export function resolveScale(canvas: HTMLCanvasElement, scale: number | 'auto' | null | void, version: number): number {
-  if (typeof scale === 'number')
-    return scale;
-  const w = canvas.width;
-  const h = canvas.height;
-  if (w === h)
-    return 1;
-  // Cubism 3+ (Cubism6) view X: ±(w/h), Y: ±1 — portrait causes horizontal overflow
-  // Cubism2 view X: ±1, Y: ±(h/w) — landscape causes vertical overflow
-  return version !== 2
-    ? Math.min(1, w / h)
-    : Math.min(1, h / w);
 }

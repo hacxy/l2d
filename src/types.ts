@@ -2,16 +2,15 @@ export interface Options {
   /** 模型配置文件路径（`.model.json` 或 `.model3.json`） */
   path: string
   /**
-   * 模型在画布中的位置偏移，`[x, y]` 均为逻辑坐标
+   * 模型在画布中的位置偏移，`[x, y]` 以画布半高为单位（1 = 半个画布高度），两个版本行为一致
    * @example [0.5, -0.2]
    */
   position?: [x: number, y: number]
   /**
-   * 模型缩放比例，`1` 为原始大小，`'auto'` 根据画布宽高自动缩放确保模型完整显示
-   * @default 'auto'
+   * 模型缩放比例，`1` 为原始大小
    * @example 1.5
    */
-  scale?: number | 'auto'
+  scale?: number
 }
 
 export interface L2DEventMap {

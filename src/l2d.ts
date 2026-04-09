@@ -134,6 +134,17 @@ class L2D extends Emitter<L2DEventMap> {
   }
 
   /**
+   * 设置模型缩放比例，与加载选项中的 `scale` 作用一致。
+   * @param scale - 缩放比例，`1` 为原始大小
+   */
+  setScale(scale: number) {
+    if (this._state.currentVersion === 2 && this._state.l2d2Model)
+      this._state.l2d2Model.setScale(scale);
+    else if (this._state.currentVersion !== null && this._state.l2d6Model)
+      this._state.l2d6Model.setScale(scale);
+  }
+
+  /**
    * 销毁当前模型并释放 WebGL 资源，清空画布。
    * 画布 DOM 节点本身不会被移除。
    */

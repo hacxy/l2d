@@ -194,12 +194,31 @@ class Cubism2Model {
 
   setPosition(x, y) {
     this._userPosition = [x, y];
-    this.viewMatrix.translate(x, y);
+    const ratio = this.canvas.height / this.canvas.width;
+    this.viewMatrix.translate(x * ratio, y * ratio);
   }
 
   setScale(scale) {
     this._userScale = scale;
-    this.viewMatrix.adjustScale(0, 0, scale);
+    this._applyViewState();
+  }
+
+  _applyViewState() {
+    const width = this.canvas.width;
+    const height = this.canvas.height;
+    const ratio = height / width;
+    const left = LAppDefine.VIEW_LOGICAL_LEFT;
+    const right = LAppDefine.VIEW_LOGICAL_RIGHT;
+    this.viewMatrix = new L2DViewMatrix();
+    this.viewMatrix.setScreenRect(left, right, -ratio, ratio);
+    this.viewMatrix.setMaxScreenRect(LAppDefine.VIEW_LOGICAL_MAX_LEFT, LAppDefine.VIEW_LOGICAL_MAX_RIGHT, LAppDefine.VIEW_LOGICAL_MAX_BOTTOM, LAppDefine.VIEW_LOGICAL_MAX_TOP);
+    this.viewMatrix.setMaxScale(LAppDefine.VIEW_MAX_SCALE);
+    this.viewMatrix.setMinScale(LAppDefine.VIEW_MIN_SCALE);
+    // Apply h/w as base scale so scale=1 fills canvas height, consistent with Cubism6
+    this.viewMatrix.adjustScale(0, 0, (this._userScale ?? 1) * ratio);
+    if (this._userPosition !== undefined) {
+      this.viewMatrix.translate(this._userPosition[0] * ratio, this._userPosition[1] * ratio);
+    }
   }
 
   resize() {
@@ -209,13 +228,7 @@ class Cubism2Model {
     const width = this.canvas.width;
     const height = this.canvas.height;
 
-    const ratio = height / width;
-    const left = LAppDefine.VIEW_LOGICAL_LEFT;
-    const right = LAppDefine.VIEW_LOGICAL_RIGHT;
-    const bottom = -ratio;
-    const top = ratio;
-
-    this.viewMatrix.setScreenRect(left, right, bottom, top);
+    this._applyViewState();
 
     this.projMatrix = new L2DMatrix44();
     this.projMatrix.multScale(1, width / height);
@@ -225,13 +238,6 @@ class Cubism2Model {
     this.deviceToScreen.multScale(2 / width, -2 / width);
 
     this.gl.viewport(0, 0, width, height);
-
-    if (this._userScale !== undefined) {
-      this.viewMatrix.adjustScale(0, 0, this._userScale);
-    }
-    if (this._userPosition !== undefined) {
-      this.viewMatrix.translate(this._userPosition[0], this._userPosition[1]);
-    }
   }
 
   modelTurnHead(event) {

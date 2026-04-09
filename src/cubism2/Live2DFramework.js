@@ -101,7 +101,7 @@ class L2DBaseModel {
         return;
       }
       this.modelMatrix = new L2DModelMatrix(this.live2DModel.getCanvasWidth(), this.live2DModel.getCanvasHeight());
-      this.modelMatrix.setWidth(2);
+      this.modelMatrix.setHeight(2);
       this.modelMatrix.setCenterPosition(0, 0);
       callback(this.live2DModel);
     });

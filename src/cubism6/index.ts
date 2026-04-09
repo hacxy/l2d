@@ -366,7 +366,11 @@ export class AppDelegate {
     const subdelegate = this._subdelegates[0];
     subdelegate._userScale = scale;
     const view = subdelegate._view;
+    view.initialize(subdelegate);
     view._viewMatrix.adjustScale(0, 0, scale);
+    if (subdelegate._userPosition !== undefined) {
+      view._viewMatrix.translate(subdelegate._userPosition[0], subdelegate._userPosition[1]);
+    }
     subdelegate.getLive2DManager().setViewMatrix(view._viewMatrix);
   }
 
