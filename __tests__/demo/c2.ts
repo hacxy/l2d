@@ -7,12 +7,16 @@ const l2d = init(canvasEl1);
 
 l2d.load({
   // path: 'https://model.hacxy.cn/HK416-1-normal/model.json',
-  // scale: 0.8,
+  scale: 0.8,
   path: 'https://model.hacxy.cn/bilibili-22/index.json',
   position: [-1, 0],
 }).then(() => {
   console.log('模型已准备就绪, ===> then');
   l2d.showHitAreas(true);
+  setTimeout(() => {
+    // l2d.setScale(0.5);
+    // l2d.setPosition(1, 0);
+  }, 1000);
 });
 
 l2d.on('tap', () => {

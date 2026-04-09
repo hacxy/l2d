@@ -57,15 +57,17 @@ export async function loadModel(ctx: LoadContext, options: Options): Promise<voi
       console.error('Failed to initialize Cubism6 model');
       return;
     }
-    if (options.position)
+    if (typeof options.scale === 'number') {
+      model.setScale(options.scale);
+    }
+    if (options.position) {
       model.setPosition(options.position[0], options.position[1]);
+    }
     model.changeModel(options.path);
     model.run();
     await new Promise<void>(resolve => {
       model.onLoaded(() => {
         ctx.resize();
-        if (typeof options.scale === 'number')
-          model.setScale(options.scale);
         ctx.emit('loaded');
         resolve();
       });

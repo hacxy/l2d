@@ -145,6 +145,18 @@ class L2D extends Emitter<L2DEventMap> {
   }
 
   /**
+   * 设置模型在画布中的位置偏移，与加载选项中的 `position` 作用一致。
+   * @param x - X 轴偏移
+   * @param y - Y 轴偏移
+   */
+  setPosition(x: number, y: number) {
+    if (this._state.currentVersion === 2 && this._state.l2d2Model)
+      this._state.l2d2Model.setPosition(x, y);
+    else if (this._state.currentVersion !== null && this._state.l2d6Model)
+      this._state.l2d6Model.setPosition(x, y);
+  }
+
+  /**
    * 销毁当前模型并释放 WebGL 资源，清空画布。
    * 画布 DOM 节点本身不会被移除。
    */
