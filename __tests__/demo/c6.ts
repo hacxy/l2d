@@ -21,7 +21,7 @@ l2d.load({
   console.log(l2d.getMotionFiles());
   setTimeout(() => {
     l2d.setScale(1);
-    // l2d.setPosition(1, 0);
+    l2d.setPosition(1, 0);
   }, 1000);
 });
 

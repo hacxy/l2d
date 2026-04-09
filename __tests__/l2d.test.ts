@@ -480,17 +480,14 @@ describe('l2D.load() — Cubism5 补充分支', () => {
     expect(mockCubism5Instance.setScale).toHaveBeenCalledWith(1.5);
   });
 
-  it('正方形 canvas 时 auto scale 为 1', async () => {
+  it('不传 scale 时不调用 setScale', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
     const { init } = await import('../src/index.ts');
-    const canvas = document.createElement('canvas');
-    canvas.width = 400;
-    canvas.height = 400;
-    document.body.appendChild(canvas);
+    const canvas = makeCanvas();
     const l2d = init(canvas);
 
     await l2d.load({ path: '/models/test.model3.json' });
-    expect(mockCubism5Instance.setScale).toHaveBeenCalledWith(1);
+    expect(mockCubism5Instance.setScale).not.toHaveBeenCalled();
   });
 });
 
@@ -754,6 +751,80 @@ describe('l2D.load() — 二次加载清理旧模型', () => {
 
     await l2d.load({ path: '/models/second.model3.json' });
     expect(mockCubism5Instance.release).toHaveBeenCalledOnce();
+  });
+});
+
+describe('l2D.setPosition()', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
+  });
+
+  it('cubism6 加载后 setPosition() 调用底层', async () => {
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
+    const { init } = await import('../src/index.ts');
+    const canvas = makeCanvas();
+    const l2d = init(canvas);
+    await l2d.load({ path: '/models/test.model3.json' });
+
+    l2d.setPosition(0.5, -0.2);
+    expect(mockCubism5Instance.setPosition).toHaveBeenCalledWith(0.5, -0.2);
+  });
+
+  it('cubism2 加载后 setPosition() 调用底层', async () => {
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
+    const { init } = await import('../src/index.ts');
+    const canvas = makeCanvas();
+    const l2d = init(canvas);
+    await l2d.load({ path: '/models/test.model.json' });
+
+    l2d.setPosition(-1, 0.3);
+    expect(mockCubism2Instance.setPosition).toHaveBeenCalledWith(-1, 0.3);
+  });
+
+  it('未加载时 setPosition() 不抛出错误', async () => {
+    const { init } = await import('../src/index.ts');
+    const l2d = init(makeCanvas());
+    expect(() => l2d.setPosition(0, 0)).not.toThrow();
+  });
+});
+
+describe('l2D.setScale()', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
+  });
+
+  it('cubism6 加载后 setScale() 调用底层', async () => {
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
+    const { init } = await import('../src/index.ts');
+    const canvas = makeCanvas();
+    const l2d = init(canvas);
+    await l2d.load({ path: '/models/test.model3.json' });
+
+    vi.clearAllMocks();
+    l2d.setScale(1.5);
+    expect(mockCubism5Instance.setScale).toHaveBeenCalledWith(1.5);
+  });
+
+  it('cubism2 加载后 setScale() 调用底层', async () => {
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
+    const { init } = await import('../src/index.ts');
+    const canvas = makeCanvas();
+    const l2d = init(canvas);
+    await l2d.load({ path: '/models/test.model.json' });
+
+    vi.clearAllMocks();
+    l2d.setScale(0.5);
+    expect(mockCubism2Instance.setScale).toHaveBeenCalledWith(0.5);
+  });
+
+  it('未加载时 setScale() 不抛出错误', async () => {
+    const { init } = await import('../src/index.ts');
+    const l2d = init(makeCanvas());
+    expect(() => l2d.setScale(1)).not.toThrow();
   });
 });
 

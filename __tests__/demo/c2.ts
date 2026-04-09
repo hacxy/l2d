@@ -14,8 +14,8 @@ l2d.load({
   console.log('模型已准备就绪, ===> then');
   l2d.showHitAreas(true);
   setTimeout(() => {
-    // l2d.setScale(0.5);
-    // l2d.setPosition(1, 0);
+    l2d.setScale(0.5);
+    l2d.setPosition(1, 0);
   }, 1000);
 });
 
