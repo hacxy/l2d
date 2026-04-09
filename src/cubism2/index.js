@@ -203,6 +203,12 @@ class Cubism2Model {
     this._applyViewState();
   }
 
+  setParams(params) {
+    const model = this.live2DMgr.getModel();
+    if (!model) return;
+    model._forcedParams = { ...params };
+  }
+
   _applyViewState() {
     const width = this.canvas.width;
     const height = this.canvas.height;

@@ -24,6 +24,7 @@ declare class Cubism2Model {
   changeModelWithJSON(modelSettingPath: any, modelSetting: any): Promise<void>;
   setPosition(x: number, y: number): void;
   setScale(scale: number): void;
+  setParams(params: Record<string, number>): void;
   resize(): void;
   getHitAreaBounds(): Array<{ name: string; x: number; y: number; w: number; h: number }>;
   playMotion(group: string, index?: number, priority?: number): void;

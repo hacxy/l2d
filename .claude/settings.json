@@ -10,7 +10,16 @@
       "Bash(node -e \"require.resolve\\('naive-ui'\\)\")",
       "WebFetch(domain:model.hacxy.cn)",
       "Bash(grep -v \":$\")",
-      "Bash(npx vitest:*)"
+      "Bash(npx vitest:*)",
+      "Bash(python3)",
+      "Bash(grep -oE \"glContext\\\\[[a-zA-Z_$]+\\\\]\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
+      "Bash(grep -oE \".{50}glContext\\\\[[a-zA-Z_\\\\$]+\\\\].{50}\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
+      "Bash(grep -oE 'this\\\\._\\\\$gl[^;]{0,30}|getGL\\\\\\(\\\\\\)[^;]{0,30}' /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
+      "Bash(grep -oE \"[a-zA-Z_\\\\$]{1,5}\\\\.getGL\\\\\\([^\\)]*\\\\\\)\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
+      "Bash(grep -oE \".{100}Q\\\\.getGL\\\\\\([a-zA-Z_\\\\$]+\\\\\\).{100}\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
+      "Bash(grep -oE \"glno[^;]{0,50}\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
+      "Bash(grep -oE \"_\\\\\\\\\\\\$62=function[^;]{0,200}\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
+      "Bash(grep -oE \"new C\\\\\\([^\\)]{0,30}\\\\\\)\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)"
     ]
   }
 }

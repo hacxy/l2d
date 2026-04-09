@@ -20,6 +20,7 @@ const mockCubism5Instance = vi.hoisted(() => ({
   resize: vi.fn(),
   setScale: vi.fn(),
   setPosition: vi.fn(),
+  setParams: vi.fn(),
   setExpression: vi.fn(),
   getExpressions: vi.fn(() => ['happy', 'angry']),
   playMotion: vi.fn(),
@@ -34,6 +35,7 @@ const mockCubism2Instance = vi.hoisted(() => ({
   resize: vi.fn(),
   setScale: vi.fn(),
   setPosition: vi.fn(),
+  setParams: vi.fn(),
   setExpression: vi.fn(),
   getExpressions: vi.fn(() => ['blink']),
   playMotion: vi.fn(),
@@ -802,6 +804,44 @@ describe('l2D.setPosition()', () => {
     const { init } = await import('../src/index.ts');
     const l2d = init(makeCanvas());
     expect(() => l2d.setPosition(0, 0)).not.toThrow();
+  });
+});
+
+describe('l2D.setParams()', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
+  });
+
+  it('cubism6 加载后 setParams() 调用底层', async () => {
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
+    const { init } = await import('../src/index.ts');
+    const canvas = makeCanvas();
+    const l2d = init(canvas);
+    await l2d.load({ path: '/models/test.model3.json' });
+
+    vi.clearAllMocks();
+    l2d.setParams({ ParamEyeLOpen: 0, ParamA: 1 });
+    expect(mockCubism5Instance.setParams).toHaveBeenCalledWith({ ParamEyeLOpen: 0, ParamA: 1 });
+  });
+
+  it('cubism2 加载后 setParams() 调用底层', async () => {
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
+    const { init } = await import('../src/index.ts');
+    const canvas = makeCanvas();
+    const l2d = init(canvas);
+    await l2d.load({ path: '/models/test.model.json' });
+
+    vi.clearAllMocks();
+    l2d.setParams({ ParamAngleX: 15 });
+    expect(mockCubism2Instance.setParams).toHaveBeenCalledWith({ ParamAngleX: 15 });
+  });
+
+  it('未加载时 setParams() 不抛出错误', async () => {
+    const { init } = await import('../src/index.ts');
+    const l2d = init(makeCanvas());
+    expect(() => l2d.setParams({ ParamEyeLOpen: 0 })).not.toThrow();
   });
 });
 

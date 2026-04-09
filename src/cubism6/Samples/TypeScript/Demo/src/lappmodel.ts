@@ -703,6 +703,16 @@ export class LAppModel extends CubismUserModel {
     // UpdateSchedulerによる一括エフェクト更新
     this._updateScheduler.onLateUpdate(this._model, deltaTimeSeconds);
 
+    if (this._forcedParams != null) {
+      for (const [id, value] of Object.entries(this._forcedParams)) {
+        this._model.setParameterValueById(
+          CubismFramework.getIdManager().getId(id),
+          value,
+          1
+        );
+      }
+    }
+
     this._model.update();
   }
 
@@ -1139,6 +1149,7 @@ export class LAppModel extends CubismUserModel {
   _modelSetting: ICubismModelSetting; // モデルセッティング情報
   _modelHomeDir: string; // モデルセッティングが置かれたディレクトリ
   _userTimeSeconds: number; // デルタ時間の積算値[秒]
+  _forcedParams: Record<string, number> | null = null;
 
   _eyeBlinkIds: Array<CubismIdHandle>; // モデルに設定された瞬き機能用パラメータID
   _lipSyncIds: Array<CubismIdHandle>; // モデルに設定されたリップシンク機能用パラメータID

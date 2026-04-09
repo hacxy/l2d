@@ -192,6 +192,11 @@ class LAppModel extends L2DBaseModel {
     if (this.pose != null) {
       this.pose.updateParam(this.live2DModel);
     }
+    if (this._forcedParams != null) {
+      for (const [id, value] of Object.entries(this._forcedParams)) {
+        this.live2DModel.setParamFloat(id, value, 1);
+      }
+    }
     this.live2DModel.update();
   }
 

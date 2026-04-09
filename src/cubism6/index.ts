@@ -362,6 +362,12 @@ export class AppDelegate {
     subdelegate.getLive2DManager().setViewMatrix(view._viewMatrix);
   }
 
+  public setParams(params: Record<string, number>): void {
+    const model = this._subdelegates[0]?.getLive2DManager()?._models?.[0];
+    if (!model) return;
+    model._forcedParams = { ...params };
+  }
+
   public setScale(scale: number): void {
     const subdelegate = this._subdelegates[0];
     subdelegate._userScale = scale;

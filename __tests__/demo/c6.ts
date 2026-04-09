@@ -12,7 +12,9 @@ l2d.load({
   // scale: 1.2,
   // path: '/models/abeikelongbi_3/abeikelongbi_3.model3.json',
   // path: '/models/cg1/cg1.model3.json',
-  path: '/models/Haru/Haru.model3.json',
+  // path: '/models/Haru/Haru.model3.json',
+  path: 'https://model.hacxy.cn//Mao/Mao.model3.json',
+  showHitAreas: true,
   // position: [0, 0.2]
   scale: 0.4
 }).then(() => {
@@ -20,7 +22,6 @@ l2d.load({
   console.log(l2d.getMotionGroups());
   console.log(l2d.getMotionFiles());
   setTimeout(() => {
-    l2d.playMotionByFile('motions/haru_g_m26.motion3.json');
     // l2d.setScale(1);
     // l2d.setPosition(1, 0);
   }, 1000);

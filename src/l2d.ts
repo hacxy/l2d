@@ -160,6 +160,18 @@ class L2D extends Emitter<L2DEventMap> {
   }
 
   /**
+   * 批量设置模型参数值，参数 ID 可在模型的 `.cdi3.json` 文件中查看。
+   * 注意：SDK 内部的动画（呼吸、眨眼等）每帧都会更新参数，若需持续锁定需每帧调用。
+   * @example l2d.setParams({ ParamEyeLOpen: 0, ParamA: 1 })
+   */
+  setParams(params: Record<string, number>) {
+    if (this._state.currentVersion === 2 && this._state.l2d2Model)
+      this._state.l2d2Model.setParams(params);
+    else if (this._state.currentVersion !== null && this._state.l2d6Model)
+      this._state.l2d6Model.setParams(params);
+  }
+
+  /**
    * 销毁当前模型并释放 WebGL 资源，清空画布。
    * 画布 DOM 节点本身不会被移除。
    */
