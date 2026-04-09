@@ -11,7 +11,8 @@
       }
     </style>
 
-    <script type="module" src="./main.ts"></script>
+    <!-- <script type="module" src="./main.ts"></script> -->
+    <script src="./index.min.js"></script>
   </head>
   <body>
     <div style="display: flex">
@@ -19,5 +20,17 @@
       <canvas id="l2d2" style="width: 300px; height: 600px"></canvas>
       <!-- <button id="btn" style="height: 30px; position: absolute; top: 10px; left: 10px">说话</button> -->
     </div>
+    <script>
+      console.log(document.getElementById('l2d1'))
+      const l2d = L2D.init(document.getElementById('l2d1'))
+      console.log(l2d)
+      l2d
+        .load({
+          path: 'https://model.hacxy.cn/cat-black/model.json',
+        })
+        .then(() => {
+          console.log('加载成功')
+        })
+    </script>
   </body>
 </html>

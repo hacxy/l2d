@@ -35,4 +35,4 @@ jobs:
         run: pnpm build
 
       - name: Build Docs
-        run: pnpm docs:duild
+        run: pnpm docs:build

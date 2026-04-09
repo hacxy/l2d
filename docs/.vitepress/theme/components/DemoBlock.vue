@@ -42,8 +42,13 @@ async function runDemo() {
   const wrappedInit = (canvas: HTMLCanvasElement): L2D => {
     const l2d = init(canvas);
     isLoading.value = true;
+    const MIN_LOADING_MS = 400;
+    let loadStartTime = Date.now();
     l2d.on('loadstart', (total: number) => {
+      isLoading.value = true;
+      progress.value = 0;
       totalCount.value = total;
+      loadStartTime = Date.now();
     });
     l2d.on('loadprogress', (loaded, total, file) => {
       loadedCount.value = loaded;
@@ -51,8 +56,6 @@ async function runDemo() {
       progress.value = total > 0 ? Math.round((loaded / total) * 100) : 0;
       currentFile.value = file.split('/').pop() || file;
     });
-    const loadStartTime = Date.now();
-    const MIN_LOADING_MS = 400;
     l2d.on('loaded', () => {
       progress.value = 100;
       const elapsed = Date.now() - loadStartTime;

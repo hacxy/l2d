@@ -6,8 +6,8 @@ interface Canvas { value: HTMLCanvasElement }
 
 // 基础使用方式
 export function demo1(init: Init, l2dCanvas: Canvas, message: MessageApiInjection) {
-  // #region demo1
   const l2d = init(l2dCanvas.value);
+  // #region demo1
   l2d.load({
     path: 'https://model.hacxy.cn/cat-black/model.json',
   }).then(() => {
@@ -18,8 +18,8 @@ export function demo1(init: Init, l2dCanvas: Canvas, message: MessageApiInjectio
 
 // tap事件监听
 export function demo2(init: Init, l2dCanvas: Canvas, message: MessageApiInjection) {
-  // #region demo2
   const l2d = init(l2dCanvas.value);
+  // #region demo2
   l2d.load({
     path: 'https://model.hacxy.cn/shizuku/shizuku.model.json'
   }).then(() => {
@@ -34,6 +34,7 @@ export function demo2(init: Init, l2dCanvas: Canvas, message: MessageApiInjectio
 
 // 切换模型
 export function demo3(init: Init, l2dCanvas: Canvas, message: MessageApiInjection) {
+  const l2d = init(l2dCanvas.value);
   // #region demo3
   const models = [
     'https://model.hacxy.cn/cat-black/model.json',
@@ -41,10 +42,9 @@ export function demo3(init: Init, l2dCanvas: Canvas, message: MessageApiInjectio
   ];
   let current = 0;
 
-  const l2d = init(l2dCanvas.value);
   l2d.load({ path: models[current] });
 
-  let countdown = 5;
+  let countdown = 3;
   const msg = message.info(`${countdown} 秒后切换模型`, { duration: 0 });
   const timer = setInterval(async () => {
     countdown--;
@@ -55,7 +55,8 @@ export function demo3(init: Init, l2dCanvas: Canvas, message: MessageApiInjectio
       clearInterval(timer);
       msg.destroy();
       current = (current + 1) % models.length;
-      await l2d.load({ path: models[current] });
+      l2d.destroy(); // 销毁当前模型模型
+      await l2d.load({ path: models[current] }); // 切换到下一个模型
       message.success('模型已切换');
     }
   }, 1000);
