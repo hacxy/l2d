@@ -70,8 +70,8 @@ function onLoaded() {
     return;
 
   let featuresShown = false;
-  l2d.on('motionend', () => {
-    if (featuresShown)
+  l2d.on('motionend', (_group, _index, file) => {
+    if (featuresShown || file !== 'motions/login.motion3.json')
       return;
     featuresShown = true;
     document.body.classList.add('features-visible');

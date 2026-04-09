@@ -462,11 +462,12 @@ export class AppDelegate {
       ? index
       : Math.floor(Math.random() * model._modelSetting.getMotionCount(group));
     const canvas = this._canvas;
+    const file = model._modelSetting.getMotionFileName(group, resolvedIndex);
     const onBegan = (_motion: any) => window.dispatchEvent(new CustomEvent(EVENTS.MOTION_START, {
-      detail: { canvas, group, index: resolvedIndex, duration: _motion.getLoopDuration() },
+      detail: { canvas, group, index: resolvedIndex, duration: _motion.getLoopDuration(), file },
     }));
     const onFinished = (_motion: any) => window.dispatchEvent(new CustomEvent(EVENTS.MOTION_END, {
-      detail: { canvas, group, index: resolvedIndex },
+      detail: { canvas, group, index: resolvedIndex, file },
     }));
     model.startMotion(group, resolvedIndex, priority, onFinished, onBegan);
   }

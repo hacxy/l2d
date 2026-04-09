@@ -26,8 +26,8 @@ export interface L2DEventMap {
   expressionstart: (id: string) => void
   /** 表情播放结束 */
   expressionend: () => void
-  /** 动作开始播放，`group` 为动作组名，`index` 为动作索引 */
-  motionstart: (group: string, index: number | undefined, duration: number | null) => void
-  /** 动作播放结束，`group` 为动作组名，`index` 为动作索引 */
-  motionend: (group: string, index: number | undefined) => void
+  /** 动作开始播放，`group` 为动作组名，`index` 为动作索引，`file` 为动作文件名 */
+  motionstart: (group: string, index: number | undefined, duration: number | null, file: string | null) => void
+  /** 动作播放结束，`group` 为动作组名，`index` 为动作索引，`file` 为动作文件名 */
+  motionend: (group: string, index: number | undefined, file: string | null) => void
 }

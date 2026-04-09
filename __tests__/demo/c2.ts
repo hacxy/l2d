@@ -13,14 +13,16 @@ l2d.load({
 }).then(() => {
   console.log('模型已准备就绪, ===> then');
   l2d.showHitAreas(true);
+  console.log(l2d.getMotionFiles());
   setTimeout(() => {
     // l2d.setScale(0.5);
     // l2d.setPosition(1, 0);
+    l2d.playMotionByFile('motions/flickHead_00.mtn');
   }, 1000);
 });
 
-l2d.on('tap', areaName => {
-  console.log(areaName);
+l2d.on('motionstart', (group, index, duration, file) => {
+  console.log(group, index, duration, file);
 });
 
 // l2d.on('motionstart', (group, index) => {

@@ -20,11 +20,12 @@ l2d.load({
   console.log(l2d.getMotionGroups());
   console.log(l2d.getMotionFiles());
   setTimeout(() => {
-    l2d.setScale(1);
-    l2d.setPosition(1, 0);
+    l2d.playMotionByFile('motions/haru_g_m26.motion3.json');
+    // l2d.setScale(1);
+    // l2d.setPosition(1, 0);
   }, 1000);
 });
 
-l2d.on('motionstart', gourp => {
-  console.log(gourp);
+l2d.on('motionstart', (group, index, duration, file) => {
+  console.log(group, index, duration, file);
 });
