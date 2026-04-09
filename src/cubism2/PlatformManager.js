@@ -1,8 +1,9 @@
 import logger from '../logger.js';
 class PlatformManager {
-  constructor(canvas) {
+  constructor(canvas, glContextIndex = 0) {
     this.cache = {};
     this.canvas = canvas;
+    this.glContextIndex = glContextIndex;
   }
 
   loadBytes(path, callback) {
@@ -20,7 +21,7 @@ class PlatformManager {
   loadLive2DModel(path, callback) {
     let model = null;
     this.loadBytes(path, buf => {
-      model = Live2DModelWebGL.loadModel(buf);
+      model = Live2DModelWebGL.loadModel(buf, this.glContextIndex);
       callback(model);
     });
   }

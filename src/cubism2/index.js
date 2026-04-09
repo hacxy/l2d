@@ -9,30 +9,14 @@ import MatrixStack from './utils/MatrixStack.js';
 // (Live2DFramework.platformManager and texCounter are module-level globals)
 let _loadQueue = Promise.resolve();
 
-function normalizePoint(x, y, x0, y0, w, h) {
-  const dx = x - x0;
-  const dy = y - y0;
-  let targetX = 0; let targetY = 0;
-  if (dx >= 0) {
-    targetX = dx / (w - x0);
-  }
-  else {
-    targetX = dx / x0;
-  }
-  if (dy >= 0) {
-    targetY = dy / (h - y0);
-  }
-  else {
-    targetY = dy / y0;
-  }
-  return {
-    vx: targetX,
-    vy: -targetY
-  };
-}
+// Each Cubism2 instance gets a unique GL context index so that
+// Q.glContext[i], Q.frameBuffers[i] and Q.fTexture[i] are fully isolated.
+let _nextGlIndex = 0;
+
 class Cubism2Model {
   constructor(canvas) {
-    this.live2DMgr = new LAppLive2DManager(canvas);
+    this._glContextIndex = _nextGlIndex++;
+    this.live2DMgr = new LAppLive2DManager(canvas, this._glContextIndex);
     this.isDrawStart = false;
     this.gl = null;
     this.canvas = null;
@@ -95,7 +79,7 @@ class Cubism2Model {
       }
       // Activate this model's PlatformManager and GL context right before loading
       this.live2DMgr.activatePlatformManager();
-      Live2D.setGL(this.gl);
+      Live2D.setGL(this.gl, this._glContextIndex);
       this.live2DMgr.onLoadStart = (total) => window.dispatchEvent(new CustomEvent(EVENTS.LOAD_START, { detail: { canvas: this.canvas, total } }));
       this.live2DMgr.onProgress = (loaded, total, file) => window.dispatchEvent(new CustomEvent(EVENTS.LOAD_PROGRESS, { detail: { canvas: this.canvas, loaded, total, file } }));
       this.live2DMgr.onMotionStart = ({ group, index, duration, file }) => window.dispatchEvent(new CustomEvent(EVENTS.MOTION_START, { detail: { canvas: this.canvas, group, index, duration, file } }));
@@ -248,16 +232,10 @@ class Cubism2Model {
 
   modelTurnHead(event) {
     const rect = this.canvas.getBoundingClientRect();
-    const { vx, vy } = normalizePoint(event.clientX, event.clientY, rect.left + rect.width / 2, rect.top + rect.height / 2, window.innerWidth, window.innerHeight);
-    logger.trace(`onMouseDown device( x:${
-      event.clientX
-    } y:${
-      event.clientY
-    } ) view( x:${
-      vx
-    } y:${
-      vy
-    })`);
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const vx = Math.max(-1, Math.min(1, (event.clientX - centerX) / (rect.width / 2)));
+    const vy = Math.max(-1, Math.min(1, -(event.clientY - centerY) / (rect.height / 2)));
     this.dragMgr.setPoint(vx, vy);
     const canvasX = (event.clientX - rect.left) * (this.canvas.width / rect.width);
     const canvasY = (event.clientY - rect.top) * (this.canvas.height / rect.height);
@@ -277,16 +255,10 @@ class Cubism2Model {
 
   followPointer(event) {
     const rect = this.canvas.getBoundingClientRect();
-    const { vx, vy } = normalizePoint(event.clientX, event.clientY, rect.left + rect.width / 2, rect.top + rect.height / 2, window.innerWidth, window.innerHeight);
-    logger.trace(`onMouseMove device( x:${
-      event.clientX
-    } y:${
-      event.clientY
-    } ) view( x:${
-      vx
-    } y:${
-      vy
-    })`);
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const vx = Math.max(-1, Math.min(1, (event.clientX - centerX) / (rect.width / 2)));
+    const vy = Math.max(-1, Math.min(1, -(event.clientY - centerY) / (rect.height / 2)));
     this.dragMgr.setPoint(vx, vy);
   }
 

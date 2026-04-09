@@ -5,10 +5,10 @@ import { Live2DFramework } from './Live2DFramework.js';
 import PlatformManager from './PlatformManager.js';
 
 class LAppLive2DManager {
-  constructor(canvas) {
+  constructor(canvas, glContextIndex = 0) {
     this.model = null;
     this.reloading = false;
-    this.platformManager = new PlatformManager(canvas);
+    this.platformManager = new PlatformManager(canvas, glContextIndex);
     Live2D.init();
   }
 
