@@ -10,14 +10,20 @@ l2d.load({
   path: 'https://model.hacxy.cn/Pio/model.json'
 }).then(() => {
   console.log('模型已准备就绪, ===> then');
-  l2d.showHitAreas(true);
-  console.log(l2d.getMotionFiles());
-  setTimeout(() => {
-    // l2d.setScale(0.5);
-    // l2d.setPosition(1, 0);
-    l2d.playMotionByFile('motions/flickHead_00.mtn');
-  }, 1000);
 });
+
+// l2d.on('loaded', () => {
+//   const model = l2d._state.l2d2Model?.live2DMgr?.getModel();
+//   if (model?.modelSetting) {
+//     const ids = model.live2DModel.getModelContext()?._$aS?.map(d => d?.getDrawDataID()?.id).filter(Boolean) ?? [];
+
+//     // 把所有 drawable 临时设为 hit_areas，名称就是 ID，方便 overlay 显示
+//     model.modelSetting.json.hit_areas = ids.map(id => ({ name: id, id }));
+//   }
+//   setTimeout(() => {
+//     l2d.showHitAreas(true);
+//   }, 0);
+// });
 
 l2d.on('motionstart', (group, index, duration, file) => {
   console.log(group, index, duration, file);

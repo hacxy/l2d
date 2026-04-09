@@ -19,7 +19,18 @@
       "Bash(grep -oE \".{100}Q\\\\.getGL\\\\\\([a-zA-Z_\\\\$]+\\\\\\).{100}\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
       "Bash(grep -oE \"glno[^;]{0,50}\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
       "Bash(grep -oE \"_\\\\\\\\\\\\$62=function[^;]{0,200}\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
-      "Bash(grep -oE \"new C\\\\\\([^\\)]{0,30}\\\\\\)\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)"
+      "Bash(grep -oE \"new C\\\\\\([^\\)]{0,30}\\\\\\)\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
+      "Bash(grep -oE \"getDrawData[a-zA-Z_]*=function[^;]{0,60}\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
+      "Bash(grep -oE \"[a-zA-Z_$]{3,30}=function[^\\(]*\\\\\\(\\\\\\)[^{]*\\\\{return this\\\\._\\\\$[a-zA-Z0-9_$]{1,5}\\\\}\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
+      "Bash(grep -oE \"l\\\\.prototype\\\\.[a-zA-Z_$]+=function\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
+      "Bash(grep -oE \"aa\\\\.prototype\\\\.[a-zA-Z_$]+=function\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
+      "Bash(grep -oE \"getModelContext=function\\\\\\(\\\\\\)\\\\{[^}]{0,100}\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
+      "Bash(grep -oE \".{30}getDrawDataList=function\\\\\\(\\\\\\)\\\\{[^}]{0,50}\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
+      "Bash(grep -oE \"aq\\\\.prototype\\\\.[a-zA-Z_$]+=function\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
+      "Bash(grep -oE \"_\\\\\\\\\\\\$5S=[^;]{0,80}\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
+      "Bash(grep -oE \"y\\\\.prototype\\\\.[a-zA-Z_$]+=function\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
+      "Bash(grep -oE \"y\\\\.prototype\\\\.getDrawData=function[^;]{0,100}\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
+      "Bash(grep -oE \"y\\\\.prototype\\\\.getDrawData=function\\\\\\(aH\\\\\\)\\\\{[^}]{0,200}\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)"
     ]
   }
 }
