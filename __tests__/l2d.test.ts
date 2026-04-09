@@ -319,10 +319,10 @@ describe('l2D — CustomEvent 事件桥接', () => {
     l2d.on('motionstart', fn);
 
     window.dispatchEvent(new CustomEvent('live2d:motionstart', {
-      detail: { canvas, group: 'Idle', index: 1, duration: 2000 },
+      detail: { canvas, group: 'Idle', index: 1, duration: 2000, file: 'motions/idle_01.motion3.json' },
     }));
 
-    expect(fn).toHaveBeenCalledWith('Idle', 1, 2000);
+    expect(fn).toHaveBeenCalledWith('Idle', 1, 2000, 'motions/idle_01.motion3.json');
   });
 
   it('live2d:motionstart 携带 null duration 时传递 null', async () => {
@@ -337,7 +337,7 @@ describe('l2D — CustomEvent 事件桥接', () => {
       detail: { canvas, group: 'Tap', index: 0 },
     }));
 
-    expect(fn).toHaveBeenCalledWith('Tap', 0, null);
+    expect(fn).toHaveBeenCalledWith('Tap', 0, null, null);
   });
 
   it('live2d:motionend 触发 motionend 事件', async () => {
@@ -349,10 +349,25 @@ describe('l2D — CustomEvent 事件桥接', () => {
     l2d.on('motionend', fn);
 
     window.dispatchEvent(new CustomEvent('live2d:motionend', {
+      detail: { canvas, group: 'Idle', index: 0, file: 'motions/idle_01.motion3.json' },
+    }));
+
+    expect(fn).toHaveBeenCalledWith('Idle', 0, 'motions/idle_01.motion3.json');
+  });
+
+  it('live2d:motionend 不携带 file 时传递 null', async () => {
+    const { init } = await import('../src/index.ts');
+    const canvas = makeCanvas();
+    const l2d = init(canvas);
+
+    const fn = vi.fn();
+    l2d.on('motionend', fn);
+
+    window.dispatchEvent(new CustomEvent('live2d:motionend', {
       detail: { canvas, group: 'Idle', index: 0 },
     }));
 
-    expect(fn).toHaveBeenCalledWith('Idle', 0);
+    expect(fn).toHaveBeenCalledWith('Idle', 0, null);
   });
 
   it('live2d:expressionstart 触发 expressionstart 事件', async () => {

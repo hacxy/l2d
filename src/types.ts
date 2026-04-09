@@ -11,6 +11,10 @@ export interface Options {
    * @example 0.5
    */
   scale?: number
+  /**
+   * 是否显示 hit area 可视化边界框，默认 `false`
+   */
+  showHitAreas?: boolean
 }
 
 export interface L2DEventMap {

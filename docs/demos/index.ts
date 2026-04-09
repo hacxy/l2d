@@ -21,9 +21,8 @@ export function demo2(init: Init, l2dCanvas: Canvas, message: MessageApiInjectio
   const l2d = init(l2dCanvas.value);
   // #region demo2
   l2d.load({
-    path: 'https://model.hacxy.cn/shizuku/shizuku.model.json'
-  }).then(() => {
-    l2d.showHitAreas(true);
+    path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
+    showHitAreas: true
   });
 
   l2d.on('tap', areaName => {

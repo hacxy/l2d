@@ -54,7 +54,10 @@ class L2D extends Emitter<L2DEventMap> {
       canvas: this.canvas,
       state: this._state,
       resize: () => this.resize(),
-      emit: () => this.emit('loaded'),
+      emit: () => {
+        this.emit('loaded');
+        this.showHitAreas(options.showHitAreas ?? false);
+      },
       replaceCanvas: () => this._replaceCanvas(),
     }, options);
   }

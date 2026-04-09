@@ -9,7 +9,8 @@
       "Bash(node -e \"require.resolve\\('shiki'\\)\")",
       "Bash(node -e \"require.resolve\\('naive-ui'\\)\")",
       "WebFetch(domain:model.hacxy.cn)",
-      "Bash(grep -v \":$\")"
+      "Bash(grep -v \":$\")",
+      "Bash(npx vitest:*)"
     ]
   }
 }
