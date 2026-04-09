@@ -32,6 +32,7 @@ export class HitAreaOverlay {
       overlay.style.top = `${rect.top}px`;
       overlay.style.width = `${rect.width}px`;
       overlay.style.height = `${rect.height}px`;
+      overlay.style.zIndex = '9999';
 
       ctx.clearRect(0, 0, overlay.width, overlay.height);
       for (const b of this.getBounds()) {

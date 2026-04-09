@@ -13,7 +13,7 @@ async function main() {
 
   // ...模型创建完成
 
-  model.setPosition([50, 50]); // 重新设置位置
+  model.setPosition([0.2, -0,2]); // 重新设置位置
 }
 ```
 

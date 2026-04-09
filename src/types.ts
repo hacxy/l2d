@@ -2,13 +2,13 @@ export interface Options {
   /** 模型配置文件路径（`.model.json` 或 `.model3.json`） */
   path: string
   /**
-   * 模型在画布中的位置偏移，`[x, y]` 以画布半高为单位（1 = 半个画布高度），两个版本行为一致
+   * 模型位置偏移 `[x, y]`，`x` 正值右移，`y` 正值上移
    * @example [0.5, -0.2]
    */
   position?: [x: number, y: number]
   /**
    * 模型缩放比例，`1` 为原始大小
-   * @example 1.5
+   * @example 0.5
    */
   scale?: number
 }

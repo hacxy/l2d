@@ -49,6 +49,7 @@ export function load(app) {
       }).join('\n\n***\n\n');
     }
 
+    page.contents = page.contents.replace(/## Extends\n\n- .+\n\n/g, '');
     page.contents = page.contents.replace(/## Properties/g, '');
     page.contents = page.contents.replace(/## Methods/g, '## 方法');
     page.contents = page.contents.replace(/## Enumeration Members/g, '');

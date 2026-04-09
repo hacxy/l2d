@@ -33,3 +33,6 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: Build Docs
+        run: pnpm docs:duild

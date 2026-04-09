@@ -11,8 +11,8 @@
   "keywords": [
     "Live2D",
     "cubism2",
-    "cubism5",
-    "Live2D Component"
+    "cubism6",
+    "Live2D for Web"
   ],
   "main": "index.js",
   "module": "dist/index.js",
