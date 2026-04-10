@@ -1,6 +1,6 @@
 ---
 group:
-  text: 指南
+  text: 能力
   sort: 2
 ---
 

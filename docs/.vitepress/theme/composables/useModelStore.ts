@@ -6,7 +6,7 @@ export interface ModelItem {
   dir: string
   file: string
   path: string
-  version: 2 | 5
+  version: 2 | 6
 }
 
 const models = ref<ModelItem[]>([]);
@@ -30,8 +30,8 @@ function parseLinks(html: string): string[] {
     .filter(h => !h.startsWith('?') && h !== '../');
 }
 
-function getVersion(file: string): 2 | 5 {
-  return file.endsWith('.model3.json') ? 5 : 2;
+function getVersion(file: string): 2 | 6 {
+  return file.endsWith('.model3.json') ? 6 : 2;
 }
 
 export async function prefetchModels() {
