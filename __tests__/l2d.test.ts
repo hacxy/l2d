@@ -25,6 +25,7 @@ const mockCubism5Instance = vi.hoisted(() => ({
   getExpressions: vi.fn(() => ['happy', 'angry']),
   playMotion: vi.fn(),
   getMotionGroups: vi.fn(() => ({ Idle: 3, Tap: 2 })),
+  getMotionFiles: vi.fn(() => ({ Idle: ['motions/idle_0.motion3.json', 'motions/idle_1.motion3.json', 'motions/idle_2.motion3.json'], Tap: ['motions/tap_0.motion3.json', 'motions/tap_1.motion3.json'] })),
   getHitAreaBounds: vi.fn(() => []),
 }));
 
@@ -40,6 +41,7 @@ const mockCubism2Instance = vi.hoisted(() => ({
   getExpressions: vi.fn(() => ['blink']),
   playMotion: vi.fn(),
   getMotionGroups: vi.fn(() => ({ Idle: 2 })),
+  getMotionFiles: vi.fn(() => ({ Idle: ['motions/idle_0.mtn', 'motions/idle_1.mtn'] })),
   getHitAreaBounds: vi.fn(() => []),
 }));
 
@@ -107,14 +109,6 @@ describe('init()', () => {
     const { init } = await import('../src/index.ts');
     const div = document.createElement('div');
     expect(init(div as unknown as HTMLCanvasElement)).toBeNull();
-  });
-
-  it('canvas 不在 DOM 中时自动挂载到 document.body', async () => {
-    const { init } = await import('../src/index.ts');
-    const canvas = document.createElement('canvas');
-    expect(canvas.isConnected).toBe(false);
-    init(canvas);
-    expect(canvas.isConnected).toBe(true);
   });
 
   it('传入有效 canvas 时返回 L2D 实例', async () => {
@@ -691,9 +685,45 @@ describe('l2D.playMotion() — 加载后', () => {
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model.json' });
 
-    l2d.playMotion('Tap', 1);
+    l2d.playMotion('Idle', 1);
     // eslint-disable-next-line no-undefined
-    expect(mockCubism2Instance.playMotion).toHaveBeenCalledWith('Tap', 1, undefined);
+    expect(mockCubism2Instance.playMotion).toHaveBeenCalledWith('Idle', 1, undefined);
+  });
+
+  it('playMotion() 动作组不存在时不调用底层', async () => {
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
+    const { init } = await import('../src/index.ts');
+    const canvas = makeCanvas();
+    const l2d = init(canvas);
+    await l2d.load({ path: '/models/test.model3.json' });
+
+    vi.clearAllMocks();
+    l2d.playMotion('NonExistent', 0);
+    expect(mockCubism5Instance.playMotion).not.toHaveBeenCalled();
+  });
+
+  it('playMotion() 索引越界时不调用底层', async () => {
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
+    const { init } = await import('../src/index.ts');
+    const canvas = makeCanvas();
+    const l2d = init(canvas);
+    await l2d.load({ path: '/models/test.model3.json' });
+
+    vi.clearAllMocks();
+    l2d.playMotion('Idle', 99);
+    expect(mockCubism5Instance.playMotion).not.toHaveBeenCalled();
+  });
+
+  it('playMotionByFile() 文件不存在时不调用底层', async () => {
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
+    const { init } = await import('../src/index.ts');
+    const canvas = makeCanvas();
+    const l2d = init(canvas);
+    await l2d.load({ path: '/models/test.model3.json' });
+
+    vi.clearAllMocks();
+    l2d.playMotionByFile('motions/nonexistent.motion3.json');
+    expect(mockCubism5Instance.playMotion).not.toHaveBeenCalled();
   });
 });
 

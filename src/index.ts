@@ -20,7 +20,6 @@ export function init(canvasEl: HTMLCanvasElement | null): L2D | null {
     logger.error('Target element node is not a canvas element.');
     return null;
   }
-
   return new L2D(canvasEl);
 }
 export type { L2DEventMap, Options } from './types.js';
