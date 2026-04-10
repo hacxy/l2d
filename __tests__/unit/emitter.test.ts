@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { Emitter } from '../src/emitter';
+import { Emitter } from '../../src/emitter';
 
 interface TestEventMap {
   greet: (name: string) => void

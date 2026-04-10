@@ -4,10 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>l2d demo</title>
-    <link rel="stylesheet" href="./style.css" />
-    <link rel="stylesheet" href="./style-loading.css" />
-    <link rel="stylesheet" href="./style-console.css" />
-    <link rel="stylesheet" href="./style-models.css" />
+    <link rel="stylesheet" href="./styles/layout.css" />
+    <link rel="stylesheet" href="./styles/loading.css" />
+    <link rel="stylesheet" href="./styles/code.css" />
+    <link rel="stylesheet" href="./styles/console.css" />
+    <link rel="stylesheet" href="./styles/models.css" />
     <script type="module" src="./main.ts"></script>
   </head>
   <body>
@@ -24,9 +25,18 @@
       <div id="console-panel">
         <div class="console-header">
           <span>Console</span>
+          <button id="console-toggle">折叠</button>
           <button id="console-clear">清空</button>
         </div>
         <div id="console-log"></div>
+      </div>
+      <div id="code-panel" class="collapsed">
+        <div class="code-header">
+          <span>Setup</span>
+          <span id="code-file" class="code-file"></span>
+          <button id="code-toggle">展开</button>
+        </div>
+        <div id="code-view"><pre></pre></div>
       </div>
     </div>
     <aside id="model-panel">

@@ -1,0 +1,72 @@
+#code-panel {
+  height: 240px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid #2a2a2a;
+  background: #0d0d0d;
+  transition: height 0.2s;
+}
+
+#code-panel.collapsed {
+  height: auto;
+}
+
+#code-panel.collapsed #code-view {
+  display: none;
+}
+
+#code-panel .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 12px;
+  border-bottom: 1px solid #1e1e1e;
+  flex-shrink: 0;
+}
+
+#code-panel .code-header button {
+  background: none;
+  border: none;
+  color: #444;
+  cursor: pointer;
+  font-size: 10px;
+  padding: 0 4px;
+}
+
+#code-panel .code-header button:hover {
+  color: #888;
+}
+
+#code-panel .code-header span {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #444;
+}
+
+#code-panel .code-header .code-file {
+  font-size: 10px;
+  font-weight: normal;
+  letter-spacing: 0;
+  text-transform: none;
+  font-family: monospace;
+  color: #4a4a6a;
+}
+
+#code-view {
+  flex: 1;
+  overflow: auto;
+  padding: 8px 12px;
+}
+
+#code-view pre {
+  margin: 0;
+  font-size: 11px;
+  font-family: 'Fira Code', 'Cascadia Code', monospace;
+  line-height: 1.6;
+  color: #c0c0c0;
+  white-space: pre;
+  tab-size: 2;
+}

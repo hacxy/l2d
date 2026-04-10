@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import logger from '../src/logger';
+import logger from '../../src/logger';
 
 // logger 是模块级单例，每个测试前后需要还原 level
 beforeEach(() => {

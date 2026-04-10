@@ -41,7 +41,14 @@
       "Bash(awk '{printf \"index.js gzip: %.2f kB\\\\n\", $1/1024}')",
       "Bash(gzip -c dist/index.min.js)",
       "Bash(awk '{printf \"index.min.js gzip: %.2f kB\\\\n\", $1/1024}')",
-      "Read(//Users/hacxy/__tests__/**)"
+      "Read(//Users/hacxy/__tests__/**)",
+      "Bash(ls /Users/hacxy/Projects/l2d/__tests__/style*.css)",
+      "Bash(grep -n \"^// ──\\\\|^$\" /Users/hacxy/Projects/l2d/__tests__/main.ts)",
+      "Bash(sed -n '140,145p' /Users/hacxy/Projects/l2d/__tests__/main.ts)",
+      "Bash(sed -n '169,174p' /Users/hacxy/Projects/l2d/__tests__/main.ts)",
+      "Bash(sed -n '223,228p' /Users/hacxy/Projects/l2d/__tests__/main.ts)",
+      "Bash(grep -c \"^$\" /Users/hacxy/Projects/l2d/__tests__/main.ts)",
+      "Bash(awk '/^$/{blank++; if\\(blank>1\\) print NR\": double blank\"} /^./{blank=0}' /Users/hacxy/Projects/l2d/__tests__/main.ts)"
     ]
   }
 }

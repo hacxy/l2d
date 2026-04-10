@@ -44,18 +44,18 @@ const mockCubism2Instance = vi.hoisted(() => ({
 // ---------------------------------------------------------------------------
 
 // 浏览器 SDK 副作用 import，在 jsdom 中直接忽略
-vi.mock('../src/vendor/lib/cubism2.js', () => ({}));
-vi.mock('../src/vendor/lib/live2dcubismcore.js', () => ({}));
+vi.mock('../../src/vendor/lib/cubism2.js', () => ({}));
+vi.mock('../../src/vendor/lib/live2dcubismcore.js', () => ({}));
 
 // Arrow functions cannot be used as constructors (`new ArrowFn()` throws).
 // Regular function declarations return the mock instance via the JS spec:
 // if a constructor returns an object, `new Ctor()` yields that object.
-vi.mock('../src/vendor/cubism6/index.ts', () => {
+vi.mock('../../src/vendor/cubism6/index.ts', () => {
   function AppDelegate() { return mockCubism5Instance; }
   return { AppDelegate };
 });
 
-vi.mock('../src/vendor/cubism2/index.js', () => {
+vi.mock('../../src/vendor/cubism2/index.js', () => {
   function Cubism2Model() { return mockCubism2Instance; }
   return { default: Cubism2Model };
 });
@@ -90,18 +90,18 @@ const CUBISM2_JSON = { model: 'test.moc' };
 
 describe('init()', () => {
   it('传入 null 时返回 null', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     expect(init(null)).toBeNull();
   });
 
   it('传入非 canvas 元素时返回 null', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const div = document.createElement('div');
     expect(init(div as unknown as HTMLCanvasElement)).toBeNull();
   });
 
   it('传入有效 canvas 时返回 L2D 实例', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     expect(l2d).toBeDefined();
@@ -115,7 +115,7 @@ describe('l2D — 未加载模型时的守卫行为', () => {
 
   beforeEach(async () => {
     canvas = makeCanvas();
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     // 使用 let 保持实例引用；这里借 canvas 验证 init 不抛出
     init(canvas);
   });
@@ -126,19 +126,19 @@ describe('l2D — 未加载模型时的守卫行为', () => {
   });
 
   it('getMotions() 未加载时返回空对象', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const l2d = init(makeCanvas());
     expect(l2d.getMotions()).toEqual({});
   });
 
   it('getExpressions() 未加载时返回空数组', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const l2d = init(makeCanvas());
     expect(l2d.getExpressions()).toEqual([]);
   });
 
   it('playMotion() 未加载时不抛出错误', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const l2d = init(makeCanvas());
     expect(() => l2d.playMotion('Idle', 0)).not.toThrow();
   });
@@ -153,7 +153,7 @@ describe('l2D.load() — Cubism5', () => {
 
   it('加载成功后触发 loaded 事件', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -166,7 +166,7 @@ describe('l2D.load() — Cubism5', () => {
 
   it('加载后 getMotions() 返回模型数据', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -176,7 +176,7 @@ describe('l2D.load() — Cubism5', () => {
 
   it('加载后 getExpressions() 返回表情列表', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -186,7 +186,7 @@ describe('l2D.load() — Cubism5', () => {
 
   it('fetch 失败时不触发 loaded 事件', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, statusText: 'Not Found' }));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -199,7 +199,7 @@ describe('l2D.load() — Cubism5', () => {
 
   it('传入 position 选项后调用 setPosition', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -217,7 +217,7 @@ describe('l2D.load() — Cubism2', () => {
 
   it('加载成功后触发 loaded 事件', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -230,7 +230,7 @@ describe('l2D.load() — Cubism2', () => {
 
   it('加载后 getMotions() 返回模型数据', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -248,7 +248,7 @@ describe('l2D.destroy()', () => {
 
   it('destroy() 后 getMotions() 返回空对象', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model3.json' });
@@ -259,7 +259,7 @@ describe('l2D.destroy()', () => {
 
   it('destroy() 后 getExpressions() 返回空数组', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model3.json' });
@@ -270,7 +270,7 @@ describe('l2D.destroy()', () => {
 
   it('destroy() 调用底层模型的 release()', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model3.json' });
@@ -281,7 +281,7 @@ describe('l2D.destroy()', () => {
 
   it('destroy() 触发 destroy 事件', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model3.json' });
@@ -301,7 +301,7 @@ describe('l2D — CustomEvent 事件桥接', () => {
   });
 
   it('window live2d:motionstart 触发 motionstart 事件', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -316,7 +316,7 @@ describe('l2D — CustomEvent 事件桥接', () => {
   });
 
   it('live2d:motionstart 携带 null duration 时传递 null', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -331,7 +331,7 @@ describe('l2D — CustomEvent 事件桥接', () => {
   });
 
   it('live2d:motionend 触发 motionend 事件', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -346,7 +346,7 @@ describe('l2D — CustomEvent 事件桥接', () => {
   });
 
   it('live2d:motionend 不携带 file 时传递 null', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -361,7 +361,7 @@ describe('l2D — CustomEvent 事件桥接', () => {
   });
 
   it('live2d:expressionstart 触发 expressionstart 事件', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -376,7 +376,7 @@ describe('l2D — CustomEvent 事件桥接', () => {
   });
 
   it('live2d:expressionend 触发 expressionend 事件', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -391,7 +391,7 @@ describe('l2D — CustomEvent 事件桥接', () => {
   });
 
   it('live2d:tapbody 触发 tap 事件', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -406,7 +406,7 @@ describe('l2D — CustomEvent 事件桥接', () => {
   });
 
   it('live2d:loadstart 触发 loadstart 事件', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -421,7 +421,7 @@ describe('l2D — CustomEvent 事件桥接', () => {
   });
 
   it('live2d:loadprogress 触发 loadprogress 事件', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -436,7 +436,7 @@ describe('l2D — CustomEvent 事件桥接', () => {
   });
 
   it('其他 canvas 触发的事件不影响当前实例', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas1 = makeCanvas();
     const canvas2 = makeCanvas();
     const l2d1 = init(canvas1);
@@ -464,7 +464,7 @@ describe('l2D.load() — Cubism5 补充分支', () => {
   it('initialize() 失败时不触发 loaded 事件', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
     mockCubism5Instance.initialize.mockReturnValueOnce(false);
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -477,7 +477,7 @@ describe('l2D.load() — Cubism5 补充分支', () => {
 
   it('传入数字 scale 时直接调用 setScale', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -487,7 +487,7 @@ describe('l2D.load() — Cubism5 补充分支', () => {
 
   it('不传 scale 时不调用 setScale', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -505,7 +505,7 @@ describe('l2D.load() — Cubism2 补充分支', () => {
 
   it('传入 position 选项后调用 setPosition', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -515,7 +515,7 @@ describe('l2D.load() — Cubism2 补充分支', () => {
 
   it('传入数字 scale 时直接调用 setScale', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -525,7 +525,7 @@ describe('l2D.load() — Cubism2 补充分支', () => {
 
   it('加载后 getExpressions() 返回表情列表', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -542,7 +542,7 @@ describe('l2D.load() — 版本切换替换 canvas', () => {
   });
 
   it('从 Cubism5 切换到 Cubism2 时 canvas 被替换', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -558,7 +558,7 @@ describe('l2D.load() — 版本切换替换 canvas', () => {
 
   it('同版本二次 load 不替换 canvas', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -578,7 +578,7 @@ describe('l2D.resize()', () => {
 
   it('cubism5 加载后 resize() 调用底层 resize', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model3.json' });
@@ -590,7 +590,7 @@ describe('l2D.resize()', () => {
 
   it('cubism2 加载后 resize() 调用底层 resize', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model.json' });
@@ -601,7 +601,7 @@ describe('l2D.resize()', () => {
   });
 
   it('未加载时 resize() 不抛出错误', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const l2d = init(makeCanvas());
     expect(() => l2d.resize()).not.toThrow();
   });
@@ -616,7 +616,7 @@ describe('l2D.setExpression()', () => {
 
   it('cubism5 加载后 setExpression() 调用底层', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model3.json' });
@@ -627,7 +627,7 @@ describe('l2D.setExpression()', () => {
 
   it('cubism2 加载后 setExpression() 调用底层', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model.json' });
@@ -637,7 +637,7 @@ describe('l2D.setExpression()', () => {
   });
 
   it('未加载时 setExpression() 不抛出错误', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const l2d = init(makeCanvas());
     expect(() => l2d.setExpression('happy')).not.toThrow();
   });
@@ -652,7 +652,7 @@ describe('l2D.playMotion() — 加载后', () => {
 
   it('cubism5 加载后 playMotion() 调用底层', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model3.json' });
@@ -663,7 +663,7 @@ describe('l2D.playMotion() — 加载后', () => {
 
   it('cubism2 加载后 playMotion() 调用底层', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model.json' });
@@ -675,7 +675,7 @@ describe('l2D.playMotion() — 加载后', () => {
 
   it('playMotion() 动作组不存在时不调用底层', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model3.json' });
@@ -687,7 +687,7 @@ describe('l2D.playMotion() — 加载后', () => {
 
   it('playMotion() 索引越界时不调用底层', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model3.json' });
@@ -699,7 +699,7 @@ describe('l2D.playMotion() — 加载后', () => {
 
   it('playMotionByFile() 文件不存在时不调用底层', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model3.json' });
@@ -718,14 +718,14 @@ describe('l2D.getHitAreaBounds()', () => {
   });
 
   it('未加载时返回空数组', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const l2d = init(makeCanvas());
     expect(l2d.getHitAreaBounds()).toEqual([]);
   });
 
   it('cubism5 加载后返回归一化坐标', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas(); // width=400, height=600
     const l2d = init(canvas);
     (mockCubism5Instance.getHitAreaBounds as ReturnType<typeof vi.fn>).mockReturnValueOnce([
@@ -740,7 +740,7 @@ describe('l2D.getHitAreaBounds()', () => {
 
   it('cubism2 加载后返回归一化坐标', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas(); // width=400, height=600
     const l2d = init(canvas);
     (mockCubism2Instance.getHitAreaBounds as ReturnType<typeof vi.fn>).mockReturnValueOnce([
@@ -763,7 +763,7 @@ describe('l2D.destroy() — Cubism2', () => {
 
   it('destroy() 调用 Cubism2 底层的 destroy()', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model.json' });
@@ -782,7 +782,7 @@ describe('l2D.load() — 二次加载清理旧模型', () => {
 
   it('cubism2 → Cubism2 二次 load 时调用旧模型的 destroy()', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -795,7 +795,7 @@ describe('l2D.load() — 二次加载清理旧模型', () => {
 
   it('cubism5 → Cubism5 二次 load 时调用旧模型的 release()', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
@@ -816,7 +816,7 @@ describe('l2D.setPosition()', () => {
 
   it('cubism6 加载后 setPosition() 调用底层', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model3.json' });
@@ -827,7 +827,7 @@ describe('l2D.setPosition()', () => {
 
   it('cubism2 加载后 setPosition() 调用底层', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model.json' });
@@ -837,7 +837,7 @@ describe('l2D.setPosition()', () => {
   });
 
   it('未加载时 setPosition() 不抛出错误', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const l2d = init(makeCanvas());
     expect(() => l2d.setPosition(0, 0)).not.toThrow();
   });
@@ -852,7 +852,7 @@ describe('l2D.setParams()', () => {
 
   it('cubism6 加载后 setParams() 调用底层', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model3.json' });
@@ -864,7 +864,7 @@ describe('l2D.setParams()', () => {
 
   it('cubism2 加载后 setParams() 调用底层', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model.json' });
@@ -875,7 +875,7 @@ describe('l2D.setParams()', () => {
   });
 
   it('未加载时 setParams() 不抛出错误', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const l2d = init(makeCanvas());
     expect(() => l2d.setParams({ ParamEyeLOpen: 0 })).not.toThrow();
   });
@@ -890,7 +890,7 @@ describe('l2D.setScale()', () => {
 
   it('cubism6 加载后 setScale() 调用底层', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model3.json' });
@@ -902,7 +902,7 @@ describe('l2D.setScale()', () => {
 
   it('cubism2 加载后 setScale() 调用底层', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await l2d.load({ path: '/models/test.model.json' });
@@ -913,7 +913,7 @@ describe('l2D.setScale()', () => {
   });
 
   it('未加载时 setScale() 不抛出错误', async () => {
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const l2d = init(makeCanvas());
     expect(() => l2d.setScale(1)).not.toThrow();
   });
@@ -928,7 +928,7 @@ describe('l2D.create() deprecated', () => {
 
   it('create() 等价于 load()，触发 loaded 事件', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
-    const { init } = await import('../src/index.ts');
+    const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { ensureCanvasElementInDOM } from '../src/utils/dom';
-import { checkModelVersion } from '../src/utils/model';
+import { ensureCanvasElementInDOM } from '../../src/utils/dom';
+import { checkModelVersion } from '../../src/utils/model';
 
 // ---------------------------------------------------------------------------
 // checkModelVersion
