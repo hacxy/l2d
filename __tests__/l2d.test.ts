@@ -136,10 +136,10 @@ describe('l2D — 未加载模型时的守卫行为', () => {
     vi.clearAllMocks();
   });
 
-  it('getMotionGroups() 未加载时返回空对象', async () => {
+  it('getMotions() 未加载时返回空对象', async () => {
     const { init } = await import('../src/index.ts');
     const l2d = init(makeCanvas());
-    expect(l2d.getMotionGroups()).toEqual({});
+    expect(l2d.getMotions()).toEqual({});
   });
 
   it('getExpressions() 未加载时返回空数组', async () => {
@@ -181,14 +181,14 @@ describe('l2D.load() — Cubism5', () => {
     expect(onLoaded).toHaveBeenCalledOnce();
   });
 
-  it('加载后 getMotionGroups() 返回模型数据', async () => {
+  it('加载后 getMotions() 返回模型数据', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
     const { init } = await import('../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
     await l2d.load({ path: '/models/test.model3.json' });
-    expect(l2d.getMotionGroups()).toEqual({ Idle: 3, Tap: 2 });
+    expect(l2d.getMotions()).toEqual({ Idle: ['motions/idle_0.motion3.json', 'motions/idle_1.motion3.json', 'motions/idle_2.motion3.json'], Tap: ['motions/tap_0.motion3.json', 'motions/tap_1.motion3.json'] });
   });
 
   it('加载后 getExpressions() 返回表情列表', async () => {
@@ -245,14 +245,14 @@ describe('l2D.load() — Cubism2', () => {
     expect(onLoaded).toHaveBeenCalledOnce();
   });
 
-  it('加载后 getMotionGroups() 返回模型数据', async () => {
+  it('加载后 getMotions() 返回模型数据', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
     const { init } = await import('../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
     await l2d.load({ path: '/models/test.model.json' });
-    expect(l2d.getMotionGroups()).toEqual({ Idle: 2 });
+    expect(l2d.getMotions()).toEqual({ Idle: ['motions/idle_0.mtn', 'motions/idle_1.mtn'] });
   });
 });
 
@@ -263,7 +263,7 @@ describe('l2D.destroy()', () => {
     vi.clearAllMocks();
   });
 
-  it('destroy() 后 getMotionGroups() 返回空对象', async () => {
+  it('destroy() 后 getMotions() 返回空对象', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
     const { init } = await import('../src/index.ts');
     const canvas = makeCanvas();
@@ -271,7 +271,7 @@ describe('l2D.destroy()', () => {
     await l2d.load({ path: '/models/test.model3.json' });
 
     l2d.destroy();
-    expect(l2d.getMotionGroups()).toEqual({});
+    expect(l2d.getMotions()).toEqual({});
   });
 
   it('destroy() 后 getExpressions() 返回空数组', async () => {

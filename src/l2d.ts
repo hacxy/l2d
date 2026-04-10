@@ -68,11 +68,6 @@ class L2D extends Emitter<L2DEventMap> {
     return this.load(options);
   }
 
-  /**
-   * 通知模型重新计算渲染尺寸以适配当前 canvas 大小。
-   *
-   * 当 canvas 的 `width` / `height` 属性发生变化后调用此方法，使模型填满新尺寸。
-   */
   resize() {
     if (this._state.currentVersion === 2 && this._state.l2d2Model)
       this._state.l2d2Model.resize();
@@ -102,17 +97,12 @@ class L2D extends Emitter<L2DEventMap> {
     this._motionCtrl.playMotion(group, index, priority);
   }
 
-  /** 获取所有动作组及其动作数量的映射，`{ 组名: 动作数 }` */
-  getMotionGroups(): Record<string, number> {
-    return this._motionCtrl.getMotionGroups();
-  }
-
   /**
-   * 获取所有动作文件路径，结构为 `{ 组名: [文件路径, ...] }`。
+   * 获取所有动作，结构为 `{ 组名: [文件路径, ...] }`。
    * 可用于配合 {@link playMotionByFile} 按文件路径播放动作。
    */
-  getMotionFiles(): Record<string, string[]> {
-    return this._motionCtrl.getMotionFiles();
+  getMotions(): Record<string, string[]> {
+    return this._motionCtrl.getMotions();
   }
 
   /**

@@ -47,8 +47,8 @@ export class MotionController {
       : this.state.l2d6Model!.getMotionGroups();
   }
 
-  getMotionFiles(): Record<string, string[]> {
-    if (!this.isReady('getMotionFiles'))
+  getMotions(): Record<string, string[]> {
+    if (!this.isReady('getMotions'))
       return {};
     return this.state.currentVersion === 2
       ? this.state.l2d2Model!.getMotionFiles()
@@ -56,7 +56,7 @@ export class MotionController {
   }
 
   playMotionByFile(file: string, priority?: number) {
-    const motionFiles = this.getMotionFiles();
+    const motionFiles = this.getMotions();
     for (const [group, files] of Object.entries(motionFiles)) {
       const index = files.findIndex(f => f === file || f.startsWith(`${file}.`));
       if (index !== -1) {

@@ -30,7 +30,18 @@
       "Bash(grep -oE \"_\\\\\\\\\\\\$5S=[^;]{0,80}\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
       "Bash(grep -oE \"y\\\\.prototype\\\\.[a-zA-Z_$]+=function\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
       "Bash(grep -oE \"y\\\\.prototype\\\\.getDrawData=function[^;]{0,100}\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
-      "Bash(grep -oE \"y\\\\.prototype\\\\.getDrawData=function\\\\\\(aH\\\\\\)\\\\{[^}]{0,200}\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)"
+      "Bash(grep -oE \"y\\\\.prototype\\\\.getDrawData=function\\\\\\(aH\\\\\\)\\\\{[^}]{0,200}\" /Users/hacxy/Projects/l2d/src/lib/cubism2.js)",
+      "Bash(pnpm build:*)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\({k:d[k] for k in ['main','module','exports'] if k in d}, indent=2\\)\\)\")",
+      "Bash(node -e ':*)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\('scripts',{}\\), indent=2\\)\\)\")",
+      "Bash(node -e \"import\\('/Users/hacxy/Projects/l2d/node_modules/.pnpm/esbuild@0.21.5/node_modules/esbuild/lib/main.js'\\).then\\(e => console.log\\('ok', Object.keys\\(e\\).slice\\(0,5\\)\\)\\)\")",
+      "Bash(node -e \"const esbuild = require\\('/Users/hacxy/Projects/l2d/node_modules/.pnpm/esbuild@0.21.5/node_modules/esbuild/lib/main.js'\\); console.log\\(Object.keys\\(esbuild\\).slice\\(0,5\\)\\)\")",
+      "Bash(gzip -c dist/index.js)",
+      "Bash(awk '{printf \"index.js gzip: %.2f kB\\\\n\", $1/1024}')",
+      "Bash(gzip -c dist/index.min.js)",
+      "Bash(awk '{printf \"index.min.js gzip: %.2f kB\\\\n\", $1/1024}')",
+      "Read(//Users/hacxy/__tests__/**)"
     ]
   }
 }

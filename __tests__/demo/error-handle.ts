@@ -12,8 +12,7 @@ l2d.load({
 }).then(() => {
   console.log('模型已准备就绪, ===> then');
   l2d.showHitAreas(true);
-  console.log(l2d.getMotionFiles());
-  console.log(l2d.getMotionGroups());
+  console.log(l2d.getMotions());
   setTimeout(() => {
     // l2d.setScale(0.5);
     // l2d.setPosition(1, 0);

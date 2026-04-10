@@ -19,8 +19,7 @@ l2d.load({
   scale: 0.4
 }).then(() => {
   console.log('模型已准备就绪');
-  console.log(l2d.getMotionGroups());
-  console.log(l2d.getMotionFiles());
+  console.log(l2d.getMotions());
   setTimeout(() => {
     // l2d.setScale(1);
     // l2d.setPosition(1, 0);
