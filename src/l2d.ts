@@ -191,6 +191,7 @@ class L2D extends Emitter<L2DEventMap> {
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
     }
+    this.emit('destroy');
   }
 }
 

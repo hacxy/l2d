@@ -34,4 +34,6 @@ export interface L2DEventMap {
   motionstart: (group: string, index: number | undefined, duration: number | null, file: string | null) => void
   /** 动作播放结束，`group` 为动作组名，`index` 为动作索引，`file` 为动作文件名 */
   motionend: (group: string, index: number | undefined, file: string | null) => void
+  /** 模型销毁，WebGL 资源释放完成 */
+  destroy: () => void
 }

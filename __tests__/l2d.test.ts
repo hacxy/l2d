@@ -303,6 +303,19 @@ describe('l2D.destroy()', () => {
     l2d.destroy();
     expect(mockCubism5Instance.release).toHaveBeenCalledOnce();
   });
+
+  it('destroy() 触发 destroy 事件', async () => {
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
+    const { init } = await import('../src/index.ts');
+    const canvas = makeCanvas();
+    const l2d = init(canvas);
+    await l2d.load({ path: '/models/test.model3.json' });
+
+    const fn = vi.fn();
+    l2d.on('destroy', fn);
+    l2d.destroy();
+    expect(fn).toHaveBeenCalledOnce();
+  });
 });
 
 describe('l2D — CustomEvent 事件桥接', () => {

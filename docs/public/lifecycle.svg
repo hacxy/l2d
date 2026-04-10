@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 740" font-family="ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, monospace">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#64748b"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#3b82f6"/>
+    </marker>
+    <marker id="arrow-orange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#f97316"/>
+    </marker>
+  </defs>
+
+  <!-- init -->
+  <rect x="160" y="20" width="200" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+  <text x="260" y="38" text-anchor="middle" fill="#94a3b8" font-size="11">调用</text>
+  <text x="260" y="55" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="600">init(canvas)</text>
+
+  <!-- arrow init -> load -->
+  <line x1="260" y1="64" x2="260" y2="96" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- load -->
+  <rect x="160" y="100" width="200" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+  <text x="260" y="118" text-anchor="middle" fill="#94a3b8" font-size="11">调用</text>
+  <text x="260" y="135" text-anchor="middle" fill="#e2e8f0" font-size="14" font-weight="600">load(options)</text>
+
+  <!-- arrow load -> loadstart -->
+  <line x1="260" y1="144" x2="260" y2="176" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- loadstart event -->
+  <rect x="130" y="180" width="260" height="40" rx="8" fill="#0f172a" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="260" y="196" text-anchor="middle" fill="#60a5fa" font-size="11">事件</text>
+  <text x="260" y="212" text-anchor="middle" fill="#93c5fd" font-size="13" font-weight="600">loadstart(total)</text>
+
+  <!-- arrow loadstart -> loadprogress -->
+  <line x1="260" y1="220" x2="260" y2="248" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- loadprogress event -->
+  <rect x="100" y="252" width="320" height="40" rx="8" fill="#0f172a" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="260" y="268" text-anchor="middle" fill="#60a5fa" font-size="11">事件（每个文件）</text>
+  <text x="260" y="284" text-anchor="middle" fill="#93c5fd" font-size="13" font-weight="600">loadprogress(loaded, total, file)</text>
+
+  <!-- self-loop for loadprogress -->
+  <path d="M420,272 C460,272 460,290 420,290" stroke="#3b82f6" stroke-width="1.2" fill="none" stroke-dasharray="4,3"/>
+  <text x="465" y="284" fill="#60a5fa" font-size="10">×N</text>
+
+  <!-- arrow loadprogress -> loaded -->
+  <line x1="260" y1="292" x2="260" y2="320" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- loaded event -->
+  <rect x="130" y="324" width="260" height="40" rx="8" fill="#0f172a" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="260" y="340" text-anchor="middle" fill="#4ade80" font-size="11">事件</text>
+  <text x="260" y="356" text-anchor="middle" fill="#86efac" font-size="13" font-weight="600">loaded()</text>
+
+  <!-- arrow loaded -> running -->
+  <line x1="260" y1="364" x2="260" y2="392" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- running state -->
+  <rect x="120" y="396" width="280" height="176" rx="10" fill="#0f172a" stroke="#334155" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="260" y="420" text-anchor="middle" fill="#64748b" font-size="11">持续渲染中</text>
+
+  <!-- tap -->
+  <rect x="140" y="428" width="240" height="32" rx="6" fill="#1e293b" stroke="#7c3aed" stroke-width="1"/>
+  <text x="260" y="449" text-anchor="middle" fill="#c4b5fd" font-size="12">tap(areaName)</text>
+
+  <!-- motionstart / motionend -->
+  <rect x="140" y="468" width="240" height="32" rx="6" fill="#1e293b" stroke="#7c3aed" stroke-width="1"/>
+  <text x="260" y="489" text-anchor="middle" fill="#c4b5fd" font-size="12">motionstart / motionend</text>
+
+  <!-- expressionstart / expressionend -->
+  <rect x="140" y="508" width="240" height="32" rx="6" fill="#1e293b" stroke="#7c3aed" stroke-width="1"/>
+  <text x="260" y="529" text-anchor="middle" fill="#c4b5fd" font-size="12">expressionstart / expressionend</text>
+
+  <!-- reload arrow (loop back) -->
+  <path d="M120,456 C50,456 50,130 160,120" stroke="#f97316" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arrow-orange)"/>
+  <text x="14" y="300" fill="#fb923c" font-size="11" transform="rotate(-90,14,300)">重新调用 load()</text>
+
+  <!-- arrow running -> destroy -->
+  <line x1="260" y1="572" x2="260" y2="612" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="275" y="596" fill="#64748b" font-size="11">调用 destroy()</text>
+
+  <!-- destroy event -->
+  <rect x="130" y="616" width="260" height="40" rx="8" fill="#0f172a" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="260" y="632" text-anchor="middle" fill="#f87171" font-size="11">事件</text>
+  <text x="260" y="648" text-anchor="middle" fill="#fca5a5" font-size="13" font-weight="600">destroy()</text>
+
+  <!-- end -->
+  <line x1="260" y1="656" x2="260" y2="688" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <rect x="160" y="692" width="200" height="36" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <text x="260" y="715" text-anchor="middle" fill="#475569" font-size="13">WebGL 资源释放</text>
+</svg>
