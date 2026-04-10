@@ -1,19 +1,26 @@
+import type { Demo } from '../demo-types';
 import { init } from '../../dist';
 
-const canvasEl1 = document.getElementById('l2d1') as HTMLCanvasElement;
-const l2d = init(canvasEl1);
-
-l2d.load({
-  path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
-}).then(() => {
-  console.log('模型已准备就绪, ===> then');
-  l2d.showHitAreas(true);
-
-  setTimeout(() => {
+export default {
+  title: '重新加载模型',
+  setup([canvas]) {
+    const l2d = init(canvas);
+    let timerId: ReturnType<typeof setTimeout> | null = null;
     l2d.load({
-      path: '/models/abeikelongbi_3/abeikelongbi_3.model3.json'
+      path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
     }).then(() => {
-      l2d.showHitAreas(true);
+      timerId = setTimeout(() => {
+        l2d.load({
+          path: 'https://model.hacxy.cn//Mao/Mao.model3.json',
+        });
+      }, 3000);
     });
-  }, 1000);
-});
+
+    return () => {
+      if (timerId !== null) {
+        clearTimeout(timerId);
+        l2d.destroy();
+      }
+    };
+  },
+} satisfies Demo;

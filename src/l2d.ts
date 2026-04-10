@@ -1,7 +1,6 @@
-import type { HitAreaOverlay } from './hit-area-overlay.js';
 import type { ModelState } from './motion-controller.js';
 import type { L2DEventMap, Options } from './types.js';
-import { cloneCanvas, createHitAreaOverlay } from './canvas-manager.js';
+import { cloneCanvas } from './canvas-manager.js';
 import { EVENTS } from './const.js';
 import { Emitter } from './emitter.js';
 import { ExpressionController } from './expression-controller.js';
@@ -11,7 +10,6 @@ import { MotionController } from './motion-controller.js';
 
 class L2D extends Emitter<L2DEventMap> {
   private canvas: HTMLCanvasElement;
-  private hitAreaOverlay: HitAreaOverlay;
   private _state: ModelState = { currentVersion: null, l2d2Model: null, l2d6Model: null };
   private _motionCtrl = new MotionController(this._state);
   private _exprCtrl = new ExpressionController(this._state);
@@ -19,7 +17,6 @@ class L2D extends Emitter<L2DEventMap> {
   constructor(canvas: HTMLCanvasElement) {
     super();
     this.canvas = canvas;
-    this.hitAreaOverlay = createHitAreaOverlay(canvas, this._state);
     this._on(EVENTS.MOTION_START, d => this.emit('motionstart', d.group, d.index, d.duration ?? null, d.file ?? null));
     this._on(EVENTS.EXPRESSION_START, d => this.emit('expressionstart', d.id));
     this._on(EVENTS.EXPRESSION_END, () => this.emit('expressionend'));
@@ -38,9 +35,7 @@ class L2D extends Emitter<L2DEventMap> {
   }
 
   private _replaceCanvas() {
-    this.hitAreaOverlay.hide();
     this.canvas = cloneCanvas(this.canvas);
-    this.hitAreaOverlay = createHitAreaOverlay(this.canvas, this._state);
   }
 
   /**
@@ -55,10 +50,7 @@ class L2D extends Emitter<L2DEventMap> {
       canvas: this.canvas,
       state: this._state,
       resize: () => this.resize(),
-      emit: () => {
-        this.emit('loaded');
-        this.showHitAreas(options.showHitAreas ?? false);
-      },
+      emit: () => this.emit('loaded'),
       replaceCanvas: () => this._replaceCanvas(),
     }, options);
   }
@@ -73,18 +65,6 @@ class L2D extends Emitter<L2DEventMap> {
       this._state.l2d2Model.resize();
     else if (this._state.currentVersion !== null && this._state.l2d6Model)
       this._state.l2d6Model.resize();
-  }
-
-  /**
-   * 显示或隐藏 hit area 的可视化边界框，用于调试可交互区域。
-   * @param enabled - `true` 显示边界框，`false` 隐藏
-   */
-  showHitAreas(enabled: boolean) {
-    if (enabled && this._state.currentVersion === null) {
-      logger.warn('showHitAreas: model not loaded yet, call this after the loaded event.');
-      return;
-    }
-    enabled ? this.hitAreaOverlay.show() : this.hitAreaOverlay.hide();
   }
 
   /**
@@ -163,6 +143,31 @@ class L2D extends Emitter<L2DEventMap> {
   }
 
   /**
+   * 获取所有 hit area 的当前归一化边界（相对 canvas 的 0~1 比例）。
+   * 每帧调用可实现实时追踪。
+   * @example
+   * // canvas overlay
+   * ctx.strokeRect(b.x * canvas.width, b.y * canvas.height, b.w * canvas.width, b.h * canvas.height)
+   * // div overlay
+   * el.style.left = `${b.x * 100}%`
+   */
+  getHitAreaBounds(): Array<{ name: string, x: number, y: number, w: number, h: number }> {
+    const raw = this._state.currentVersion === 2 && this._state.l2d2Model
+      ? this._state.l2d2Model.getHitAreaBounds()
+      : this._state.currentVersion !== null && this._state.l2d6Model
+        ? this._state.l2d6Model.getHitAreaBounds()
+        : [];
+    const { width, height } = this.canvas;
+    return raw.map(b => ({
+      name: b.name,
+      x: b.x / width,
+      y: b.y / height,
+      w: b.w / width,
+      h: b.h / height,
+    }));
+  }
+
+  /**
    * 销毁当前模型并释放 WebGL 资源，清空画布。
    * 画布 DOM 节点本身不会被移除。
    */
@@ -176,11 +181,11 @@ class L2D extends Emitter<L2DEventMap> {
       this._state.l2d6Model = null;
     }
     this._state.currentVersion = null;
-    this.hitAreaOverlay.hide();
-    const gl = this.canvas.getContext('webgl2');
+    const gl = this.canvas.getContext('webgl2') ?? this.canvas.getContext('webgl') as WebGL2RenderingContext | null;
     if (gl) {
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.getExtension('WEBGL_lose_context')?.loseContext();
     }
     this.emit('destroy');
   }

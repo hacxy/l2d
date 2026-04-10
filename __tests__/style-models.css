@@ -1,0 +1,103 @@
+#model-panel {
+  width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: #111;
+  border-left: 1px solid #333;
+}
+
+#model-panel h2 {
+  padding: 12px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #666;
+  border-bottom: 1px solid #222;
+  flex-shrink: 0;
+}
+
+#model-list {
+  list-style: none;
+  overflow-y: auto;
+  flex: 1;
+}
+
+#model-list li {
+  border-bottom: 1px solid #1e1e1e;
+}
+
+#model-list li button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  color: #b0b0b0;
+  cursor: pointer;
+  font-size: 11px;
+  text-align: left;
+  transition: background 0.1s;
+}
+
+#model-list li button:hover {
+  background: #1f1f1f;
+  color: #eee;
+}
+
+#model-list li button .model-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#model-list li button .badge {
+  flex-shrink: 0;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+#model-list li button .badge.c2 {
+  background: #2a3a5a;
+  color: #7aaaff;
+}
+
+#model-list li button .badge.c6 {
+  background: #2a4a2a;
+  color: #7adf7a;
+}
+
+#model-list .status {
+  padding: 12px 14px;
+  font-size: 11px;
+  color: #555;
+}
+
+#copy-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: #333;
+  color: #eee;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 12px;
+  opacity: 0;
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
+  pointer-events: none;
+}
+
+#copy-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}

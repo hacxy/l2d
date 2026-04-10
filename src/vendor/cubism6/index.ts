@@ -163,6 +163,7 @@ export class AppDelegate {
   private _canvas: HTMLCanvasElement;
   private _subdelegates: AppSubdelegate[] = [];
   private _cubismOption: Option;
+  private _released = false;
   _drawFrameId: number | null = null;
   _modelLoadedEmitted: boolean = false;
   _onLoaded: (() => void) | null = null;
@@ -221,6 +222,7 @@ export class AppDelegate {
   }
 
   public release(): void {
+    this._released = true;
     this.stop();
     this.releaseEventListener();
     for (const sd of this._subdelegates) {
@@ -243,6 +245,7 @@ export class AppDelegate {
   }
 
   private _isModelReady(): boolean {
+    if (CubismFramework.getIdManager() === null) return false;
     const manager = this._subdelegates[0]?.getLive2DManager();
     const model = manager?._models?.[0];
     // LoadStep.CompleteSetup === 23（SDK 5-r.5 新增了 SetupLook 导致枚举值 +1）
@@ -462,6 +465,7 @@ export class AppDelegate {
   }
 
   public playMotion(group: string, index?: number, priority: number = 2): void {
+    if (this._released) return;
     const model = this._subdelegates[0]?.getLive2DManager()?._models?.[0];
     if (!model) return;
     const resolvedIndex = index !== undefined

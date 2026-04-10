@@ -16,6 +16,7 @@ class Cubism2Model {
   constructor(canvas) {
     this._glContextIndex = _nextGlIndex++;
     this.live2DMgr = new LAppLive2DManager(canvas, this._glContextIndex);
+    this._destroyed = false;
     this.isDrawStart = false;
     this.gl = null;
     this.canvas = null;
@@ -102,6 +103,7 @@ class Cubism2Model {
       window.cancelAnimationFrame(this._drawFrameId);
       this._drawFrameId = null;
     }
+    this._destroyed = true;
     this.isDrawStart = false;
     if (this.live2DMgr && typeof this.live2DMgr.release === 'function') {
       this.live2DMgr.release();
@@ -117,6 +119,7 @@ class Cubism2Model {
   }
 
   startDraw() {
+    if (this._destroyed) return;
     if (!this.isDrawStart) {
       this.isDrawStart = true;
       const tick = () => {

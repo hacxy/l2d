@@ -5,12 +5,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 // ---------------------------------------------------------------------------
 // 定义 hoisted mock 工厂（vi.mock 会被提升到文件顶部，需提前声明 mock 实例）
 // ---------------------------------------------------------------------------
-const mockHitAreaOverlayInstance = vi.hoisted(() => ({
-  show: vi.fn(),
-  hide: vi.fn(),
-  syncTransform: vi.fn(),
-}));
-
 const mockCubism5Instance = vi.hoisted(() => ({
   initialize: vi.fn(() => true),
   changeModel: vi.fn(),
@@ -56,11 +50,6 @@ vi.mock('../src/vendor/lib/live2dcubismcore.js', () => ({}));
 // Arrow functions cannot be used as constructors (`new ArrowFn()` throws).
 // Regular function declarations return the mock instance via the JS spec:
 // if a constructor returns an object, `new Ctor()` yields that object.
-vi.mock('../src/hit-area-overlay.ts', () => {
-  function HitAreaOverlay() { return mockHitAreaOverlayInstance; }
-  return { HitAreaOverlay };
-});
-
 vi.mock('../src/vendor/cubism6/index.ts', () => {
   function AppDelegate() { return mockCubism5Instance; }
   return { AppDelegate };
@@ -146,12 +135,6 @@ describe('l2D — 未加载模型时的守卫行为', () => {
     const { init } = await import('../src/index.ts');
     const l2d = init(makeCanvas());
     expect(l2d.getExpressions()).toEqual([]);
-  });
-
-  it('showHitAreas(true) 未加载时不抛出错误', async () => {
-    const { init } = await import('../src/index.ts');
-    const l2d = init(makeCanvas());
-    expect(() => l2d.showHitAreas(true)).not.toThrow();
   });
 
   it('playMotion() 未加载时不抛出错误', async () => {
@@ -727,35 +710,47 @@ describe('l2D.playMotion() — 加载后', () => {
   });
 });
 
-describe('l2D.showHitAreas() — 加载后', () => {
+describe('l2D.getHitAreaBounds()', () => {
   afterEach(() => {
     document.body.innerHTML = '';
     vi.restoreAllMocks();
     vi.clearAllMocks();
   });
 
-  it('showHitAreas(true) 加载后调用 overlay.show()', async () => {
-    vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
+  it('未加载时返回空数组', async () => {
     const { init } = await import('../src/index.ts');
-    const canvas = makeCanvas();
-    const l2d = init(canvas);
-    await l2d.load({ path: '/models/test.model3.json' });
-
-    vi.clearAllMocks();
-    l2d.showHitAreas(true);
-    expect(mockHitAreaOverlayInstance.show).toHaveBeenCalledOnce();
+    const l2d = init(makeCanvas());
+    expect(l2d.getHitAreaBounds()).toEqual([]);
   });
 
-  it('showHitAreas(false) 调用 overlay.hide()', async () => {
+  it('cubism5 加载后返回归一化坐标', async () => {
     vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
     const { init } = await import('../src/index.ts');
-    const canvas = makeCanvas();
+    const canvas = makeCanvas(); // width=400, height=600
     const l2d = init(canvas);
+    (mockCubism5Instance.getHitAreaBounds as ReturnType<typeof vi.fn>).mockReturnValueOnce([
+      { name: 'body', x: 100, y: 150, w: 200, h: 300 },
+    ]);
     await l2d.load({ path: '/models/test.model3.json' });
 
-    vi.clearAllMocks();
-    l2d.showHitAreas(false);
-    expect(mockHitAreaOverlayInstance.hide).toHaveBeenCalledOnce();
+    expect(l2d.getHitAreaBounds()).toEqual([
+      { name: 'body', x: 0.25, y: 0.25, w: 0.5, h: 0.5 },
+    ]);
+  });
+
+  it('cubism2 加载后返回归一化坐标', async () => {
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
+    const { init } = await import('../src/index.ts');
+    const canvas = makeCanvas(); // width=400, height=600
+    const l2d = init(canvas);
+    (mockCubism2Instance.getHitAreaBounds as ReturnType<typeof vi.fn>).mockReturnValueOnce([
+      { name: 'head', x: 200, y: 300, w: 80, h: 120 },
+    ]);
+    await l2d.load({ path: '/models/test.model.json' });
+
+    expect(l2d.getHitAreaBounds()).toEqual([
+      { name: 'head', x: 0.5, y: 0.5, w: 0.2, h: 0.2 },
+    ]);
   });
 });
 

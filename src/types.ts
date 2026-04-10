@@ -12,10 +12,6 @@ export interface Options {
    */
   scale?: number
   /**
-   * 是否显示 hit area 可视化边界框，默认 `false`
-   */
-  showHitAreas?: boolean
-  /**
    * 日志输出级别，默认 `'warn'`。设为 `'trace'` 可查看详细加载日志，设为 `'error'` 可屏蔽警告。
    */
   logLevel?: 'error' | 'warn' | 'info' | 'trace'
