@@ -1,5 +1,4 @@
 import { EVENTS } from '../const.js';
-import logger from '../logger.js';
 import LAppDefine from './LAppDefine.js';
 import LAppLive2DManager from './LAppLive2DManager.js';
 import { L2DMatrix44, L2DTargetPoint, L2DViewMatrix } from './Live2DFramework.js';
@@ -30,10 +29,6 @@ class Cubism2Model {
 
   initL2dCanvas(canvas) {
     this.canvas = canvas;
-    if (!this.canvas) {
-      logger.error('initL2dCanvas: canvas 元素无效');
-      return;
-    }
     if (this.canvas.addEventListener) {
       this.canvas.addEventListener('click', this._boundMouseEvent, false);
       document.addEventListener('mousemove', this._boundMouseEvent, false);
@@ -50,10 +45,6 @@ class Cubism2Model {
   async init(canvas, modelSettingPath, modelSetting) {
     const doInit = async () => {
       this.initL2dCanvas(canvas);
-      if (!this.canvas) {
-        logger.error('canvas 元素无效');
-        return;
-      }
       const width = this.canvas.width;
       const height = this.canvas.height;
       this.dragMgr = new L2DTargetPoint();
@@ -74,8 +65,7 @@ class Cubism2Model {
       this.deviceToScreen.multScale(2 / width, -2 / width);
       this.gl = this.canvas.getContext('webgl2', { premultipliedAlpha: true, preserveDrawingBuffer: true });
       if (!this.gl) {
-        logger.error('Failed to create WebGL context.');
-        return;
+        throw new Error('Failed to create WebGL context.');
       }
       // Activate this model's PlatformManager and GL context right before loading
       this.live2DMgr.activatePlatformManager();
@@ -90,7 +80,7 @@ class Cubism2Model {
       this.startDraw();
     };
     // Chain onto the global queue so Cubism2 models load one at a time
-    _loadQueue = _loadQueue.then(doInit).catch(err => logger.error(err));
+    _loadQueue = _loadQueue.then(doInit).catch(err => { throw err; });
     return _loadQueue;
   }
 

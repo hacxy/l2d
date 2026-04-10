@@ -1,4 +1,3 @@
-import logger from '../logger.js';
 import LAppDefine from './LAppDefine.js';
 import LAppModel from './LAppModel.js';
 import { Live2DFramework } from './Live2DFramework.js';
@@ -73,14 +72,12 @@ class LAppLive2DManager {
   }
 
   maxScaleEvent() {
-    logger.trace('Max scale event.');
     if (this.model) {
       this.model.startRandomMotion(LAppDefine.MOTION_GROUP_PINCH_IN, LAppDefine.PRIORITY_NORMAL);
     }
   }
 
   minScaleEvent() {
-    logger.trace('Min scale event.');
     if (this.model) {
       this.model.startRandomMotion(LAppDefine.MOTION_GROUP_PINCH_OUT, LAppDefine.PRIORITY_NORMAL);
     }

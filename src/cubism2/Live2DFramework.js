@@ -1,5 +1,3 @@
-import logger from '../logger.js';
-
 class L2DBaseModel {
   constructor() {
     this.live2DModel = null;
@@ -91,13 +89,11 @@ class L2DBaseModel {
 
   loadModelData(path, callback) {
     const pm = Live2DFramework.getPlatformManager();
-    logger.info(`Load model : ${path}`);
     pm.loadLive2DModel(path, l2dModel => {
       this.live2DModel = l2dModel;
       this.live2DModel.saveParam();
       const _err = Live2D.getError();
       if (_err != 0) {
-        logger.error('Error : Failed to loadModelData().');
         return;
       }
       this.modelMatrix = new L2DModelMatrix(this.live2DModel.getCanvasWidth(), this.live2DModel.getCanvasHeight());
@@ -110,7 +106,6 @@ class L2DBaseModel {
   loadTexture(no, path, callback) {
     texCounter++;
     const pm = Live2DFramework.getPlatformManager();
-    logger.info(`Load Texture : ${path}`);
     pm.loadTexture(this.live2DModel, no, path, () => {
       texCounter--;
       if (texCounter == 0)
@@ -122,7 +117,6 @@ class L2DBaseModel {
 
   loadMotion(name, path, callback) {
     const pm = Live2DFramework.getPlatformManager();
-    logger.trace(`Load Motion : ${path}`);
     let motion = null;
     pm.loadBytes(path, buf => {
       motion = Live2DMotion.loadMotion(buf);
@@ -135,7 +129,6 @@ class L2DBaseModel {
 
   loadExpression(name, path, callback) {
     const pm = Live2DFramework.getPlatformManager();
-    logger.trace(`Load Expression : ${path}`);
     pm.loadBytes(path, buf => {
       if (name != null) {
         this.expressions[name] = L2DExpressionMotion.loadJson(buf);
@@ -147,32 +140,20 @@ class L2DBaseModel {
 
   loadPose(path, callback) {
     const pm = Live2DFramework.getPlatformManager();
-    logger.trace(`Load Pose : ${path}`);
-    try {
-      pm.loadBytes(path, buf => {
-        this.pose = L2DPose.load(buf);
-        if (typeof callback === 'function')
-          callback();
-      });
-    }
-    catch (e) {
-      logger.warn(e);
-    }
+    pm.loadBytes(path, buf => {
+      this.pose = L2DPose.load(buf);
+      if (typeof callback === 'function')
+        callback();
+    });
   }
 
   loadPhysics(path, callback) {
     const pm = Live2DFramework.getPlatformManager();
-    logger.trace(`Load Physics : ${path}`);
-    try {
-      pm.loadBytes(path, buf => {
-        this.physics = L2DPhysics.load(buf);
-        if (typeof callback === 'function')
-          callback();
-      });
-    }
-    catch (e) {
-      logger.warn(e);
-    }
+    pm.loadBytes(path, buf => {
+      this.physics = L2DPhysics.load(buf);
+      if (typeof callback === 'function')
+        callback();
+    });
   }
 
   hitTestSimple(drawID, testX, testY) {

@@ -4,4 +4,5 @@
 // import './demo/multiple-instances';
 // import './demo/set-params-c2';
 // import './demo/set-params-c6';
-import './demo/destroy';
+// import './demo/destroy';
+import './demo/error-handle';

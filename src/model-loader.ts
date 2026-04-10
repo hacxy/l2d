@@ -2,6 +2,7 @@ import type { ModelState } from './motion-controller.js';
 import type { Options } from './types.js';
 import Cubism2Model from './cubism2/index.js';
 import { AppDelegate as Cubism6Model } from './cubism6/index.js';
+import logger from './logger.js';
 import { checkModelVersion } from './utils/model.js';
 
 export interface LoadContext {
@@ -26,9 +27,16 @@ export async function loadModel(ctx: LoadContext, options: Options): Promise<voi
   }
   state.currentVersion = null;
 
-  const res = await fetch(options.path);
+  let res: Response;
+  try {
+    res = await fetch(options.path);
+  }
+  catch (e) {
+    logger.error(`Failed to fetch model config: ${options.path}`, e);
+    return;
+  }
   if (!res.ok) {
-    console.error(`获取模型配置失败: ${res.statusText}`);
+    logger.error(`Failed to load model config: ${res.status} ${res.statusText} (${options.path})`);
     return;
   }
   const result = await res.json();
@@ -42,7 +50,13 @@ export async function loadModel(ctx: LoadContext, options: Options): Promise<voi
   if (version === 2) {
     const model = new Cubism2Model(ctx.canvas);
     state.l2d2Model = model;
-    await model.init(canvas, options.path, result);
+    try {
+      await model.init(canvas, options.path, result);
+    }
+    catch (e) {
+      logger.error('Failed to initialize Cubism2 model.', e);
+      return;
+    }
     if (options.position)
       model.setPosition(options.position[0], options.position[1]);
     ctx.resize();
@@ -54,7 +68,7 @@ export async function loadModel(ctx: LoadContext, options: Options): Promise<voi
     const model = new Cubism6Model(ctx.canvas);
     state.l2d6Model = model;
     if (!model.initialize()) {
-      console.error('Failed to initialize Cubism6 model');
+      logger.error('Failed to initialize Cubism6 model');
       return;
     }
     if (typeof options.scale === 'number') {

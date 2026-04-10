@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { EVENTS } from '../const.js';
-import logger from '../logger.js';
+
 
 // ----- 通过 Vite ?raw 内联 GLSL 着色器，避免运行时 fetch 加载外部文件 -----
 import _vertShaderSrc from './Framework/Shaders/WebGL/vertshadersrc.vert?raw';
@@ -309,7 +309,12 @@ export class AppDelegate {
     CubismFramework.startUp(this._cubismOption);
     CubismFramework.initialize();
 
-    this.initializeSubdelegates();
+    try {
+      this.initializeSubdelegates();
+    }
+    catch {
+      return false;
+    }
     this.initializeEventListener();
 
     return true;
@@ -319,14 +324,9 @@ export class AppDelegate {
     const subdelegate = new AppSubdelegate();
     const result = subdelegate.initialize(this._canvas);
     if (!result) {
-      logger.error('Failed to initialize AppSubdelegate');
-      return;
+      throw new Error('Failed to initialize AppSubdelegate');
     }
     this._subdelegates.push(subdelegate);
-
-    if (subdelegate.isContextLost()) {
-      logger.error('WebGL context was lost, possibly because the acquisition limit for WebGLRenderingContext was reached.');
-    }
   }
 
   public changeModel(modelSettingPath: string): void {

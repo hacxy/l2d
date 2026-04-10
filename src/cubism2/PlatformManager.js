@@ -1,4 +1,3 @@
-import logger from '../logger.js';
 class PlatformManager {
   constructor(canvas, glContextIndex = 0) {
     this.cache = {};
@@ -33,22 +32,15 @@ class PlatformManager {
     loadedImage.onload = () => {
       const canvas = this.canvas;
       if (!canvas) {
-        logger.error('无法找到 canvas 元素');
-        if (typeof callback === 'function')
-          callback();
-        return;
+        throw new Error('无法找到 canvas 元素');
       }
       const gl = canvas.getContext('webgl2', { premultipliedAlpha: true, preserveDrawingBuffer: true });
       if (!gl) {
-        logger.error('无法获取 WebGL 上下文');
-        if (typeof callback === 'function')
-          callback();
-        return;
+        throw new Error('无法获取 WebGL 上下文');
       }
       let texture = gl.createTexture();
       if (!texture) {
-        logger.error('Failed to generate gl texture name.');
-        return -1;
+        throw new Error('Failed to generate gl texture name.');
       }
       if (model.isPremultipliedAlpha() == false) {
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
@@ -65,9 +57,7 @@ class PlatformManager {
       if (typeof callback === 'function')
         callback();
     };
-    loadedImage.onerror = () => {
-      logger.error(`Failed to load image : ${path}`);
-    };
+    loadedImage.onerror = () => {};
   }
 
   jsonParseFromBytes(buf) {

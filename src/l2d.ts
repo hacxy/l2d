@@ -50,6 +50,7 @@ class L2D extends Emitter<L2DEventMap> {
    * @param options - 模型加载选项，参见 {@link Options}
    */
   load(options: Options): Promise<void> {
+    logger.setLevel(options.logLevel);
     return loadModel({
       canvas: this.canvas,
       state: this._state,
@@ -85,7 +86,7 @@ class L2D extends Emitter<L2DEventMap> {
    */
   showHitAreas(enabled: boolean) {
     if (enabled && this._state.currentVersion === null) {
-      logger.warn('showHitAreas: 模型尚未加载完成，请在 loaded 事件触发后调用。');
+      logger.warn('showHitAreas: model not loaded yet, call this after the loaded event.');
       return;
     }
     enabled ? this.hitAreaOverlay.show() : this.hitAreaOverlay.hide();

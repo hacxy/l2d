@@ -1,4 +1,3 @@
-import logger from '../logger.js';
 import LAppDefine from './LAppDefine.js';
 import { L2DBaseModel, L2DEyeBlink, Live2DFramework } from './Live2DFramework.js';
 import MatrixStack from './utils/MatrixStack.js';
@@ -149,7 +148,6 @@ class LAppModel extends L2DBaseModel {
 
   update() {
     if (this.live2DModel == null) {
-      logger.error('Failed to update.');
       return;
     }
     const timeMSec = UtSystem.getUserTimeMSec() - this.startTimeMSec;
@@ -224,7 +222,6 @@ class LAppModel extends L2DBaseModel {
       this.mainMotionManager.setReservePriority(priority);
     }
     else if (!this.mainMotionManager.reserveMotion(priority)) {
-      logger.trace('Motion is running.');
       return;
     }
     this._currentMotionGroup = name;
@@ -247,10 +244,8 @@ class LAppModel extends L2DBaseModel {
   }
 
   setFadeInFadeOut(name, no, priority, motion) {
-    const motionName = this.modelSetting.getMotionFile(name, no);
     motion.setFadeIn(this.modelSetting.getMotionFadeIn(name, no));
     motion.setFadeOut(this.modelSetting.getMotionFadeOut(name, no));
-    logger.trace(`Start motion : ${motionName}`);
     if (this.modelSetting.getMotionSound(name, no) == null) {
       this.mainMotionManager.startMotionPrio(motion, priority);
     }
@@ -258,7 +253,6 @@ class LAppModel extends L2DBaseModel {
       const soundName = this.modelSetting.getMotionSound(name, no);
       const snd = document.createElement('audio');
       snd.src = this.modelHomeDir + soundName;
-      logger.trace(`Start sound : ${soundName}`);
       snd.play().catch(() => {});
       this.mainMotionManager.startMotionPrio(motion, priority);
     }
@@ -267,7 +261,6 @@ class LAppModel extends L2DBaseModel {
   setExpression(name) {
     let _a;
     const motion = this.expressions[name];
-    logger.trace(`Expression : ${name}`);
     (_a = this.expressionManager) === null || _a === void 0 ? void 0 : _a.startMotion(motion, false);
     this.onExpressionStart?.({ id: name });
   }

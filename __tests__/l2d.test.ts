@@ -98,17 +98,15 @@ const CUBISM2_JSON = { model: 'test.moc' };
 // ---------------------------------------------------------------------------
 
 describe('init()', () => {
-  it('传入 null 时抛出 TypeError', async () => {
+  it('传入 null 时返回 null', async () => {
     const { init } = await import('../src/index.ts');
-    expect(() => init(null)).toThrow(TypeError);
-    expect(() => init(null)).toThrow('Target element node not found.');
+    expect(init(null)).toBeNull();
   });
 
-  it('传入非 canvas 元素时抛出 TypeError', async () => {
+  it('传入非 canvas 元素时返回 null', async () => {
     const { init } = await import('../src/index.ts');
     const div = document.createElement('div');
-    expect(() => init(div as unknown as HTMLCanvasElement)).toThrow(TypeError);
-    expect(() => init(div as unknown as HTMLCanvasElement)).toThrow('not a canvas element');
+    expect(init(div as unknown as HTMLCanvasElement)).toBeNull();
   });
 
   it('canvas 不在 DOM 中时自动挂载到 document.body', async () => {

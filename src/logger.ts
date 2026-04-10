@@ -10,7 +10,7 @@ class Logger {
 
   private level: LogLevel;
 
-  constructor(level: LogLevel = 'info') {
+  constructor(level: LogLevel = 'warn') {
     this.level = level;
   }
 

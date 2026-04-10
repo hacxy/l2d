@@ -21,7 +21,7 @@
     "dist"
   ],
   "scripts": {
-    "dev": "vite build --watch",
+    "dev": "vite build --watch --sourcemap",
     "build": "vite build",
     "docs:dev": "typedoc && vitepress dev docs",
     "docs:build": "typedoc && npm run build && vitepress build docs",

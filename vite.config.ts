@@ -26,5 +26,15 @@ export default defineConfig({
       fileName: format => `index.${format === 'iife' ? 'min.js' : 'js'}`,
     },
   },
-  plugins: [dts()],
+  plugins: [
+    dts(),
+    {
+      name: 'suppress-cubism-core-log',
+      transform(code: string, id: string) {
+        if (id.endsWith('live2dcubismcore.js')) {
+          return `const __c=console.log;console.log=()=>{};${code}\nconsole.log=__c;`;
+        }
+      },
+    },
+  ],
 });

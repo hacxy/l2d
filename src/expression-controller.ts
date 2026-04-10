@@ -6,7 +6,7 @@ export class ExpressionController {
 
   private isReady(method: string): boolean {
     if (this.state.currentVersion === null) {
-      logger.warn(`${method}: 模型尚未加载完成，请在 loaded 事件触发后调用。`);
+      logger.warn(`${method}: model not loaded yet, call this after the loaded event.`);
       return false;
     }
     return true;
