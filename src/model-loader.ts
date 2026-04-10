@@ -10,11 +10,12 @@ export interface LoadContext {
   state: ModelState
   resize: () => void
   emit: (event: 'loaded') => void
-  replaceCanvas: () => void
+  replaceCanvas: () => HTMLCanvasElement
 }
 
 export async function loadModel(ctx: LoadContext, options: Options): Promise<void> {
-  const { canvas, state } = ctx;
+  const { state } = ctx;
+  let canvas = ctx.canvas;
   const prevVersion = state.currentVersion;
 
   if (state.l2d2Model) {
@@ -43,12 +44,12 @@ export async function loadModel(ctx: LoadContext, options: Options): Promise<voi
   const version = checkModelVersion(result);
 
   if (prevVersion !== null && prevVersion !== version)
-    ctx.replaceCanvas();
+    canvas = ctx.replaceCanvas();
 
   state.currentVersion = version;
 
   if (version === 2) {
-    const model = new Cubism2Model(ctx.canvas);
+    const model = new Cubism2Model(canvas);
     state.l2d2Model = model;
     try {
       await model.init(canvas, options.path, result);
@@ -65,7 +66,7 @@ export async function loadModel(ctx: LoadContext, options: Options): Promise<voi
     ctx.emit('loaded');
   }
   else {
-    const model = new Cubism6Model(ctx.canvas);
+    const model = new Cubism6Model(canvas);
     state.l2d6Model = model;
     if (!model.initialize()) {
       logger.error('Failed to initialize Cubism6 model');

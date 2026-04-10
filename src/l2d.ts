@@ -34,8 +34,9 @@ class L2D extends Emitter<L2DEventMap> {
     });
   }
 
-  private _replaceCanvas() {
+  private _replaceCanvas(): HTMLCanvasElement {
     this.canvas = cloneCanvas(this.canvas);
+    return this.canvas;
   }
 
   /**
