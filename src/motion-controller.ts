@@ -1,5 +1,5 @@
-import type Cubism2Model from './cubism2/index.js';
-import type { AppDelegate as Cubism6Model } from './cubism6/index.js';
+import type Cubism2Model from './vendor/cubism2/index.js';
+import type { AppDelegate as Cubism6Model } from './vendor/cubism6/index.js';
 import { isNumber } from '@hacxy/utils';
 import logger from './logger.js';
 

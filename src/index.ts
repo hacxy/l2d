@@ -1,6 +1,6 @@
 /* eslint-disable perfectionist/sort-imports */
-import './lib/cubism2.js';
-import './lib/live2dcubismcore.js';
+import './vendor/lib/cubism2.js';
+import './vendor/lib/live2dcubismcore.js';
 import L2D from './l2d.js';
 import logger from './logger.js';
 
@@ -9,6 +9,11 @@ import logger from './logger.js';
  * @param canvasEl canvas element
  * @returns L2D instance
  */
+console.log(
+  '%c /\\_/\\\n( o.o )\n > ^ <\n\n Welcome to l2d! 🎉  https://github.com/hacxy/l2d',
+  'color: #f472b6; font-weight: bold; font-size: 14px; line-height: 1.6; font-family: monospace;',
+);
+
 export function init(canvasEl: HTMLCanvasElement): L2D;
 export function init(canvasEl: HTMLCanvasElement | null): L2D | null;
 export function init(canvasEl: HTMLCanvasElement | null): L2D | null {

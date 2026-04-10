@@ -1,4 +1,4 @@
-import { EVENTS } from '../const.js';
+import { EVENTS } from '../../const.js';
 import LAppDefine from './LAppDefine.js';
 import LAppLive2DManager from './LAppLive2DManager.js';
 import { L2DMatrix44, L2DTargetPoint, L2DViewMatrix } from './Live2DFramework.js';

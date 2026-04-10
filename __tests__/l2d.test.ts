@@ -50,8 +50,8 @@ const mockCubism2Instance = vi.hoisted(() => ({
 // ---------------------------------------------------------------------------
 
 // 浏览器 SDK 副作用 import，在 jsdom 中直接忽略
-vi.mock('../src/lib/cubism2.js', () => ({}));
-vi.mock('../src/lib/live2dcubismcore.js', () => ({}));
+vi.mock('../src/vendor/lib/cubism2.js', () => ({}));
+vi.mock('../src/vendor/lib/live2dcubismcore.js', () => ({}));
 
 // Arrow functions cannot be used as constructors (`new ArrowFn()` throws).
 // Regular function declarations return the mock instance via the JS spec:
@@ -61,12 +61,12 @@ vi.mock('../src/hit-area-overlay.ts', () => {
   return { HitAreaOverlay };
 });
 
-vi.mock('../src/cubism6/index.ts', () => {
+vi.mock('../src/vendor/cubism6/index.ts', () => {
   function AppDelegate() { return mockCubism5Instance; }
   return { AppDelegate };
 });
 
-vi.mock('../src/cubism2/index.js', () => {
+vi.mock('../src/vendor/cubism2/index.js', () => {
   function Cubism2Model() { return mockCubism2Instance; }
   return { default: Cubism2Model };
 });

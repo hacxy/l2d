@@ -1,9 +1,9 @@
 import type { ModelState } from './motion-controller.js';
 import type { Options } from './types.js';
-import Cubism2Model from './cubism2/index.js';
-import { AppDelegate as Cubism6Model } from './cubism6/index.js';
 import logger from './logger.js';
 import { checkModelVersion } from './utils/model.js';
+import Cubism2Model from './vendor/cubism2/index.js';
+import { AppDelegate as Cubism6Model } from './vendor/cubism6/index.js';
 
 export interface LoadContext {
   canvas: HTMLCanvasElement

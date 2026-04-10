@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { EVENTS } from '../const.js';
+import { EVENTS } from '../../const.js';
 
 
 // ----- 通过 Vite ?raw 内联 GLSL 着色器，避免运行时 fetch 加载外部文件 -----
