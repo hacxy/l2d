@@ -1,13 +1,9 @@
 import type { Demo } from '../demo-types';
-import { init } from '../../dist';
 
 export default {
   title: 'Cubism2 双实例',
   canvasCount: 2,
-  setup([canvas1, canvas2]) {
-    const l2d = init(canvas1);
-    const l2d2 = init(canvas2);
-
+  setup([l2d, l2d2]) {
     let timerId: ReturnType<typeof setTimeout> | null = null;
 
     l2d.load({
@@ -34,8 +30,6 @@ export default {
     return () => {
       if (timerId !== null)
         clearTimeout(timerId);
-      l2d.destroy();
-      l2d2.destroy();
     };
   },
 } satisfies Demo;

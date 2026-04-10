@@ -1,10 +1,9 @@
 import type { Demo } from '../demo-types';
-import { init } from '../../dist';
 
 export default {
   title: 'Hit Area 边界',
-  setup([canvas]) {
-    const l2d = init(canvas);
+  setup([l2d]) {
+    const canvas = l2d.getCanvas();
 
     const overlay = document.createElement('canvas');
     overlay.style.cssText = 'position:fixed;pointer-events:none;z-index:9999;';
@@ -62,7 +61,6 @@ export default {
       if (rafId !== null)
         cancelAnimationFrame(rafId);
       overlay.remove();
-      l2d.destroy();
     };
   },
 } satisfies Demo;

@@ -1,5 +1,7 @@
 /// <reference types="vite/client" />
-import type { Demo } from './demo-types';
+import type { Options } from '../dist';
+import type { Demo, L2D } from './demo-types';
+import { init } from '../dist';
 
 const modules = import.meta.glob<{ default: Demo }>('./demo/*.ts', { eager: true });
 
@@ -20,10 +22,9 @@ const demos = Object.entries(modules)
 
 let activeIndex = -1;
 let cleanup: (() => void) | null = null;
+let activeInstances: L2D[] = [];
 
-const canvasOverlays = new Map<HTMLCanvasElement, { el: HTMLDivElement, text: HTMLSpanElement, bar: HTMLDivElement }>();
-
-function createCanvasWithOverlay(): HTMLCanvasElement {
+function createInstance(): L2D {
   const wrapper = document.createElement('div');
   wrapper.className = 'canvas-wrapper';
   const canvas = document.createElement('canvas');
@@ -34,49 +35,55 @@ function createCanvasWithOverlay(): HTMLCanvasElement {
   overlay.innerHTML = '<div class="spinner"></div><span class="loading-text">Loading...</span><div class="loading-track"><div class="loading-bar"></div></div>';
   wrapper.appendChild(canvas);
   wrapper.appendChild(overlay);
-  stageEl.appendChild(wrapper);
-  canvasOverlays.set(canvas, {
-    el: overlay,
-    text: overlay.querySelector('.loading-text') as HTMLSpanElement,
-    bar: overlay.querySelector('.loading-bar') as HTMLDivElement,
+
+  const text = overlay.querySelector('.loading-text') as HTMLSpanElement;
+  const bar = overlay.querySelector('.loading-bar') as HTMLDivElement;
+
+  const pathEl = document.createElement('div');
+  pathEl.className = 'canvas-path';
+  pathEl.textContent = '—';
+
+  const item = document.createElement('div');
+  item.className = 'canvas-item';
+  item.appendChild(wrapper);
+  item.appendChild(pathEl);
+  stageEl.appendChild(item);
+
+  const l2d = init(canvas);
+
+  l2d.on('loadstart', total => {
+    overlay.classList.remove('done');
+    text.textContent = `0 / ${total}`;
+    bar.style.width = '0%';
   });
-  return canvas;
+
+  l2d.on('loadprogress', (loaded, total) => {
+    text.textContent = `${loaded} / ${total}`;
+    bar.style.width = `${Math.round((loaded / total) * 100)}%`;
+    if (loaded >= total)
+      setTimeout(() => overlay.classList.add('done'), 300);
+  });
+
+  const origLoad = l2d.load.bind(l2d);
+  l2d.load = (opts: Options) => {
+    pathEl.textContent = opts.path;
+    pathEl.classList.add('has-path');
+    pathEl.onclick = () => copyPath(opts.path);
+    return origLoad(opts);
+  };
+  return l2d;
 }
-
-window.addEventListener('live2d:loadstart', (e: Event) => {
-  const { canvas, total } = (e as CustomEvent).detail as { canvas: HTMLCanvasElement, total: number };
-  const ov = canvasOverlays.get(canvas);
-  if (!ov)
-    return;
-  ov.el.classList.remove('done');
-  ov.text.textContent = `0 / ${total}`;
-  ov.bar.style.width = '0%';
-});
-
-window.addEventListener('live2d:loadprogress', (e: Event) => {
-  const { canvas, loaded, total } = (e as CustomEvent).detail as { canvas: HTMLCanvasElement, loaded: number, total: number };
-  const ov = canvasOverlays.get(canvas);
-  if (!ov)
-    return;
-  ov.text.textContent = `${loaded} / ${total}`;
-  ov.bar.style.width = `${Math.round((loaded / total) * 100)}%`;
-  if (loaded >= total)
-    setTimeout(() => ov.el.classList.add('done'), 300);
-});
 
 // ── sidebar ──────────────────────────────────────────────────────────────────
 
 demos.forEach(({ stem, demo }, i) => {
   const li = document.createElement('li');
   const btn = document.createElement('button');
-
   const titleSpan = document.createElement('span');
   titleSpan.textContent = demo.title ?? stem;
-
   const stemSpan = document.createElement('span');
   stemSpan.className = 'stem';
   stemSpan.textContent = stem;
-
   btn.appendChild(titleSpan);
   btn.appendChild(stemSpan);
   btn.addEventListener('click', () => runDemo(i));
@@ -97,15 +104,12 @@ function formatArgs(args: unknown[]): string {
 function appendLog(level: 'log' | 'warn' | 'error', args: unknown[]): void {
   const entry = document.createElement('div');
   entry.className = `log-entry ${level}`;
-
   const time = document.createElement('span');
   time.className = 'log-time';
   const now = new Date();
   time.textContent = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-
   const text = document.createElement('span');
   text.textContent = formatArgs(args);
-
   entry.appendChild(time);
   entry.appendChild(text);
   consoleLog.appendChild(entry);
@@ -145,23 +149,24 @@ function runDemo(index: number, force = false): void {
     cleanup = null;
   }
 
+  for (const l2d of activeInstances)
+    l2d.destroy();
+  activeInstances = [];
+
   stageEl.innerHTML = '';
   consoleLog.innerHTML = '';
-  canvasOverlays.clear();
 
   listEl.querySelectorAll('li').forEach((li, i) => li.classList.toggle('active', i === index));
-
   activeIndex = index;
   const { stem, demo } = demos[index];
-
   titleEl.textContent = demo.title ?? stem;
   history.replaceState(null, '', `?demo=${stem}`);
 
-  const count = demo.canvasCount ?? 1;
-  const canvases = Array.from({ length: count }, createCanvasWithOverlay);
+  const l2ds = Array.from({ length: demo.canvasCount ?? 1 }, createInstance);
+  activeInstances = l2ds;
 
   try {
-    const result = demo.setup(canvases);
+    const result = demo.setup(l2ds);
     cleanup = typeof result === 'function' ? result : null;
   }
   catch (e) {
@@ -176,11 +181,8 @@ function runDemo(index: number, force = false): void {
 
 reloadBtn.addEventListener('click', () => runDemo(activeIndex, true));
 
-// ── init: restore from URL or run first ──────────────────────────────────────
-
 const urlStem = new URLSearchParams(location.search).get('demo');
 const initialIndex = urlStem ? demos.findIndex(d => d.stem === urlStem) : 0;
-
 if (demos.length > 0)
   runDemo(initialIndex >= 0 ? initialIndex : 0);
 
@@ -190,20 +192,14 @@ const BASE = 'https://model.hacxy.cn';
 const modelListEl = document.getElementById('model-list') as HTMLUListElement;
 const toastEl = document.getElementById('copy-toast') as HTMLDivElement;
 
-interface ModelItem {
-  name: string
-  path: string
-  version: 2 | 6
-}
+interface ModelItem { name: string, path: string, version: 2 | 6 }
 
 async function fetchText(url: string): Promise<string | null> {
   try {
     const res = await fetch(url);
     return res.ok ? res.text() : null;
   }
-  catch {
-    return null;
-  }
+  catch { return null; }
 }
 
 function parseLinks(html: string): string[] {
@@ -218,57 +214,39 @@ async function loadModels(): Promise<void> {
     modelListEl.innerHTML = '<li class="status">无法连接到模型服务器</li>';
     return;
   }
-
   const dirs = parseLinks(rootHtml).filter(l => l.endsWith('/'));
-
   const results = await Promise.all(dirs.map(async dir => {
     const name = dir.replace(/\/$/, '');
     const dirHtml = await fetchText(`${BASE}/${name}/`);
     if (!dirHtml)
       return null;
-
     const files = parseLinks(dirHtml);
     const jsonFile = files.find(f =>
-      f.endsWith('.model3.json')
-      || f.endsWith('.model.json')
-      || f === 'index.json'
-      || f === 'model.json',
+      f.endsWith('.model3.json') || f.endsWith('.model.json') || f === 'index.json' || f === 'model.json',
     );
     if (!jsonFile)
       return null;
-
-    return {
-      name,
-      path: `${BASE}/${name}/${jsonFile}`,
-      version: jsonFile.endsWith('.model3.json') ? 6 : 2,
-    } as ModelItem;
+    return { name, path: `${BASE}/${name}/${jsonFile}`, version: jsonFile.endsWith('.model3.json') ? 6 : 2 } as ModelItem;
   }));
-
   const models = results.filter((m): m is ModelItem => m !== null);
-
   if (models.length === 0) {
     modelListEl.innerHTML = '<li class="status">未找到模型</li>';
     return;
   }
-
   modelListEl.innerHTML = '';
   models.forEach(model => {
     const li = document.createElement('li');
     const btn = document.createElement('button');
-
     const nameSpan = document.createElement('span');
     nameSpan.className = 'model-name';
     nameSpan.textContent = model.name;
-
     const badge = document.createElement('span');
     badge.className = `badge c${model.version}`;
     badge.textContent = `C${model.version}`;
-
     btn.appendChild(nameSpan);
     btn.appendChild(badge);
     btn.title = model.path;
     btn.addEventListener('click', () => copyPath(model.path));
-
     li.appendChild(btn);
     modelListEl.appendChild(li);
   });

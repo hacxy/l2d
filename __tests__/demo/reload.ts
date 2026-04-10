@@ -1,11 +1,10 @@
 import type { Demo } from '../demo-types';
-import { init } from '../../dist';
 
 export default {
   title: '重新加载模型',
-  setup([canvas]) {
-    const l2d = init(canvas);
+  setup([l2d]) {
     let timerId: ReturnType<typeof setTimeout> | null = null;
+
     l2d.load({
       path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
     }).then(() => {
@@ -17,10 +16,8 @@ export default {
     });
 
     return () => {
-      if (timerId !== null) {
+      if (timerId !== null)
         clearTimeout(timerId);
-        l2d.destroy();
-      }
     };
   },
 } satisfies Demo;

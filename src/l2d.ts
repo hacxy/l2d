@@ -67,6 +67,11 @@ class L2D extends Emitter<L2DEventMap> {
       this._state.l2d6Model.resize();
   }
 
+  /** 返回当前绑定的 canvas 元素 */
+  getCanvas(): HTMLCanvasElement {
+    return this.canvas;
+  }
+
   /**
    * 播放指定动作组中的动作。
    * @param group - 动作组名称

@@ -1,3 +1,8 @@
+.canvas-item {
+  display: flex;
+  flex-direction: column;
+}
+
 .canvas-wrapper {
   position: relative;
   width: 300px;
@@ -66,4 +71,26 @@
   background: #7aaaff;
   border-radius: 1px;
   transition: width 0.15s;
+}
+
+.canvas-path {
+  max-width: 300px;
+  padding: 4px 6px;
+  font-size: 10px;
+  font-family: monospace;
+  color: #444;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+}
+
+.canvas-path.has-path {
+  color: #555;
+  cursor: pointer;
+}
+
+.canvas-path.has-path:hover {
+  color: #9090ff;
 }

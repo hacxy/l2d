@@ -1,11 +1,8 @@
 import type { Demo } from '../demo-types';
-import { init } from '../../dist';
 
 export default {
   title: '设置参数 (Cubism2)',
-  setup([canvas]) {
-    const l2d = init(canvas);
-
+  setup([l2d]) {
     l2d.load({
       path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
       scale: 0.8,
@@ -20,7 +17,5 @@ export default {
         PARAM_ANGLE_Y: -19,
       });
     });
-
-    return () => l2d.destroy();
   },
 } satisfies Demo;
