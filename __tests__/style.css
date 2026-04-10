@@ -139,14 +139,6 @@ body {
   min-height: 0;
 }
 
-#stage canvas {
-  display: block;
-  width: 300px;
-  height: 400px;
-  border: 1px solid #333;
-  background: #0a0a0a;
-}
-
 #stage .error-msg {
   width: 100%;
   padding: 12px 16px;

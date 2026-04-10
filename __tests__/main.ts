@@ -21,6 +21,49 @@ const demos = Object.entries(modules)
 let activeIndex = -1;
 let cleanup: (() => void) | null = null;
 
+const canvasOverlays = new Map<HTMLCanvasElement, { el: HTMLDivElement, text: HTMLSpanElement, bar: HTMLDivElement }>();
+
+function createCanvasWithOverlay(): HTMLCanvasElement {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'canvas-wrapper';
+  const canvas = document.createElement('canvas');
+  canvas.width = 300;
+  canvas.height = 400;
+  const overlay = document.createElement('div');
+  overlay.className = 'canvas-loading';
+  overlay.innerHTML = '<div class="spinner"></div><span class="loading-text">Loading...</span><div class="loading-track"><div class="loading-bar"></div></div>';
+  wrapper.appendChild(canvas);
+  wrapper.appendChild(overlay);
+  stageEl.appendChild(wrapper);
+  canvasOverlays.set(canvas, {
+    el: overlay,
+    text: overlay.querySelector('.loading-text') as HTMLSpanElement,
+    bar: overlay.querySelector('.loading-bar') as HTMLDivElement,
+  });
+  return canvas;
+}
+
+window.addEventListener('live2d:loadstart', (e: Event) => {
+  const { canvas, total } = (e as CustomEvent).detail as { canvas: HTMLCanvasElement, total: number };
+  const ov = canvasOverlays.get(canvas);
+  if (!ov)
+    return;
+  ov.el.classList.remove('done');
+  ov.text.textContent = `0 / ${total}`;
+  ov.bar.style.width = '0%';
+});
+
+window.addEventListener('live2d:loadprogress', (e: Event) => {
+  const { canvas, loaded, total } = (e as CustomEvent).detail as { canvas: HTMLCanvasElement, loaded: number, total: number };
+  const ov = canvasOverlays.get(canvas);
+  if (!ov)
+    return;
+  ov.text.textContent = `${loaded} / ${total}`;
+  ov.bar.style.width = `${Math.round((loaded / total) * 100)}%`;
+  if (loaded >= total)
+    setTimeout(() => ov.el.classList.add('done'), 300);
+});
+
 // ── sidebar ──────────────────────────────────────────────────────────────────
 
 demos.forEach(({ stem, demo }, i) => {
@@ -104,6 +147,7 @@ function runDemo(index: number, force = false): void {
 
   stageEl.innerHTML = '';
   consoleLog.innerHTML = '';
+  canvasOverlays.clear();
 
   listEl.querySelectorAll('li').forEach((li, i) => li.classList.toggle('active', i === index));
 
@@ -114,14 +158,7 @@ function runDemo(index: number, force = false): void {
   history.replaceState(null, '', `?demo=${stem}`);
 
   const count = demo.canvasCount ?? 1;
-  const canvases: HTMLCanvasElement[] = [];
-  for (let i = 0; i < count; i++) {
-    const canvas = document.createElement('canvas');
-    canvas.width = 300;
-    canvas.height = 400;
-    stageEl.appendChild(canvas);
-    canvases.push(canvas);
-  }
+  const canvases = Array.from({ length: count }, createCanvasWithOverlay);
 
   try {
     const result = demo.setup(canvases);
