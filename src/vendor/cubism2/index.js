@@ -26,6 +26,7 @@ class Cubism2Model {
     this.deviceToScreen = null;
     this._boundMouseEvent = this.mouseEvent.bind(this);
     this._boundTouchEvent = this.touchEvent.bind(this);
+    this._resizeRafId = null;
   }
 
   initL2dCanvas(canvas) {
@@ -39,7 +40,13 @@ class Cubism2Model {
       this.canvas.addEventListener('touchend', this._boundTouchEvent, false);
       this.canvas.addEventListener('touchmove', this._boundTouchEvent, false);
     }
-    this._resizeObserver = new ResizeObserver(() => this.resize());
+    this._resizeObserver = new ResizeObserver(() => {
+      if (this._resizeRafId) return;
+      this._resizeRafId = requestAnimationFrame(() => {
+        this._resizeRafId = null;
+        this.resize();
+      });
+    });
     this._resizeObserver.observe(this.canvas);
   }
 
@@ -98,6 +105,10 @@ class Cubism2Model {
     if (this._resizeObserver) {
       this._resizeObserver.disconnect();
       this._resizeObserver = null;
+    }
+    if (this._resizeRafId) {
+      cancelAnimationFrame(this._resizeRafId);
+      this._resizeRafId = null;
     }
     if (this._drawFrameId) {
       window.cancelAnimationFrame(this._drawFrameId);
