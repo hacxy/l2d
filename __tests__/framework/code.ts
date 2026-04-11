@@ -1,6 +1,10 @@
 /// <reference types="vite/client" />
 
-const rawSources = import.meta.glob<string>('../demo/*.ts', { as: 'raw', eager: true });
+const rawSources = import.meta.glob<string>('../demo/*.ts', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
 const codeFileEl = document.getElementById('code-file') as HTMLSpanElement;
 const codePreEl = document.querySelector('#code-view pre') as HTMLPreElement;
 const codePanelEl = document.getElementById('code-panel') as HTMLDivElement;

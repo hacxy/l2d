@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { ensureCssSize } from '../../canvas-manager.js';
 import { EVENTS } from '../../const.js';
 
 
@@ -78,6 +79,7 @@ class AppSubdelegate extends LAppSubdelegate {
     }
 
     this._canvas = canvas;
+    ensureCssSize(canvas);
 
     if (LAppDefine.CanvasSize === 'auto') {
       this.resizeCanvas();

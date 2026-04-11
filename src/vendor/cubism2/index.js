@@ -1,3 +1,4 @@
+import { ensureCssSize } from '../../canvas-manager.js';
 import { EVENTS } from '../../const.js';
 import LAppDefine from './LAppDefine.js';
 import LAppLive2DManager from './LAppLive2DManager.js';
@@ -40,6 +41,7 @@ class Cubism2Model {
       this.canvas.addEventListener('touchend', this._boundTouchEvent, false);
       this.canvas.addEventListener('touchmove', this._boundTouchEvent, false);
     }
+    ensureCssSize(this.canvas);
     this._resizeObserver = new ResizeObserver(() => {
       if (this._resizeRafId) return;
       this._resizeRafId = requestAnimationFrame(() => {
