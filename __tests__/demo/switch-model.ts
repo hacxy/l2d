@@ -1,4 +1,6 @@
 import type { Demo } from '../demo-types';
+import { modelPathLabel } from './utils/demo-helpers';
+import { createWideGridListPanel } from './utils/demo-list-panel';
 
 export default {
   title: '切换并重新加载模型',
@@ -10,41 +12,11 @@ export default {
       'https://model.hacxy.cn/Natori/Natori.model3.json',
     ];
 
-    const canvasItem = document.querySelector('#stage .canvas-item') as HTMLDivElement | null;
-    const canvasWrapper = canvasItem?.querySelector('.canvas-wrapper') as HTMLDivElement | null;
-    const panel = document.createElement('div');
-    panel.style.position = 'absolute';
-    panel.style.bottom = '8px';
-    panel.style.left = '8px';
-    panel.style.right = '8px';
-    panel.style.zIndex = '2';
-    panel.style.maxHeight = '140px';
-    panel.style.overflow = 'auto';
-    panel.style.padding = '8px';
-    panel.style.border = '1px solid #444';
-    panel.style.background = 'rgba(15, 15, 15, 0.8)';
-
-    const title = document.createElement('div');
-    title.textContent = '点击模型切换';
-    title.style.fontSize = '12px';
-    title.style.color = '#aaa';
-    title.style.marginBottom = '6px';
-    panel.appendChild(title);
-
-    const list = document.createElement('ul');
-    list.style.listStyle = 'none';
-    list.style.padding = '0';
-    list.style.margin = '0';
-    list.style.display = 'grid';
-    list.style.gap = '6px';
-    panel.appendChild(list);
+    const { panel, list, mount } = createWideGridListPanel('点击模型切换');
+    mount(l2d);
 
     const buttons: HTMLButtonElement[] = [];
-    const getModelName = (path: string) => {
-      const cleaned = path.endsWith('/') ? path.slice(0, -1) : path;
-      const segments = cleaned.split('/');
-      return segments.length >= 2 ? segments[segments.length - 2] : path;
-    };
+
     const setActive = (activeIndex: number) => {
       buttons.forEach((btn, i) => {
         btn.style.fontWeight = i === activeIndex ? '600' : '400';
@@ -56,7 +28,7 @@ export default {
     const switchModel = (index: number) => {
       setActive(index);
       l2d.load({
-        path: models[index],
+        path: models[index]!,
       });
     };
 
@@ -64,7 +36,7 @@ export default {
       const item = document.createElement('li');
       const button = document.createElement('button');
       button.type = 'button';
-      button.textContent = getModelName(path);
+      button.textContent = modelPathLabel(path);
       button.title = path;
       button.style.width = '100%';
       button.style.textAlign = 'left';
@@ -80,9 +52,6 @@ export default {
       item.appendChild(button);
       list.appendChild(item);
     });
-
-    if (canvasWrapper)
-      canvasWrapper.appendChild(panel);
 
     switchModel(0);
 

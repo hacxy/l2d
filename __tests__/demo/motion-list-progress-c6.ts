@@ -1,17 +1,6 @@
 import type { Demo } from '../demo-types';
-
-function rowKey(group: string, index: number) {
-  return `${group}\0${index}`;
-}
-
-function motionStem(file: string) {
-  return file
-    .replace(/^.*\//, '')
-    .replace(/\.motion3\.json$/i, '')
-    .replace(/\.motion\.json$/i, '')
-    .replace(/\.mtn$/i, '')
-    .replace(/\.json$/i, '');
-}
+import { motionRowKey, motionStem } from './utils/demo-helpers';
+import { createCompactListPanel, DEMO_BTN_MOTION_ROW } from './utils/demo-list-panel';
 
 /** 用户点列表时用高优先级打断当前 Idle */
 const CLICK_PRIO = 3;
@@ -24,19 +13,8 @@ interface Row {
 export default {
   title: '动作列表与播放进度 (Cubism6)',
   setup([l2d]) {
-    const wrap = l2d.getCanvas().parentElement as HTMLElement | null;
-
-    const panel = document.createElement('div');
-    panel.style.cssText
-      = 'position:absolute;bottom:6px;left:6px;right:6px;z-index:2;max-height:min(132px,38%);overflow:auto;padding:5px 6px;border:1px solid #444;border-radius:5px;background:rgba(12,12,12,0.88);box-sizing:border-box';
-
-    const title = document.createElement('div');
-    title.textContent = '动作';
-    title.style.cssText = 'font-size:9px;color:#777;margin-bottom:5px;font-family:system-ui,sans-serif';
-
-    const list = document.createElement('div');
-    list.style.cssText = 'display:flex;flex-direction:column;gap:4px';
-    panel.append(title, list);
+    const { panel, list, mount } = createCompactListPanel('动作');
+    mount(l2d);
 
     const rows = new Map<string, Row>();
     let rafId: number | null = null;
@@ -72,11 +50,10 @@ export default {
 
       for (const [group, files] of Object.entries(l2d.getMotions())) {
         files.forEach((file, index) => {
-          const key = rowKey(group, index);
+          const key = motionRowKey(group, index);
           const button = document.createElement('button');
           button.type = 'button';
-          button.style.cssText
-            = 'display:flex;flex-direction:column;align-items:stretch;gap:3px;width:100%;padding:4px 5px;border:1px solid #555;border-radius:3px;cursor:pointer;text-align:left;font-family:ui-monospace,monospace;font-size:8px;color:#ccc;background:rgba(0,0,0,0.2)';
+          button.style.cssText = DEMO_BTN_MOTION_ROW;
 
           const label = document.createElement('div');
           label.textContent = motionStem(file) || `#${index}`;
@@ -128,14 +105,14 @@ export default {
     }
 
     l2d.on('motionstart', (group, index, duration) => {
-      const key = rowKey(group, index);
+      const key = motionRowKey(group, index);
       activeKey = key;
       paintRows(key);
       runProgress(key, typeof duration === 'number' && duration > 0 ? duration : null);
     });
 
     l2d.on('motionend', (group, index) => {
-      const key = rowKey(group, index);
+      const key = motionRowKey(group, index);
       stopRaf();
       if (activeKey === key) {
         activeKey = null;
@@ -145,7 +122,6 @@ export default {
 
     l2d.on('loaded', buildList);
 
-    wrap?.append(panel);
     l2d.load({ path: 'https://model.hacxy.cn/Mao/Mao.model3.json' });
 
     return () => {

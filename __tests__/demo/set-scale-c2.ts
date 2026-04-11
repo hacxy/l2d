@@ -1,12 +1,13 @@
 import type { Demo } from '../demo-types';
+import { attachCanvasScaleSlider } from './utils';
 
 export default {
-  title: 'Cubism2 基础',
+  title: 'setScale 缩放 (Cubism2)',
   setup([l2d]) {
+    const detach = attachCanvasScaleSlider(l2d, { min: 0.15, max: 2.5 });
     l2d.load({
       path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
-    }).then(() => {
-      console.log('模型已准备就绪');
     });
+    return detach;
   },
 } satisfies Demo;

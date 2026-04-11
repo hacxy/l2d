@@ -1,24 +1,11 @@
 import type { Demo } from '../demo-types';
-
-const BTN_BASE
-  = 'width:100%;padding:4px 6px;border:1px solid #555;border-radius:3px;cursor:pointer;text-align:left;font-family:ui-monospace,monospace;font-size:8px;color:#ccc;background:rgba(0,0,0,0.2)';
+import { createCompactListPanel, DEMO_BTN_COMPACT } from './utils/demo-list-panel';
 
 export default {
   title: '表情切换 (Cubism2)',
   setup([l2d]) {
-    const wrap = l2d.getCanvas().parentElement as HTMLElement | null;
-
-    const panel = document.createElement('div');
-    panel.style.cssText
-      = 'position:absolute;bottom:6px;left:6px;right:6px;z-index:2;max-height:min(132px,38%);overflow:auto;padding:5px 6px;border:1px solid #444;border-radius:5px;background:rgba(12,12,12,0.88);box-sizing:border-box';
-
-    const heading = document.createElement('div');
-    heading.textContent = '表情';
-    heading.style.cssText = 'font-size:9px;color:#777;margin-bottom:5px;font-family:system-ui,sans-serif';
-
-    const list = document.createElement('div');
-    list.style.cssText = 'display:flex;flex-direction:column;gap:4px';
-    panel.append(heading, list);
+    const { panel, list, mount } = createCompactListPanel('表情');
+    mount(l2d);
 
     const exprButtons = new Map<string, HTMLButtonElement>();
     let randomBtn: HTMLButtonElement | null = null;
@@ -41,7 +28,7 @@ export default {
       randomBtn = document.createElement('button');
       randomBtn.type = 'button';
       randomBtn.textContent = '随机';
-      randomBtn.style.cssText = BTN_BASE;
+      randomBtn.style.cssText = DEMO_BTN_COMPACT;
       randomBtn.onclick = () => l2d.setExpression();
       list.append(randomBtn);
 
@@ -58,7 +45,7 @@ export default {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.textContent = id;
-        btn.style.cssText = BTN_BASE;
+        btn.style.cssText = DEMO_BTN_COMPACT;
         btn.onclick = () => l2d.setExpression(id);
         list.append(btn);
         exprButtons.set(id, btn);
@@ -71,7 +58,6 @@ export default {
 
     l2d.on('loaded', buildList);
 
-    wrap?.append(panel);
     l2d.load({
       path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
       scale: 0.8,
