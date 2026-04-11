@@ -105,10 +105,8 @@ class Cubism2Model {
     }
     this._destroyed = true;
     this.isDrawStart = false;
-    if (this.live2DMgr && typeof this.live2DMgr.release === 'function') {
-      this.live2DMgr.release();
-    }
-    if (this.gl) {
+    if (this.live2DMgr) {
+      this.live2DMgr.releaseModel(this.gl);
     }
     this.canvas = null;
     this.gl = null;

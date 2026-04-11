@@ -1,11 +1,12 @@
 import type { Demo } from '../demo-types';
 
 export default {
-  title: '销毁生命周期',
+  title: '销毁生命周期 (Cubism2)',
   setup([l2d]) {
     let countdownId: ReturnType<typeof setInterval> | null = null;
     l2d.load({
-      path: 'https://model.hacxy.cn/HK416-1-normal/model.json',
+      path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
+      scale: 0.8,
     }).then(() => {
       let remain = 3;
       console.log(`销毁倒计时: ${remain}`);

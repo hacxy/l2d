@@ -188,10 +188,15 @@ class L2D extends Emitter<L2DEventMap> {
     }
     this._state.currentVersion = null;
     const gl = this.canvas.getContext('webgl2') ?? this.canvas.getContext('webgl') as WebGL2RenderingContext | null;
-    if (gl) {
+    if (gl && !gl.isContextLost()) {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+      gl.disable(gl.SCISSOR_TEST);
+      gl.colorMask(true, true, true, true);
+      const dw = gl.drawingBufferWidth;
+      const dh = gl.drawingBufferHeight;
+      gl.viewport(0, 0, dw || this.canvas.width, dh || this.canvas.height);
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
     }
     this.emit('destroy');
   }
