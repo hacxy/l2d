@@ -22,7 +22,7 @@ interface Row {
 }
 
 export default {
-  title: '动作列表与播放进度',
+  title: '动作列表与播放进度 (Cubism6)',
   setup([l2d]) {
     const wrap = l2d.getCanvas().parentElement as HTMLElement | null;
 

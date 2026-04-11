@@ -1,7 +1,7 @@
 import type { Demo } from '../demo-types';
 
 export default {
-  title: 'Hit Area 边界',
+  title: 'Hit Area 边界 (Cubism6)',
   setup([l2d]) {
     const canvas = l2d.getCanvas();
 
