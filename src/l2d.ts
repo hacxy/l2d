@@ -85,7 +85,6 @@ class L2D extends Emitter<L2DEventMap> {
 
   /**
    * 获取所有动作，结构为 `{ 组名: [文件路径, ...] }`。
-   * 可用于配合 {@link playMotionByFile} 按文件路径播放动作。
    */
   getMotions(): Record<string, string[]> {
     return this._motionCtrl.getMotions();
@@ -138,7 +137,6 @@ class L2D extends Emitter<L2DEventMap> {
 
   /**
    * 批量设置模型参数值，参数 ID 可在模型的 `.cdi3.json` 文件中查看。
-   * 注意：SDK 内部的动画（呼吸、眨眼等）每帧都会更新参数，若需持续锁定需每帧调用。
    * @example l2d.setParams({ ParamEyeLOpen: 0, ParamA: 1 })
    */
   setParams(params: Record<string, number>) {
@@ -149,7 +147,7 @@ class L2D extends Emitter<L2DEventMap> {
   }
 
   /**
-   * 获取所有 hit area 的当前归一化边界（相对 canvas 的 0~1 比例）。
+   * 获取所有 hit area 的当前边界（相对 canvas 的 0~1 比例）。
    * 每帧调用可实现实时追踪。
    * @example
    * // canvas overlay

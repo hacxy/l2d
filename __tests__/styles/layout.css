@@ -101,6 +101,8 @@ body {
   font-size: 12px;
   color: #888;
   flex-shrink: 0;
+  position: relative;
+  z-index: 9999;
 }
 
 #stage-header .running-label {
