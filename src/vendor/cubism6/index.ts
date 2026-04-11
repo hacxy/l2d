@@ -353,6 +353,18 @@ export class AppDelegate {
       }));
     };
 
+    instance.onMotionStart = ({ group, index, duration, file }) => {
+      window.dispatchEvent(new CustomEvent(EVENTS.MOTION_START, {
+        detail: { canvas: this._canvas, group, index, duration, file },
+      }));
+    };
+
+    instance.onMotionEnd = ({ group, index, file }) => {
+      window.dispatchEvent(new CustomEvent(EVENTS.MOTION_END, {
+        detail: { canvas: this._canvas, group, index, file },
+      }));
+    };
+
     instance.loadAssets(modelPath, modelJsonName);
     live2dManager._models.push(instance);
   }
@@ -471,15 +483,7 @@ export class AppDelegate {
     const resolvedIndex = index !== undefined
       ? index
       : Math.floor(Math.random() * model._modelSetting.getMotionCount(group));
-    const canvas = this._canvas;
-    const file = model._modelSetting.getMotionFileName(group, resolvedIndex);
-    const onBegan = (_motion: any) => window.dispatchEvent(new CustomEvent(EVENTS.MOTION_START, {
-      detail: { canvas, group, index: resolvedIndex, duration: _motion.getLoopDuration(), file },
-    }));
-    const onFinished = (_motion: any) => window.dispatchEvent(new CustomEvent(EVENTS.MOTION_END, {
-      detail: { canvas, group, index: resolvedIndex, file },
-    }));
-    model.startMotion(group, resolvedIndex, priority, onFinished, onBegan);
+    model.startMotion(group, resolvedIndex, priority);
   }
 
   public getMotionGroups(): Record<string, number> {

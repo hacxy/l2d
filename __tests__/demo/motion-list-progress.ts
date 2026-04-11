@@ -1,11 +1,9 @@
 import type { Demo } from '../demo-types';
 
-/** 与 motionstart/motionend 的 group+index 对应一行 UI */
 function rowKey(group: string, index: number) {
   return `${group}\0${index}`;
 }
 
-/** 列表短标签：去目录与常见动作后缀 */
 function motionStem(file: string) {
   return file
     .replace(/^.*\//, '')
@@ -15,13 +13,8 @@ function motionStem(file: string) {
     .replace(/\.json$/i, '');
 }
 
-/** 优先 Idle 组，否则取第一个组名 */
-function pickMotionGroup(motions: Record<string, string[]>) {
-  return ['Idle', 'idle'].find(g => motions[g]?.length) ?? Object.keys(motions)[0];
-}
-
-/** 强制走 L2D.playMotion，才能收到 motionstart / motionend（对齐 Cubism6 内部接 Idle 不派发事件的问题） */
-const FORCE_PRIO = 3;
+/** 用户点列表时用高优先级打断当前 Idle */
+const CLICK_PRIO = 3;
 
 interface Row {
   button: HTMLButtonElement
@@ -48,7 +41,6 @@ export default {
     const rows = new Map<string, Row>();
     let rafId: number | null = null;
     let activeKey: string | null = null;
-    let alive = true;
 
     const stopRaf = () => {
       if (rafId !== null) {
@@ -57,7 +49,6 @@ export default {
       }
     };
 
-    /** 全部恢复默认样式；若传入 key 则高亮该行（进度条宽度由 runProgress 单独管） */
     function paintRows(highlightKey: string | null) {
       for (const { button, bar } of rows.values()) {
         button.style.borderColor = '#555';
@@ -71,15 +62,6 @@ export default {
         row.button.style.borderColor = '#5a7acc';
         row.button.style.background = 'rgba(40,60,120,0.25)';
       }
-    }
-
-    function kickPlayMotionIdle() {
-      const motions = l2d.getMotions();
-      const group = pickMotionGroup(motions);
-      const files = motions[group];
-      if (!files?.length)
-        return;
-      l2d.playMotion(group, Math.floor(Math.random() * files.length), FORCE_PRIO);
     }
 
     function buildList() {
@@ -107,7 +89,7 @@ export default {
           bar.style.cssText = 'height:100%;width:0%;background:#6b9fff;border-radius:2px';
           track.append(bar);
           button.append(label, track);
-          button.onclick = () => l2d.playMotion(group, index, FORCE_PRIO);
+          button.onclick = () => l2d.playMotion(group, index, CLICK_PRIO);
 
           list.append(button);
           rows.set(key, { button, bar });
@@ -115,7 +97,6 @@ export default {
       }
     }
 
-    /** durationSec 无效时用正弦条表示「未知时长」 */
     function runProgress(key: string, durationSec: number | null) {
       stopRaf();
       if (!rows.has(key))
@@ -160,27 +141,14 @@ export default {
         activeKey = null;
         paintRows(null);
       }
-      /*
-       * Cubism6：Idle 结束后 SDK 内部接下一遍 Idle，不发 motionstart。
-       * Cubism2：同一同步回合里会紧跟 motionstart，microtask 里 activeKey 已非空则不再 kick。
-       */
-      queueMicrotask(() => {
-        if (!alive || activeKey !== null)
-          return;
-        kickPlayMotionIdle();
-      });
     });
 
-    l2d.on('loaded', () => {
-      buildList();
-      kickPlayMotionIdle();
-    });
+    l2d.on('loaded', buildList);
 
     wrap?.append(panel);
     l2d.load({ path: 'https://model.hacxy.cn/Mao/Mao.model3.json' });
 
     return () => {
-      alive = false;
       stopRaf();
       for (const { button } of rows.values())
         button.onclick = null;

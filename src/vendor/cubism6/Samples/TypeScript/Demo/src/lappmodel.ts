@@ -742,6 +742,16 @@ export class LAppModel extends CubismUserModel {
 
     const motionFileName = this._modelSetting.getMotionFileName(group, no);
 
+    const resolvedBeganHandler: BeganMotionCallback | undefined = onBeganMotionHandler ??
+      (this.onMotionStart ? (_motion: ACubismMotion) => {
+        this.onMotionStart!({ group, index: no, duration: (_motion as any).getLoopDuration?.() ?? null, file: motionFileName });
+      } : undefined);
+
+    const resolvedFinishedHandler: FinishedMotionCallback | undefined = onFinishedMotionHandler ??
+      (this.onMotionEnd ? (_motion: ACubismMotion) => {
+        this.onMotionEnd!({ group, index: no, file: motionFileName });
+      } : undefined);
+
     // ex) idle_0
     const name = `${group}_${no}`;
     let motion: CubismMotion = this._motions.get(name) as CubismMotion;
@@ -765,8 +775,8 @@ export class LAppModel extends CubismUserModel {
             processedBuffer,
             processedBuffer.byteLength,
             null,
-            onFinishedMotionHandler,
-            onBeganMotionHandler,
+            resolvedFinishedHandler,
+            resolvedBeganHandler,
             this._modelSetting,
             group,
             no,
@@ -784,8 +794,8 @@ export class LAppModel extends CubismUserModel {
         return InvalidMotionQueueEntryHandleValue;
       }
     } else {
-      motion.setBeganMotionHandler(onBeganMotionHandler);
-      motion.setFinishedMotionHandler(onFinishedMotionHandler);
+      motion.setBeganMotionHandler(resolvedBeganHandler);
+      motion.setFinishedMotionHandler(resolvedFinishedHandler);
     }
 
     //voice
@@ -1173,6 +1183,10 @@ export class LAppModel extends CubismUserModel {
   _motionCount: number; // モーションデータカウント
   _allMotionCount: number; // モーション総数
   _wavFileHandler: LAppWavFileHandler; //wavファイルハンドラ
+
+  // 动作事件回调（自动闲置动作 & 外部均触发）
+  onMotionStart: ((info: { group: string; index: number; duration: number | null; file: string }) => void) | null = null;
+  onMotionEnd: ((info: { group: string; index: number; file: string }) => void) | null = null;
 
   // ロード進捗コールバック
   onProgress: ((loaded: number, total: number, file: string) => void) | null = null;
