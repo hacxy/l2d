@@ -5,6 +5,10 @@ export default {
   setup([l2d]) {
     const canvas = l2d.getCanvas();
 
+    l2d.on('tap', areaName => {
+      console.log('[tap] 命中 hit area:', areaName || '(空字符串)');
+    });
+
     const overlay = document.createElement('canvas');
     overlay.style.cssText = 'position:fixed;pointer-events:none;z-index:9999;';
     document.body.appendChild(overlay);

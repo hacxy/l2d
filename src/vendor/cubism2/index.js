@@ -186,6 +186,30 @@ class Cubism2Model {
     model._forcedParams = { ...params };
   }
 
+  _computeFitScale() {
+    const model = this.live2DMgr.getModel();
+    if (!model?.live2DModel || !model.modelMatrix) return 1;
+
+    const W = model.live2DModel.getCanvasWidth();
+    const H = model.live2DModel.getCanvasHeight();
+    const mm = model.modelMatrix;
+
+    const x0 = mm.transformX(0);
+    const x1 = mm.transformX(W);
+    const y0 = mm.transformY(0);
+    const y1 = mm.transformY(H);
+
+    const maxX = Math.max(Math.abs(x0), Math.abs(x1));
+    const maxY = Math.max(Math.abs(y0), Math.abs(y1));
+
+    const ratio = this.canvas.height / this.canvas.width;
+    const ndcMaxX = ratio * maxX;
+    const ndcMaxY = maxY;
+
+    const maxExtent = Math.max(ndcMaxX, ndcMaxY);
+    return maxExtent > 1 ? 1 / maxExtent : 1;
+  }
+
   _applyViewState() {
     const width = this.canvas.width;
     const height = this.canvas.height;
@@ -197,8 +221,8 @@ class Cubism2Model {
     this.viewMatrix.setMaxScreenRect(LAppDefine.VIEW_LOGICAL_MAX_LEFT, LAppDefine.VIEW_LOGICAL_MAX_RIGHT, LAppDefine.VIEW_LOGICAL_MAX_BOTTOM, LAppDefine.VIEW_LOGICAL_MAX_TOP);
     this.viewMatrix.setMaxScale(LAppDefine.VIEW_MAX_SCALE);
     this.viewMatrix.setMinScale(LAppDefine.VIEW_MIN_SCALE);
-    // Apply h/w as base scale so scale=1 fills canvas height, consistent with Cubism6
-    this.viewMatrix.adjustScale(0, 0, (this._userScale ?? 1) * ratio);
+    const fitScale = this._computeFitScale();
+    this.viewMatrix.adjustScale(0, 0, (this._userScale ?? 1) * ratio * fitScale);
     if (this._userPosition !== undefined) {
       this.viewMatrix.translate(this._userPosition[0] * ratio, this._userPosition[1] * ratio);
     }
