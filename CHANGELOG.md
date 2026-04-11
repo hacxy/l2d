@@ -1,3 +1,10 @@
+# [2.0.0-beta.0](https://github.com/hacxy/l2d/compare/v2.0.0-beta...v2.0.0-beta.0) (2026-04-11)
+
+### Bug Fixes
+
+- 修复在vite8中报ResizeObserver loop异常 ([e047916](https://github.com/hacxy/l2d/commit/e0479162f8f8b92ac13530d76ba735625e882857))
+- 修复canvas在不设置style宽高时异常放大的问题 ([4dc602a](https://github.com/hacxy/l2d/commit/4dc602a1a55a7b93327bd4ae8c78f14275efb33d))
+
 # [2.0.0-beta](https://github.com/hacxy/l2d/compare/v1.0.1...v2.0.0-beta) (2026-04-11)
 
 ### Bug Fixes
