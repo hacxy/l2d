@@ -183,15 +183,15 @@ export class AppDelegate {
     const loop = (timestamp: number) => {
       updateTimeOnce(timestamp);
 
-      for (const sd of this._subdelegates) {
-        sd.update();
-      }
-
       if (!this._modelLoadedEmitted && this._isModelReady()) {
         this._modelLoadedEmitted = true;
         if (this._onLoaded) {
           this._onLoaded();
         }
+      }
+
+      for (const sd of this._subdelegates) {
+        sd.update();
       }
 
       // 检测表情结束
