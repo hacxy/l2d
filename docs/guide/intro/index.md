@@ -15,6 +15,21 @@ group:
 - **统一规范的API** Cubism 2 & 6 所驱动的模型均使用完全相同规范的接口，尽可能保证两版本的能力与规范完全对称
 - **零依赖，轻量** — 单一 JS 文件，不绑定任何框架，Vue、React、原生项目均可直接使用
 
+
+## 贡献者们
+
+感谢以下所有为 `l2d` 贡献过代码的 [开发者们](https://github.com/hacxy/l2d/graphs/contributors)。
+
+<a href="https://github.com/hacxy/l2d/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=hacxy/l2d" />
+</a>
+
+## 讨论
+
+微信群:
+
+<img width="200"  src="https://raw.githubusercontent.com/hacxy/hacxy/main/images/wxq.jpg"/>
+
 ## 免责声明
 
 ::: warning 关于 Live2D 模型版权

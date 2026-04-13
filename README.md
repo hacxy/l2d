@@ -34,7 +34,7 @@
 
 微信群:
 
-<img width="200"  src="https://raw.githubusercontent.com/hacxy/hacxy/main/images/20250217175953.png"/>
+<img width="200"  src="https://raw.githubusercontent.com/hacxy/hacxy/main/images/wxq.jpg"/>
 
 ## 免责声明
 
