@@ -41,7 +41,6 @@ class L2D extends Emitter<L2DEventMap> {
 
   /**
    * 加载并渲染一个 Live2D 模型，自动识别 Cubism 2 / 6 版本。
-   * 版本切换时会自动替换 canvas 以规避 WebGL context 不兼容问题。
    * 加载完成后触发 `loaded` 事件。
    * @param options - 模型加载选项，参见 {@link Options}
    */
@@ -125,8 +124,8 @@ class L2D extends Emitter<L2DEventMap> {
 
   /**
    * 设置模型在画布中的位置偏移，与加载选项中的 `position` 作用一致。
-   * @param x - X 轴偏移
-   * @param y - Y 轴偏移
+   * @param x - X 轴偏移，范围为-2 ~ 2
+   * @param y - Y 轴偏移，范围为-2 ~ 2
    */
   setPosition(x: number, y: number) {
     if (this._state.currentVersion === 2 && this._state.l2d2Model)

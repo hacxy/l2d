@@ -2,7 +2,7 @@ export interface Options {
   /** 模型配置文件路径（`.model.json` 或 `.model3.json`） */
   path: string
   /**
-   * 模型位置偏移 `[x, y]`，`x` 正值右移，`y` 正值上移
+   * 模型位置偏移 `[x, y]`，`x` 正值右移，`y` 正值上移，范围通常为 `-2 ~ 2`
    * @example [0.5, -0.2]
    */
   position?: [x: number, y: number]
