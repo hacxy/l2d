@@ -25,6 +25,7 @@ declare class Cubism2Model {
   setPosition(x: number, y: number): void;
   setScale(scale: number): void;
   setParams(params: Record<string, number>): void;
+  getParams(): Array<{ id: string; value: number; min: number; max: number; default: number }>;
   resize(): void;
   getHitAreaBounds(): Array<{ name: string; x: number; y: number; w: number; h: number }>;
   playMotion(group: string, index?: number, priority?: number): void;

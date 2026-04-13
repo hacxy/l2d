@@ -1,3 +1,16 @@
+export interface ParamInfo {
+  /** 参数 ID */
+  id: string
+  /** 当前值 */
+  value: number
+  /** 最小值 */
+  min: number
+  /** 最大值 */
+  max: number
+  /** 默认值 */
+  default: number
+}
+
 export interface Options {
   /** 模型配置文件路径（`.model.json` 或 `.model3.json`） */
   path: string

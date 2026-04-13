@@ -1,5 +1,5 @@
 import type { ModelState } from './motion-controller.js';
-import type { L2DEventMap, Options } from './types.js';
+import type { L2DEventMap, Options, ParamInfo } from './types.js';
 import { cloneCanvas } from './canvas-manager.js';
 import { EVENTS } from './const.js';
 import { Emitter } from './emitter.js';
@@ -147,6 +147,18 @@ class L2D extends Emitter<L2DEventMap> {
       this._state.l2d2Model.setParams(params);
     else if (this._state.currentVersion !== null && this._state.l2d6Model)
       this._state.l2d6Model.setParams(params);
+  }
+
+  /**
+   * 获取模型所有参数的当前状态，每帧调用可实现实时追踪。
+   * Cubism 2 / Cubism 6 均支持完整的 `id` / `value` / `min` / `max` / `default`。
+   */
+  getParams(): ParamInfo[] {
+    if (this._state.currentVersion === 2 && this._state.l2d2Model)
+      return this._state.l2d2Model.getParams();
+    else if (this._state.currentVersion !== null && this._state.l2d6Model)
+      return this._state.l2d6Model.getParams();
+    return [];
   }
 
   /**
