@@ -18,8 +18,9 @@
 - **One API for both** — Models driven by Cubism 2 and 6 share the same API design, keeping capabilities and conventions as aligned as possible across versions
 - **Zero dependencies, lightweight** — One JS bundle, no framework lock-in; use it in Vue, React, or vanilla projects
 
-- [Documentation](https://l2d.hacxy.cn)
-- L2D Demos <https://l2d-demo.hacxy.cn>
+[Documentation](https://l2d.hacxy.cn)
+
+L2D Demos: <https://l2d-demo.hacxy.cn>
 
 Try `l2d` on [StackBlitz](https://stackblitz.com/edit/vitejs-vite-dye9t3?file=src%2Fmain.ts).
 

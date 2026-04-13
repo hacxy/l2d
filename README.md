@@ -18,8 +18,9 @@
 - **统一规范的API** Cubism 2 & 6 所驱动的模型均使用完全相同规范的接口，尽可能保证两版本的能力与规范完全对称
 - **零依赖，轻量** — 单一 JS 文件，不绑定任何框架，Vue、React、原生项目均可直接使用
 
-- [查阅文档](https://l2d.hacxy.cn)
-- L2D Demos <https://l2d-demo.hacxy.cn>
+[查阅文档](https://l2d.hacxy.cn)
+
+L2D Demos: <https://l2d-demo.hacxy.cn>
 
 通过 [stackblitz](https://stackblitz.com/edit/vitejs-vite-dye9t3?file=src%2Fmain.ts) 在线游玩`l2d`.
 
