@@ -21,6 +21,7 @@ const loadedCount = ref(0);
 const totalCount = ref(0);
 const currentFile = ref('');
 const cleanup = shallowRef<(() => void) | null>(null);
+const l2dInstance = shallowRef<L2D | null>(null);
 
 const live2dRef = ref<InstanceType<typeof Live2D> | null>(null);
 const canvasRef = computed(() => live2dRef.value?.l2dCanvas ?? null);
@@ -41,6 +42,7 @@ async function runDemo() {
 
   const wrappedInit = (canvas: HTMLCanvasElement): L2D => {
     const l2d = init(canvas);
+    l2dInstance.value = l2d;
     isLoading.value = true;
     const MIN_LOADING_MS = 400;
     let loadStartTime = Date.now();
@@ -85,11 +87,14 @@ function onOpen() {
 function onClose() {
   cleanup.value?.();
   cleanup.value = null;
+  l2dInstance.value?.destroy();
+  l2dInstance.value = null;
   resetProgress();
 }
 
 onBeforeUnmount(() => {
   cleanup.value?.();
+  l2dInstance.value?.destroy();
 });
 </script>
 

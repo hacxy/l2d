@@ -2,6 +2,14 @@ import { Converter } from 'typedoc';
 import { MarkdownPageEvent, MarkdownTheme, MarkdownThemeContext } from 'typedoc-plugin-markdown';
 
 export function load(app) {
+  // 注册 @demo 自定义块标签
+  app.converter.on(Converter.EVENT_BEGIN, () => {
+    const current = app.options.getValue('blockTags');
+    if (!current.includes('@demo')) {
+      app.options.setValue('blockTags', [...current, '@demo']);
+    }
+  });
+
   // 在转换阶段过滤构造函数
   app.converter.on(Converter.EVENT_CREATE_DECLARATION, (context, reflection) => {
     if (
@@ -59,6 +67,9 @@ export function load(app) {
 
     // 剩余四级标题统一转为加粗加冒号
     page.contents = page.contents.replace(/^#### (.+)$/gm, '**$1：**');
+
+    // 将 @demo 标题标签映射为"案例"
+    page.contents = page.contents.replace(/\*\*Demo：\*\*/g, '**案例：**');
 
     // 单行代码块转为内联代码
     page.contents = page.contents.replace(/```\w*\n([^\n]+)\n```/g, '`$1`');

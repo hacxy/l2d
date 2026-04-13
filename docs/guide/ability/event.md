@@ -12,7 +12,7 @@
 
 ## 事件列表
 
-以下列出了所有的模型事件列表,  以 `tap` 为例:
+以下列出了所有的模型事件列表,  以 `motionstart` 为例:
 
 <DemoBlock demo="demo2">
 

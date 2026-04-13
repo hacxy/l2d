@@ -18,22 +18,94 @@ export interface Options {
 }
 
 export interface L2DEventMap {
-  /** 点击命中 hit area 时触发，`areaName` 为命中的区域名称 */
+  /**
+   * 用户点击 canvas 且命中 hit area 时触发，`areaName` 为命中的区域名称
+   * @demo
+   * <DemoBlock demo="demo5">
+   *
+   * <<< ../../demos/index.ts#demo5{ts}
+   *
+   * </DemoBlock>
+   */
   tap: (areaName: string) => void
-  /** 开始加载，`total` 为需要加载的文件总数 */
+  /**
+   * 调用 `load()` 后，模型文件开始下载前触发，`total` 为需要加载的文件总数
+   * @demo
+   * <DemoBlock demo="demo6">
+   *
+   * <<< ../../demos/index.ts#demo6{ts}
+   *
+   * </DemoBlock>
+   */
   loadstart: (total: number) => void
-  /** 单个文件加载完成 */
+  /**
+   * 每个文件下载完成时触发
+   * @demo
+   * <DemoBlock demo="demo7">
+   *
+   * <<< ../../demos/index.ts#demo7{ts}
+   *
+   * </DemoBlock>
+   */
   loadprogress: (loaded: number, total: number, file: string) => void
-  /** 所有资源就绪，模型开始渲染 */
+  /**
+   * 所有资源下载完毕、模型初始化完成并开始首帧渲染时触发
+   * @demo
+   * <DemoBlock demo="demo8">
+   *
+   * <<< ../../demos/index.ts#demo8{ts}
+   *
+   * </DemoBlock>
+   */
   loaded: () => void
-  /** 表情开始播放，`id` 为表情 ID */
+  /**
+   * 调用 `setExpression()` 后，表情过渡动画开始播放时触发，`id` 为表情 ID
+   * @demo
+   * <DemoBlock demo="demo9">
+   *
+   * <<< ../../demos/index.ts#demo9{ts}
+   *
+   * </DemoBlock>
+   */
   expressionstart: (id: string) => void
-  /** 表情播放结束 */
+  /**
+   * 表情过渡动画播放结束时触发
+   * @demo
+   * <DemoBlock demo="demo10">
+   *
+   * <<< ../../demos/index.ts#demo10{ts}
+   *
+   * </DemoBlock>
+   */
   expressionend: () => void
-  /** 动作开始播放，`group` 为动作组名，`index` 为动作索引，`file` 为动作文件名 */
+  /**
+   * 调用 `playMotion()` 或随机动作被触发后，动作开始播放时触发
+   * @demo
+   * <DemoBlock demo="demo2">
+   *
+   * <<< ../../demos/index.ts#demo2{ts}
+   *
+   * </DemoBlock>
+   */
   motionstart: (group: string, index: number, duration: number | null, file: string | null) => void
-  /** 动作播放结束，`group` 为动作组名，`index` 为动作索引，`file` 为动作文件名 */
+  /**
+   * 当前动作播放完毕时触发
+   * @demo
+   * <DemoBlock demo="demo11">
+   *
+   * <<< ../../demos/index.ts#demo11{ts}
+   *
+   * </DemoBlock>
+   */
   motionend: (group: string, index: number, file: string | null) => void
-  /** 模型销毁，WebGL 资源释放完成 */
+  /**
+   * 调用 `destroy()` 后，WebGL 资源释放完成时触发
+   * @demo
+   * <DemoBlock demo="demo12">
+   *
+   * <<< ../../demos/index.ts#demo12{ts}
+   *
+   * </DemoBlock>
+   */
   destroy: () => void
 }
