@@ -1,14 +1,44 @@
-import { defineConfig } from 'vite';
+import path from 'node:path';
+import { createLogger, defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
+import pkg from './package.json' with { type: 'json' };
+
+const logger = createLogger();
+const loggerWarn = logger.warn;
+logger.warn = (msg, options) => {
+  // 忽略nodejs模块警告
+  if (msg.includes('has been externalized for browser compatibility'))
+    return;
+  loggerWarn(msg, options);
+};
 
 export default defineConfig({
-  build: {
-    lib: {
-      name: 'LIVE2D',
-      entry: 'src/index.ts',
-      formats: ['es', 'iife'],
-      fileName: format => `index.${format === 'iife' ? 'min.js' : 'js'}`
+  customLogger: logger,
+  define: {
+    __VERSION__: JSON.stringify(pkg.version),
+  },
+  resolve: {
+    alias: {
+      '@framework': path.resolve(__dirname, 'src/vendor/cubism6/Framework/src'),
     },
   },
-  plugins: [dts()]
+  build: {
+    lib: {
+      name: 'L2D',
+      entry: 'src/index.ts',
+      formats: ['es', 'iife'],
+      fileName: format => `index.${format === 'iife' ? 'min.js' : 'js'}`,
+    },
+  },
+  plugins: [
+    dts(),
+    {
+      name: 'suppress-cubism-core-log',
+      transform(code: string, id: string) {
+        if (id.endsWith('live2dcubismcore.js')) {
+          return `const __c=console.log;console.log=()=>{};${code}\nconsole.log=__c;`;
+        }
+      },
+    },
+  ],
 });

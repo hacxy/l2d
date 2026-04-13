@@ -1,62 +1,108 @@
 <script lang="ts" setup>
-// eslint-disable-next-line antfu/no-import-dist
-import type { L2D, Model, Options } from '../../../../dist';
-import { nextTick, onMounted, ref, toRefs, watch } from 'vue';
+import type { L2D, Options } from '../../../../dist';
+import { nextTick, onBeforeUnmount, onMounted, ref, shallowRef, toRefs, watch } from 'vue';
 
-const props = defineProps<Options & {
+const props = defineProps<Partial<Options> & {
   width?: number
   height?: number
+  /** 铺满父容器，按容器尺寸设置 canvas 分辨率并随窗口缩放 */
+  fill?: boolean
 }>();
 
-const emits = defineEmits<{
-  (e: 'load', status: 'loading' | 'done'): void
+const emit = defineEmits<{
+  loadstart: [total: number]
+  loadprogress: [loaded: number, total: number, file: string]
+  loaded: []
 }>();
-const { path, position, scale, volume, anchor, rotaion, width, height } = toRefs(props);
 
-let l2d: L2D;
-let model: Model;
+const { path, width, height } = toRefs(props);
 
-const l2dCanvas = ref(null);
+const l2d = shallowRef<L2D | null>(null);
 
-watch(path, reloadModel);
-watch(scale, () => model.setScale(scale.value || 'auto'));
-watch(volume, () => model.setVolume(volume.value));
-watch(anchor, () => model.setAnchor(...(anchor.value || [])));
-watch(rotaion, () => model.setRotaion(rotaion.value));
-watch(() => position, () => model.setPosition(position.value || 'center'), { deep: true });
-watch(() => [width, height], () => {
-  nextTick(() => {
-    model.setScale(scale.value || 'auto');
-    model.setPosition(position.value || 'center');
-  });
-}, { deep: true });
+const l2dCanvas = ref<HTMLCanvasElement | null>(null);
+const wrapRef = ref<HTMLElement | null>(null);
 
-async function reloadModel() {
-  model?.destroy();
+let ro: ResizeObserver | null = null;
 
-  emits('load', 'loading');
-
-  model = await l2d.create({
-    path: path.value,
-    scale: scale.value,
-    position: position.value,
-    volume: volume.value,
-    rotaion: rotaion.value,
-    anchor: anchor.value
-  });
-  emits('load', 'done');
+function bindL2dEvents(instance: L2D) {
+  instance.on('loadstart', total => emit('loadstart', total));
+  instance.on('loadprogress', (loaded, total, file) => emit('loadprogress', loaded, total, file));
+  instance.on('loaded', () => emit('loaded'));
 }
 
-onMounted(() => {
-  import('../../../../dist').then(({ init }) => {
-    l2d = init(l2dCanvas.value! as HTMLCanvasElement);
-    reloadModel();
-  });
+function syncCanvasSize() {
+  if (!props.fill)
+    return;
+  const canvas = l2dCanvas.value;
+  const wrap = wrapRef.value;
+  if (!canvas || !wrap)
+    return;
+  const dpr = window.devicePixelRatio || 1;
+  const cssW = wrap.clientWidth;
+  const cssH = wrap.clientHeight;
+  if (cssW < 1 || cssH < 1)
+    return;
+  const w = Math.max(1, Math.floor(cssW * dpr));
+  const h = Math.max(1, Math.floor(cssH * dpr));
+  if (canvas.width !== w || canvas.height !== h) {
+    canvas.width = w;
+    canvas.height = h;
+  }
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+  l2d.value?.resize();
+}
+
+onMounted(async () => {
+  if (!props.fill)
+    return;
+  await nextTick();
+  if (!wrapRef.value)
+    return;
+  ro = new ResizeObserver(() => syncCanvasSize());
+  ro.observe(wrapRef.value);
+  syncCanvasSize();
 });
+
+onBeforeUnmount(() => {
+  ro?.disconnect();
+  ro = null;
+});
+
+watch(
+  [path, l2dCanvas],
+  async ([p, el]) => {
+    if (!p || !el)
+      return;
+    if (!l2d.value) {
+      const { init } = await import('../../../../dist');
+      l2d.value = init(el as HTMLCanvasElement);
+      bindL2dEvents(l2d.value);
+    }
+    if (props.fill) {
+      await nextTick();
+      syncCanvasSize();
+    }
+    l2d.value.load({ path: p });
+  },
+  { immediate: true, flush: 'post' },
+);
+
+defineExpose({ l2d, l2dCanvas });
 </script>
 
 <template>
-  <div :style="{ width: `${width}px`, height: `${height}px` }">
+  <div v-if="fill" ref="wrapRef" class="live2d-fill">
     <canvas ref="l2dCanvas" />
   </div>
+  <canvas v-else ref="l2dCanvas" :width="width" :height="height" />
 </template>
+
+<style scoped>
+.live2d-fill {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+}
+</style>

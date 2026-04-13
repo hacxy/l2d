@@ -1,0 +1,44 @@
+import type LAppLive2DManager from './LAppLive2DManager.js';
+import type { L2DMatrix44, L2DTargetPoint, L2DViewMatrix } from './Live2DFramework.js';
+
+export default Cubism2Model;
+declare class Cubism2Model {
+  constructor(canvas: HTMLCanvasElement);
+  live2DMgr: LAppLive2DManager;
+  isDrawStart: boolean;
+  gl: any;
+  canvas: HTMLCanvasElement;
+  dragMgr: L2DTargetPoint;
+  viewMatrix: L2DViewMatrix;
+  projMatrix: L2DMatrix44;
+  deviceToScreen: L2DMatrix44;
+  _boundMouseEvent: any;
+  _boundTouchEvent: any;
+  initL2dCanvas(canvas: HTMLCanvasElement): void;
+  init(canvas: HTMLCanvasElement, modelSettingPath: any, modelSetting: any): Promise<void>;
+  destroy(): void;
+  _drawFrameId: number;
+  startDraw(): void;
+  draw(): void;
+  changeModel(modelSettingPath: any): Promise<void>;
+  changeModelWithJSON(modelSettingPath: any, modelSetting: any): Promise<void>;
+  setPosition(x: number, y: number): void;
+  setScale(scale: number): void;
+  setParams(params: Record<string, number>): void;
+  resize(): void;
+  getHitAreaBounds(): Array<{ name: string; x: number; y: number; w: number; h: number }>;
+  playMotion(group: string, index?: number, priority?: number): void;
+  getMotionGroups(): Record<string, number>;
+  getMotionFiles(): Record<string, string[]>;
+  setExpression(id?: string): void;
+  getExpressions(): string[];
+  modelTurnHead(event: any): void;
+  followPointer(event: any): void;
+  lookFront(): void;
+  mouseEvent(e: any): void;
+  touchEvent(e: any): void;
+  transformViewX(deviceX: any): number;
+  transformViewY(deviceY: any): number;
+  transformScreenX(deviceX: any): number;
+  transformScreenY(deviceY: any): number;
+}

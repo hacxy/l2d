@@ -1,434 +1,207 @@
-/* eslint-disable no-console */
-/* eslint-disable max-lines */
-/* eslint-disable antfu/no-import-dist */
+import type { MessageApiInjection } from 'naive-ui/es/message/src/MessageProvider';
 import type { L2D } from '../../dist';
-import { createDiscreteApi } from 'naive-ui';
 
-enum MotionPreload {
-  ALL = 'ALL',
-  IDLE = 'IDLE',
-  NONE = 'NONE'
+interface Init { (canvas: HTMLCanvasElement): L2D }
+interface Canvas { value: HTMLCanvasElement }
+
+// 基础使用方式
+export function demo1(init: Init, l2dCanvas: Canvas, message: MessageApiInjection) {
+  const l2d = init(l2dCanvas.value);
+  // #region demo1
+  l2d.load({
+    path: 'https://model.hacxy.cn/cat-black/model.json',
+  }).then(() => {
+    message.success('模型加载成功');
+  });
+  // #endregion demo1
 }
 
-const { message } = createDiscreteApi(['message']);
-
-export async function demo1(init: any, l2dCanvas: any) {
-  const loadModel = async () => {
-    // #region demo1
-    const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
-    l2d.create({
-      path: 'https://model.hacxy.cn/cat-black/model.json',
-      position: [0, 10],
-      scale: 0.1
-    }).then(() => {
-      message.info('模型加载成功');
-    });
-    // #endregion demo1
-  };
-  loadModel();
-}
-
-export async function demo2(init: any, l2dCanvas: any) {
-  const loadModel = async () => {
-    const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
-
-    // #region demo2
-    await l2d.create({
-      path: 'https://model.hacxy.cn/cat-black/model.json',
-      position: [0, 10],
-      scale: 0.1
-    });
-    message.success('黑猫加载完成');
-    await l2d.create({
-      path: 'https://model.hacxy.cn/cat-white/model.json',
-      position: [150, 10],
-      scale: 0.1
-    });
-    message.success('白猫加载完成');
-  };
-  // #endregion demo2
-
-  loadModel();
-}
-
-export async function demo3(init: any, l2dCanvas: any) {
-  const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
-  const canvasEl = l2dCanvas.value! as HTMLCanvasElement;
-  // #region demo3
-  const inputEl = document.createElement('input');
-  const labelEl = document.createElement('label');
-  inputEl.type = 'checkbox';
-  labelEl.innerHTML = '显示可点击区域';
-  canvasEl.parentElement?.append(inputEl, labelEl);
-
-  const model = await l2d.create({
+// motionstart 事件
+export function demo2(init: Init, l2dCanvas: Canvas, message: MessageApiInjection) {
+  const l2d = init(l2dCanvas.value);
+  // #region demo2
+  l2d.load({
     path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
   });
 
-  inputEl.addEventListener('change', () => {
-    if (inputEl.checked) {
-      model.showHitAreaFrames();
-    }
-    else {
-      model.hideHitAreaFrames();
-    }
+  l2d.on('motionstart', (group, index, duration, file) => {
+    message.info(`动作开始: ${group}[${index}]${file ? ` - ${file}` : ''}${duration !== null ? ` (${duration}ms)` : ''}`);
   });
-  // #endregion demo3
+  // #endregion demo2
 }
 
-export async function demo4(init, l2dCanvas) {
-  const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
-  const canvasEl = l2dCanvas.value! as HTMLCanvasElement;
-
+// 模型实例
+export function demo4(init: Init, l2dCanvas: Canvas, message: MessageApiInjection) {
+  const l2d = init(l2dCanvas.value);
   // #region demo4
-  async function tts(text: string) {
-    const response = await fetch('https://tts.hacxy.cn/tts', {
-      method: 'POST',
-      body: JSON.stringify({
-        voice: 'zh-CN-XiaoxiaoNeural',
-        text,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then(res => res.arrayBuffer());
-    // 创建 AudioContext 实例
-    const audioContext = new AudioContext();
-    // 使用 decodeAudioData 解码 ArrayBuffer
-    const audioBuffer = await audioContext.decodeAudioData(response);
-    return audioBuffer;
-  }
-
-  const main = async () => {
-    const inputEl = document.createElement('input');
-    inputEl.style.backgroundColor = '#fff';
-    const buttonEl = document.createElement('button');
-    buttonEl.className = 'say-button';
-    buttonEl.innerHTML = '说话';
-    inputEl.className = 'say-input';
-    inputEl.value = '这是一段文字, 用于测试口型动作同步';
-    canvasEl.parentElement?.append(inputEl, buttonEl);
-
-    const model = await l2d.create({
-      path: 'https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.model3.json',
-      scale: 0.3
-    });
-
-    model.loadMotionFromUrl('https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.motionsync3.json');
-
-    buttonEl.addEventListener('click', async () => {
-      const audioBuffer = await tts(inputEl.value);
-      model.speak(audioBuffer);
-    });
-
-    return model;
-  };
-  main();
+  l2d.load({
+    path: 'https://model.hacxy.cn/HK416-1-normal/model.json',
+  }).then(() => {
+    l2d.setPosition(0.2, -0.2); // 重新设置位置
+    message.success('模型加载成功');
+  });
   // #endregion demo4
 }
 
-export async function demoSync(init: any, l2dCanvas: any) {
-  const loadModel = async () => {
-    // #region demoSync
-    const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
-    const model = l2d.createSync({
-      path: 'https://model.hacxy.cn/cat-black/model.json',
-      position: [0, 10],
-      scale: 'auto'
-    });
+// 切换模型
+export function demo3(init: Init, l2dCanvas: Canvas, message: MessageApiInjection) {
+  const l2d = init(l2dCanvas.value);
+  // #region demo3
+  const models = [
+    'https://model.hacxy.cn/cat-black/model.json',
+    'https://model.hacxy.cn/cat-white/model.json',
+  ];
+  let current = 0;
 
-    model.on('settingsJSONLoaded', () => {
-      message.info('settings json 加载完成');
-    });
-    model.on('settingsLoaded', () => {
-      message.info('settings 加载完成');
-    });
+  l2d.load({ path: models[current] });
 
-    model.on('textureLoaded', () => {
-      message.info('纹理资源加载完成');
-    });
-
-    model.on('modelLoaded', () => {
-      message.info('模型加载完成');
-      // 在这个事件被调用时, 可以执行模型相关操作
-      model.setScale(0.1);
-
-      setTimeout(() => {
-        model.setScale('auto');
-      }, 300);
-    });
-
-    model.on('ready', () => {
-      message.info('所有资源准备完毕');
-      // ready事件中执行模型相关操作将更安全
-    });
-    // #endregion demoSync
-
-    return model;
-  };
-  const model = loadModel();
-  return model;
+  let countdown = 3;
+  const msg = message.info(`${countdown} 秒后切换模型`, { duration: 0 });
+  const timer = setInterval(async () => {
+    countdown--;
+    if (countdown > 0) {
+      msg.content = `${countdown} 秒后切换模型`;
+    }
+    else {
+      clearInterval(timer);
+      msg.destroy();
+      current = (current + 1) % models.length;
+      l2d.destroy(); // 销毁当前模型模型
+      await l2d.load({ path: models[current] }); // 切换到下一个模型
+      message.success('模型已切换');
+    }
+  }, 1000);
+  // #endregion demo3
 }
 
-export async function demo5(init: any, l2dCanvas: any) {
-  const loadModel = async () => {
-    // #region demo5
-    const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
-    const model = await l2d.create({
-      path: 'https://model.hacxy.cn/cat-black/model.json',
-      position: [0, 10],
-      scale: 'auto'
-    });
-
-    model.on('settingsJSONLoaded', () => {
-      message.info('settings json 加载完成');
-      // 该事件将被跳过, 因此不会执行
-    });
-    model.on('settingsLoaded', () => {
-      message.info('settings 加载完成');
-      // 该事件将被跳过, 因此不会执行
-    });
-
-    model.on('textureLoaded', () => {
-      message.info('纹理资源加载完成');
-    });
-
-    model.on('modelLoaded', () => {
-      message.info('模型加载完成');
-      // 在这个事件被调用时, 可以执行模型相关操作
-      model.setScale(0.1);
-
-      setTimeout(() => {
-        model.setScale('auto');
-      }, 300);
-
-      // 该事件将被跳过, 因此不会执行
-    });
-
-    model.on('ready', () => {
-      message.info('所有资源准备完毕');
-      // ready事件中执行模型相关操作将更安全
-    });
-    // #endregion demo5
-
-    return model;
-  };
-  loadModel();
-}
-
-export async function demo6(init: any, l2dCanvas: any) {
-  const loadModel = async () => {
-    const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
-    // #region demo6
-    await l2d.create({
-      path: 'https://model.hacxy.cn/cat-black/model.json',
-      position: [0, 10],
-      scale: 0.1
-    });
-
-    l2d.createSync({
-      path: 'https://model.hacxy.cn/cat-white/model.json',
-      position: [150, 10],
-      scale: 0.1
-    });
-    // #endregion demo6
-  };
-  loadModel();
-}
-
-export async function demo7(init: any, l2dCanvas: any) {
-  const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
-  const canvasEl = l2dCanvas.value! as HTMLCanvasElement;
-  const inputEl = document.createElement('input');
-  const labelEl = document.createElement('label');
-  inputEl.type = 'checkbox';
-  labelEl.innerHTML = '显示可点击区域';
-  canvasEl.parentElement?.append(inputEl, labelEl);
-
-  const model = await l2d.create({
+// tap 事件
+export function demo5(init: Init, l2dCanvas: Canvas, message: MessageApiInjection) {
+  const l2d = init(l2dCanvas.value);
+  // #region demo5
+  l2d.load({
     path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
   });
 
-  inputEl.addEventListener('change', () => {
-    if (inputEl.checked) {
-      model.showHitAreaFrames();
+  l2d.on('tap', areaName => {
+    message.info(`点击区域: ${areaName}`);
+  });
+  // #endregion demo5
+}
+
+// loadstart 事件
+export function demo6(init: Init, l2dCanvas: Canvas, message: MessageApiInjection) {
+  const l2d = init(l2dCanvas.value);
+  // #region demo6
+  l2d.on('loadstart', total => {
+    message.info(`开始加载，共 ${total} 个文件`);
+  });
+
+  l2d.load({
+    path: 'https://model.hacxy.cn/cat-black/model.json',
+  });
+  // #endregion demo6
+}
+
+// loadprogress 事件
+export function demo7(init: Init, l2dCanvas: Canvas, message: MessageApiInjection) {
+  const l2d = init(l2dCanvas.value);
+  // #region demo7
+  let progressMsg: ReturnType<typeof message.loading> | null = null;
+
+  l2d.on('loadprogress', (loaded, total, file) => {
+    const filename = file.split('/').pop() || file;
+    if (!progressMsg) {
+      progressMsg = message.loading(`${loaded}/${total}  ${filename}`, { duration: 0 });
     }
     else {
-      model.hideHitAreaFrames();
+      progressMsg.content = `${loaded}/${total}  ${filename}`;
     }
   });
 
-  // #region demo7
-  model.on('hit', area => {
-    message.info(`${JSON.stringify(area)}被点击了`);
+  l2d.on('loaded', () => {
+    progressMsg?.destroy();
+  });
+
+  l2d.load({
+    path: 'https://model.hacxy.cn/cat-black/model.json',
   });
   // #endregion demo7
 }
 
-export async function demo8(init: any, l2dCanvas: any) {
-  const loadModel = async () => {
-    const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
-    // #region demo8
-    await l2d.create({
-      path: 'https://model.hacxy.cn/cat-black/model.json',
-      motionPreload: MotionPreload.ALL, // [!code focus]
-      position: [0, 10],
-      scale: 0.1
-    });
-    // #endregion demo8
-  };
-  loadModel();
+// loaded 事件
+export function demo8(init: Init, l2dCanvas: Canvas, message: MessageApiInjection) {
+  const l2d = init(l2dCanvas.value);
+  // #region demo8
+  l2d.on('loaded', () => {
+    message.success('模型加载完成，开始渲染');
+  });
+
+  l2d.load({
+    path: 'https://model.hacxy.cn/cat-black/model.json',
+  });
+  // #endregion demo8
 }
 
-export async function demo9(init, l2dCanvas) {
-  const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
-  const canvasEl = l2dCanvas.value! as HTMLCanvasElement;
-
-  const buttonEl = document.createElement('button');
-  buttonEl.className = 'say-button';
-  buttonEl.innerHTML = '停止说话';
-  canvasEl.parentElement?.append(buttonEl);
-
+// expressionstart 事件
+export function demo9(init: Init, l2dCanvas: Canvas, message: MessageApiInjection) {
+  const l2d = init(l2dCanvas.value);
   // #region demo9
-  const model = await l2d.create({
-    path: 'https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.model3.json',
-    scale: 0.3
+  l2d.on('expressionstart', id => {
+    message.info(`表情开始播放: ${id}`);
   });
 
-  model.loadMotionStreamFromUrl('https://model.hacxy.cn/kei_vowels_pro/kei_vowels_pro.motionsync3.json');
-
-  const mediaStream = await navigator.mediaDevices.getUserMedia({
-    audio: true,
-  });
-
-  model.speakStream(mediaStream);
-
-  buttonEl.addEventListener('click', async () => {
-    mediaStream.getTracks().forEach(track => track.stop());
-    model.resetSpeakStream(); // 重置口型动作
+  l2d.load({
+    path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
+  }).then(() => {
+    const [first] = l2d.getExpressions();
+    if (first)
+      l2d.setExpression(first);
   });
   // #endregion demo9
-
-  return {
-    onClose: () => {
-      mediaStream.getTracks().forEach(track => track.stop());
-      model.resetSpeakStream(); // 重置口型动作
-    }
-  };
 }
 
-export async function demo10(init, l2dCanvas) {
-  const loadModel = async () => {
-    const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
-    // #region demo10
-    const model = await l2d.create({
-      path: 'https://model.hacxy.cn/live2d_002_101/object_live2d_002_101.asset.model3.json',
-      scale: 0.1
-    });
-    const motionGroups = model.getMotionGroupNames();
-    console.log(motionGroups);
-    // #endregion demo10
+// expressionend 事件
+export function demo10(init: Init, l2dCanvas: Canvas, message: MessageApiInjection) {
+  const l2d = init(l2dCanvas.value);
+  // #region demo10
+  l2d.on('expressionend', () => {
+    message.info('表情播放结束');
+  });
 
-    message.info(`动作组: ${JSON.stringify(motionGroups)}`, { showIcon: false });
-  };
-  loadModel();
+  l2d.load({
+    path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
+  }).then(() => {
+    const [first] = l2d.getExpressions();
+    if (first)
+      l2d.setExpression(first);
+  });
+  // #endregion demo10
 }
 
-export async function demo11(init, l2dCanvas) {
-  const loadModel = async () => {
-    const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
-    // #region demo11
-    const model = await l2d.create({
-      path: 'https://model.hacxy.cn/live2d_002_101/object_live2d_002_101.asset.model3.json',
-      scale: 0.1,
-    });
-    const motionGroups = model.getMotionGroupNames();
-    console.log(motionGroups);
-    const motionNames = model.getMotionListByGroupName('Tap');
-    console.log(motionNames);
-    // #endregion demo11
+// motionend 事件
+export function demo11(init: Init, l2dCanvas: Canvas, message: MessageApiInjection) {
+  const l2d = init(l2dCanvas.value);
+  // #region demo11
+  l2d.on('motionend', (group, index, file) => {
+    message.info(`动作结束: ${group}[${index}]${file ? ` - ${file}` : ''}`);
+  });
 
-    message.info(`动作组: ${JSON.stringify(motionGroups)}`, { showIcon: false });
-
-    message.info(`动作: ${JSON.stringify(motionNames)}`, { showIcon: false });
-  };
-  loadModel();
+  l2d.load({
+    path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
+  });
+  // #endregion demo11
 }
 
-export async function demo12(init, l2dCanvas) {
-  const loadModel = async () => {
-    const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
-    // #region demo12
-    const model = await l2d.create({
-      path: 'https://model.hacxy.cn/live2d_002_101/object_live2d_002_101.asset.model3.json',
-      scale: 0.1,
-    });
-    const motionGroups = model.getMotionGroupNames();
+// destroy 事件
+export function demo12(init: Init, l2dCanvas: Canvas, message: MessageApiInjection) {
+  const l2d = init(l2dCanvas.value);
+  // #region demo12
+  l2d.on('destroy', () => {
+    message.info('模型已销毁，WebGL 资源释放完成');
+  });
 
-    model.showHitAreaFrames();
-
-    setTimeout(() => {
-      model.playMotion(motionGroups[1]);
-    }, 1000);
-
-    // #endregion demo12
-  };
-  loadModel();
-}
-
-export async function demo13(init, l2dCanvas) {
-  const loadModel = async () => {
-    const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
-    // #region demo13
-    const model = await l2d.create({
-      path: 'https://model.hacxy.cn/live2d_002_101/object_live2d_002_101.asset.model3.json',
-      scale: 0.1,
-    });
-    const motionGroups = model.getMotionGroupNames();
-
-    model.showHitAreaFrames();
-
-    setTimeout(() => {
-      model.playMotion(motionGroups[1], 1);
-    }, 1000);
-
-    // #endregion demo13
-  };
-  loadModel();
-}
-
-export async function demo14(init, l2dCanvas) {
-  const loadModel = async () => {
-    const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
-    // #region demo14
-    const model = await l2d.create({
-      path: 'https://model.hacxy.cn/live2d_002_101/object_live2d_002_101.asset.model3.json',
-      scale: 0.1,
-    });
-    const expressions = model.getExpressions();
-    console.log(expressions);
-    // #endregion demo14
-    message.info(`表情列表: ${JSON.stringify(expressions)}`);
-  };
-  loadModel();
-}
-
-export async function demo15(init, l2dCanvas) {
-  const loadModel = async () => {
-    const l2d: L2D = init(l2dCanvas.value! as HTMLCanvasElement);
-    // #region demo15
-    const model = await l2d.create({
-      path: 'https://model.hacxy.cn/live2d_002_101/object_live2d_002_101.asset.model3.json',
-      scale: 0.23,
-      position: [0, 3]
-    });
-    const expressions = model.getExpressions();
-    model.expression(expressions[4].id);
-    setTimeout(() => {
-      model.expression(expressions[1].id);
-    }, 2000);
-
-    // #endregion demo15
-  };
-  loadModel();
+  l2d.load({
+    path: 'https://model.hacxy.cn/cat-black/model.json',
+  });
+  // #endregion demo12
 }

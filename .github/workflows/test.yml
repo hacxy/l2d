@@ -25,8 +25,14 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      - name: Linter
+        run: pnpm lint
+
+      - name: Unit Test
+        run: pnpm test:coverage
+
       - name: Build
         run: pnpm build
 
-      - name: Linter
-        run: pnpm lint
+      - name: Build Docs
+        run: pnpm docs:build

@@ -1,7 +1,7 @@
 {
   "name": "l2d",
   "type": "module",
-  "version": "1.0.1",
+  "version": "2.0.0-beta.0",
   "description": "Loading Live2D in a browser is simpler.",
   "author": {
     "name": "Hacxy",
@@ -11,8 +11,8 @@
   "keywords": [
     "Live2D",
     "cubism2",
-    "cubism5",
-    "Live2D Component"
+    "cubism6",
+    "Live2D for Web"
   ],
   "main": "index.js",
   "module": "dist/index.js",
@@ -21,12 +21,16 @@
     "dist"
   ],
   "scripts": {
-    "dev": "vite build --watch",
+    "dev": "vite build --watch --sourcemap",
     "build": "vite build",
     "docs:dev": "typedoc && vitepress dev docs",
     "docs:build": "typedoc && npm run build && vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "test:demo": "vite __tests__",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "demo:dev": "vite __tests__",
+    "demo:build": "vite build && vite build --config vite.demo.config.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:staged": "eslint --fix",
@@ -42,27 +46,22 @@
     "@hacxy/tsconfig": "^0.1.0",
     "@hacxy/utils": "^0.4.0",
     "@iconify/vue": "^5.0.0",
+    "@vitest/coverage-v8": "^4.1.2",
     "commitizen": "^4.3.1",
     "cz-git": "^1.11.0",
-    "emittery": "^1.1.0",
     "eslint": "^9.29.0",
-    "execa": "^9.5.2",
+    "jsdom": "^29.0.1",
     "lint-staged": "^15.4.3",
-    "live2d-motionsync": "^0.0.4",
     "naive-ui": "^2.42.0",
-    "picocolors": "^1.1.1",
-    "pixi-live2d-display": "0.4.0",
-    "pixi.js": "6.5.10",
-    "prompts": "^2.4.2",
-    "semver": "^7.7.1",
     "simple-git-hooks": "^2.11.1",
-    "typedoc": "^0.27.7",
-    "typedoc-plugin-markdown": "^4.4.2",
+    "typedoc": "^0.28.18",
+    "typedoc-plugin-markdown": "^4.11.0",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4",
-    "vite-plugin-dts": "^4.5.0",
+    "vite": "^8.0.3",
+    "vite-plugin-dts": "^4.5.4",
     "vitepress": "^1.6.3",
     "vitepress-theme-mild": "0.8.4-beta.3",
+    "vitest": "^4.1.2",
     "vue": "^3.5.13"
   },
   "simple-git-hooks": {
@@ -71,7 +70,7 @@
   },
   "lint-staged": {
     "*": [
-      "pnpm run lint:staged"
+      "npm run lint:staged"
     ]
   },
   "config": {

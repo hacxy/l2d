@@ -3,6 +3,11 @@ import hacxy from '@hacxy/eslint-config';
 export default hacxy({
   rules: {
     'max-params': 0,
+    'antfu/no-import-dist': 0
   },
-  ignores: ['lib/**', 'dist/**', 'docs/api/**', 'docs/guide/**', '**/*.d.ts'],
+  ignores: ['src/vendor/**', 'dist/**', 'docs/api/**', 'docs/guide/**', '**/public/**'],
+}, {
+  rules: {
+    'no-console': 0,
+  }
 });

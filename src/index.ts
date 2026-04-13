@@ -1,25 +1,36 @@
-import '../lib/cubism2.js';
-import '../lib/cubism5.js';
-// eslint-disable-next-line perfectionist/sort-imports
-import { L2D } from './l2d.js';
+/* eslint-disable perfectionist/sort-imports */
+import './vendor/lib/cubism2.js';
+import './vendor/lib/live2dcubismcore.js';
+import L2D from './l2d.js';
+import logger from './logger.js';
 
-export * from './constants.js';
-export type { L2D } from './l2d.js';
-export type * from './model.js';
-export type * from './types.js';
+declare const __VERSION__: string;
 
 /**
  * Initialize L2D instance
  * @param canvasEl canvas element
  * @returns L2D instance
  */
-export function init(canvasEl: HTMLCanvasElement | null) {
+console.log(
+  `%c            /\\_/\\\n           ( o.o )\n            > ^ <\n\n Welcome to l2d!  v${__VERSION__}`,
+  'color: #f472b6; line-height: 1.6; font-family: monospace;',
+);
+
+export function init(canvasEl: HTMLCanvasElement): L2D;
+export function init(canvasEl: HTMLCanvasElement | null): L2D | null;
+export function init(canvasEl: HTMLCanvasElement | null): L2D | null {
   if (!canvasEl) {
-    throw new TypeError('Target element node not found.');
+    logger.error('Target element node not found.');
+    return null;
   }
   if (!(canvasEl instanceof HTMLCanvasElement)) {
-    throw new TypeError('Target element node is not a canvas element.');
+    logger.error('Target element node is not a canvas element.');
+    return null;
   }
-  const l2d = new L2D(canvasEl!);
-  return l2d;
+  return new L2D(canvasEl);
 }
+export type { L2DEventMap, Options } from './types.js';
+
+export type {
+  L2D
+};
