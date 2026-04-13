@@ -16,6 +16,7 @@ export default defineConfigWithTheme<ThemeConfig>({
     nav: [
       { text: '指南', link: '/guide/ability/', activeMatch: '/guide/' },
       { text: '教程', link: '/tutorial/index.md', activeMatch: '/tutorial/' },
+      { text: 'Demos', link: 'https://l2d-demo.hacxy.cn' },
       // { text: '参考', link: '/api/interfaces/Options.md' , activeMatch: '/api/'},
       { text: pkgInfo.version, items: [
         {

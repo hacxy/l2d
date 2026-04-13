@@ -135,7 +135,11 @@ class L2D extends Emitter<L2DEventMap> {
   }
 
   /**
-   * 批量设置模型参数值，参数 ID 可在模型的 `.cdi3.json` 文件中查看。
+   * 批量设置模型参数值，参数 ID。
+   *
+   * - **Cubism 2 模型**：打开模型目录下任意一个 `.mtn` 动作文件（文本格式），其中 `$curve` 段的每行开头即为参数 ID，例如 `PARAM_MOUTH_OPEN_Y`。
+   *
+   * - **Cubism 6 模型**：打开模型目录下任意一个 `.motion3.json` 动作文件，找到 `"Curves"` 数组，每个对象的 `"Id"` 即为参数名。
    * @example l2d.setParams({ ParamEyeLOpen: 0, ParamA: 1 })
    */
   setParams(params: Record<string, number>) {
