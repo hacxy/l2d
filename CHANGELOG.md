@@ -1,3 +1,11 @@
+# [2.0.0](https://github.com/hacxy/l2d/compare/v2.0.0-beta.0...v2.0.0) (2026-04-13)
+
+### Bug Fixes
+
+- 修复cubism2的motionstart和motionend调用时机异常 ([98daf3f](https://github.com/hacxy/l2d/commit/98daf3fac689e12ab5a6b5a25e48d8b4644efff1))
+- 修复cubism6的motionstart事件时序问题 ([dfc39b3](https://github.com/hacxy/l2d/commit/dfc39b37bb2a01bdaf3ea6af8cc7c573d6a27a6c))
+- 调整欢迎信息格式 ([3b03ce3](https://github.com/hacxy/l2d/commit/3b03ce3362921760f4def44b538087b5d1f0a40e))
+
 # [2.0.0-beta.0](https://github.com/hacxy/l2d/compare/v2.0.0-beta...v2.0.0-beta.0) (2026-04-11)
 
 ### Bug Fixes
