@@ -51,7 +51,8 @@
       "Bash(awk '/^$/{blank++; if\\(blank>1\\) print NR\": double blank\"} /^./{blank=0}' /Users/hacxy/Projects/l2d/__tests__/main.ts)",
       "Bash(npm run:*)",
       "Bash(ls /Users/hacxy/Projects/l2d/*.json /Users/hacxy/Projects/l2d/*.mjs /Users/hacxy/Projects/l2d/*.cjs)",
-      "Bash(cat /Users/hacxy/Projects/l2d/__tests__/styles/*.css)"
+      "Bash(cat /Users/hacxy/Projects/l2d/__tests__/styles/*.css)",
+      "Bash(npm test:*)"
     ]
   }
 }

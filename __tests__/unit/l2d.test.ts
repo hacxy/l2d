@@ -919,6 +919,59 @@ describe('l2D.setScale()', () => {
   });
 });
 
+describe('l2D.getCanvas()', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
+  });
+
+  it('返回传入的 canvas 元素', async () => {
+    const { init } = await import('../../src/index.ts');
+    const canvas = makeCanvas();
+    const l2d = init(canvas);
+    expect(l2d.getCanvas()).toBe(canvas);
+  });
+
+  it('版本切换后返回新 canvas', async () => {
+    const { init } = await import('../../src/index.ts');
+    const canvas = makeCanvas();
+    const l2d = init(canvas);
+
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
+    await l2d.load({ path: '/models/test.model3.json' });
+
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
+    await l2d.load({ path: '/models/test.model.json' });
+
+    expect(l2d.getCanvas()).not.toBe(canvas);
+  });
+});
+
+describe('l2D.load() — logLevel 选项', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
+  });
+
+  it('传入 logLevel 选项时不抛出错误', async () => {
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
+    const { init } = await import('../../src/index.ts');
+    const canvas = makeCanvas();
+    const l2d = init(canvas);
+    await expect(l2d.load({ path: '/models/test.model3.json', logLevel: 'error' })).resolves.not.toThrow();
+  });
+
+  it('logLevel trace 时不抛出错误', async () => {
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
+    const { init } = await import('../../src/index.ts');
+    const canvas = makeCanvas();
+    const l2d = init(canvas);
+    await expect(l2d.load({ path: '/models/test.model.json', logLevel: 'trace' })).resolves.not.toThrow();
+  });
+});
+
 describe('l2D.create() deprecated', () => {
   afterEach(() => {
     document.body.innerHTML = '';
