@@ -4,14 +4,16 @@ import './vendor/lib/live2dcubismcore.js';
 import L2D from './l2d.js';
 import logger from './logger.js';
 
+declare const __VERSION__: string;
+
 /**
  * Initialize L2D instance
  * @param canvasEl canvas element
  * @returns L2D instance
  */
 console.log(
-  '%c /\\_/\\\n( o.o )\n > ^ <\n\n Welcome to l2d! 🎉  https://github.com/hacxy/l2d',
-  'color: #f472b6; font-weight: bold; font-size: 14px; line-height: 1.6; font-family: monospace;',
+  `%c            /\\_/\\\n           ( o.o )\n            > ^ <\n\n Welcome to l2d!  v${__VERSION__}`,
+  'color: #f472b6; line-height: 1.6; font-family: monospace;',
 );
 
 export function init(canvasEl: HTMLCanvasElement): L2D;

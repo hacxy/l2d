@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { createLogger, defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
+import pkg from './package.json' with { type: 'json' };
 
 const logger = createLogger();
 const loggerWarn = logger.warn;
@@ -13,6 +14,9 @@ logger.warn = (msg, options) => {
 
 export default defineConfig({
   customLogger: logger,
+  define: {
+    __VERSION__: JSON.stringify(pkg.version),
+  },
   resolve: {
     alias: {
       '@framework': path.resolve(__dirname, 'src/vendor/cubism6/Framework/src'),
