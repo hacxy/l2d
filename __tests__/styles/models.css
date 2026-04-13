@@ -94,6 +94,7 @@
   transition:
     opacity 0.15s,
     transform 0.15s;
+  z-index: 99999;
   pointer-events: none;
 }
 

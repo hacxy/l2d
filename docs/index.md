@@ -14,6 +14,9 @@ hero:
     - theme: alt
       text: 什么是 l2d？
       link: /guide/intro/index.md
+    - theme: alt
+      text: Demos
+      link: https://l2d-demo.hacxy.cn
 
 features:
   - title: 开箱即用
