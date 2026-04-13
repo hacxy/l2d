@@ -14,7 +14,8 @@ export default defineConfigWithTheme<ThemeConfig>({
     // https://vitepress.dev/reference/default-theme-config
     logo: '/logo.svg',
     nav: [
-      { text: '指南', link: '/guide/model/', activeMatch: '/guide/' },
+      { text: '指南', link: '/guide/ability/', activeMatch: '/guide/' },
+      { text: '教程', link: '/tutorial/index.md', activeMatch: '/tutorial/' },
       // { text: '参考', link: '/api/interfaces/Options.md' , activeMatch: '/api/'},
       { text: pkgInfo.version, items: [
         {
@@ -24,16 +25,8 @@ export default defineConfigWithTheme<ThemeConfig>({
       ] }
     ],
     sidebar: {
+      '/tutorial/': 'auto',
       '/guide/': 'auto',
-      '/api/': [{
-        text: '参考',
-        items: [
-          {
-            text: '选项',
-            link: '/api/interfaces/Options.md'
-          }
-        ]
-      }]
     },
     footer: {
       message: 'MIT Licensed',

@@ -52,7 +52,9 @@
       "Bash(npm run:*)",
       "Bash(ls /Users/hacxy/Projects/l2d/*.json /Users/hacxy/Projects/l2d/*.mjs /Users/hacxy/Projects/l2d/*.cjs)",
       "Bash(cat /Users/hacxy/Projects/l2d/__tests__/styles/*.css)",
-      "Bash(npm test:*)"
+      "Bash(npm test:*)",
+      "Bash(find /Users/hacxy/Projects/l2d/docs -type f -name \"*.md\" -exec grep -l \".\" {} \\\\;)",
+      "Bash(ls -l /Users/hacxy/Projects/l2d/__tests__/demo/*.ts)"
     ]
   }
 }
