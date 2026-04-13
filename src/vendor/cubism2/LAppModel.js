@@ -154,7 +154,10 @@ class LAppModel extends L2DBaseModel {
     const timeSec = timeMSec / 1000.0;
     const t = timeSec * 2 * Math.PI;
     if (this.mainMotionManager.isFinished()) {
-      this.onMotionEnd?.({ group: this._currentMotionGroup, index: this._currentMotionIndex, file: this.modelSetting.getMotionFile(this._currentMotionGroup, this._currentMotionIndex) });
+      if (this._motionIsPlaying) {
+        this._motionIsPlaying = false;
+        this.onMotionEnd?.({ group: this._currentMotionGroup, index: this._currentMotionIndex, file: this.modelSetting.getMotionFile(this._currentMotionGroup, this._currentMotionIndex) });
+      }
       this.startRandomMotion(LAppDefine.MOTION_GROUP_IDLE, LAppDefine.PRIORITY_IDLE);
     }
     this.live2DModel.loadParam();
@@ -246,6 +249,7 @@ class LAppModel extends L2DBaseModel {
   setFadeInFadeOut(name, no, priority, motion) {
     motion.setFadeIn(this.modelSetting.getMotionFadeIn(name, no));
     motion.setFadeOut(this.modelSetting.getMotionFadeOut(name, no));
+    this._motionIsPlaying = true;
     if (this.modelSetting.getMotionSound(name, no) == null) {
       this.mainMotionManager.startMotionPrio(motion, priority);
     }

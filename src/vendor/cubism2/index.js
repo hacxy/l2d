@@ -137,7 +137,7 @@ class Cubism2Model {
         this.draw();
         this._drawFrameId = window.requestAnimationFrame(tick, this.canvas);
       };
-      tick();
+      this._drawFrameId = window.requestAnimationFrame(tick, this.canvas);
     }
   }
 
