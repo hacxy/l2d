@@ -34,7 +34,7 @@ Thanks to everyone who has contributed code to `l2d` — see [contributors](http
 
 WeChat group:
 
-<img width="200"  src="https://raw.githubusercontent.com/hacxy/hacxy/main/images/20250217175953.png"/>
+<img width="200"  src="https://raw.githubusercontent.com/hacxy/hacxy/main/images/wxq.jpg"/>
 
 ## Disclaimer
 
