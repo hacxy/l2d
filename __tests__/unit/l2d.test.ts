@@ -315,7 +315,7 @@ describe('l2D — CustomEvent 事件桥接', () => {
     expect(fn).toHaveBeenCalledWith('Idle', 1, 2000, 'motions/idle_01.motion3.json');
   });
 
-  it('live2d:motionstart 携带 null duration 时传递 null', async () => {
+  it('live2d:motionstart 未携带 duration 时传递 -1', async () => {
     const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
@@ -327,7 +327,7 @@ describe('l2D — CustomEvent 事件桥接', () => {
       detail: { canvas, group: 'Tap', index: 0 },
     }));
 
-    expect(fn).toHaveBeenCalledWith('Tap', 0, null, null);
+    expect(fn).toHaveBeenCalledWith('Tap', 0, -1, null);
   });
 
   it('live2d:motionend 触发 motionend 事件', async () => {

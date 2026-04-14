@@ -233,14 +233,14 @@ class LAppModel extends L2DBaseModel {
     if (this.motions[key] == null) {
       this.loadMotion(key, this.modelHomeDir + motionName, mtn => {
         const durationMSec = mtn?.getDurationMSec?.();
-        const duration = (durationMSec != null && durationMSec >= 0) ? durationMSec / 1000 : null;
+        const duration = (durationMSec != null && durationMSec >= 0) ? durationMSec / 1000 : -1;
         this.onMotionStart?.({ group: name, index: no, duration, file: motionName });
         this.setFadeInFadeOut(name, no, priority, mtn);
       });
     }
     else {
       const durationMSec = this.motions[key]?.getDurationMSec?.();
-      const duration = (durationMSec != null && durationMSec >= 0) ? durationMSec / 1000 : null;
+      const duration = (durationMSec != null && durationMSec >= 0) ? durationMSec / 1000 : -1;
       this.onMotionStart?.({ group: name, index: no, duration, file: motionName });
       this.setFadeInFadeOut(name, no, priority, this.motions[key]);
     }

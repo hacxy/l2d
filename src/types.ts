@@ -94,7 +94,7 @@ export interface L2DEventMap {
    *
    * </DemoBlock>
    */
-  motionstart: (group: string, index: number, duration: number | null, file: string | null) => void
+  motionstart: (group: string, index: number, duration: number, file: string | null) => void
   /**
    * 当前动作播放完毕时触发
    * @demo
