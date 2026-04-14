@@ -1,3 +1,11 @@
+# [2.1.0](https://github.com/hacxy/l2d/compare/v2.0.0...v2.1.0) (2026-04-14)
+
+### Features
+
+- cubism6模型播放动作同时播放声音文件 ([87ce240](https://github.com/hacxy/l2d/commit/87ce240ad8d37b65aaa1a8ea51936e9b9ea3f3ff))
+- 新增getParams方法 ([e4ab34c](https://github.com/hacxy/l2d/commit/e4ab34cea03e1368396751c2ab29414bf8ffba64))
+- 新增音量控制选项(volume)和setVolume方法 ([6cb3fc4](https://github.com/hacxy/l2d/commit/6cb3fc441a95bea9a6140073b6640493740f5d19))
+
 # [2.0.0](https://github.com/hacxy/l2d/compare/v2.0.0-beta.0...v2.0.0) (2026-04-13)
 
 ### Bug Fixes
