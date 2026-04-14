@@ -1,9 +1,13 @@
-import { ensureCssSize } from '../../canvas-manager.js';
-import { EVENTS } from '../../const.js';
-import LAppDefine from './LAppDefine.js';
-import LAppLive2DManager from './LAppLive2DManager.js';
-import { L2DMatrix44, L2DTargetPoint, L2DViewMatrix } from './Live2DFramework.js';
-import MatrixStack from './utils/MatrixStack.js';
+import { ensureCssSize } from "../../canvas-manager.js";
+import { EVENTS } from "../../const.js";
+import LAppDefine from "./LAppDefine.js";
+import LAppLive2DManager from "./LAppLive2DManager.js";
+import {
+  L2DMatrix44,
+  L2DTargetPoint,
+  L2DViewMatrix,
+} from "./Live2DFramework.js";
+import MatrixStack from "./utils/MatrixStack.js";
 
 // Serialize all Cubism2 model loading to avoid conflicts with global state
 // (Live2DFramework.platformManager and texCounter are module-level globals)
@@ -33,13 +37,13 @@ class Cubism2Model {
   initL2dCanvas(canvas) {
     this.canvas = canvas;
     if (this.canvas.addEventListener) {
-      this.canvas.addEventListener('click', this._boundMouseEvent, false);
-      document.addEventListener('mousemove', this._boundMouseEvent, false);
-      document.addEventListener('mouseout', this._boundMouseEvent, false);
-      this.canvas.addEventListener('contextmenu', this._boundMouseEvent, false);
-      this.canvas.addEventListener('touchstart', this._boundTouchEvent, false);
-      this.canvas.addEventListener('touchend', this._boundTouchEvent, false);
-      this.canvas.addEventListener('touchmove', this._boundTouchEvent, false);
+      this.canvas.addEventListener("click", this._boundMouseEvent, false);
+      document.addEventListener("mousemove", this._boundMouseEvent, false);
+      document.addEventListener("mouseout", this._boundMouseEvent, false);
+      this.canvas.addEventListener("contextmenu", this._boundMouseEvent, false);
+      this.canvas.addEventListener("touchstart", this._boundTouchEvent, false);
+      this.canvas.addEventListener("touchend", this._boundTouchEvent, false);
+      this.canvas.addEventListener("touchmove", this._boundTouchEvent, false);
     }
     ensureCssSize(this.canvas);
     this._resizeObserver = new ResizeObserver(() => {
@@ -65,7 +69,12 @@ class Cubism2Model {
       const top = ratio;
       this.viewMatrix = new L2DViewMatrix();
       this.viewMatrix.setScreenRect(left, right, bottom, top);
-      this.viewMatrix.setMaxScreenRect(LAppDefine.VIEW_LOGICAL_MAX_LEFT, LAppDefine.VIEW_LOGICAL_MAX_RIGHT, LAppDefine.VIEW_LOGICAL_MAX_BOTTOM, LAppDefine.VIEW_LOGICAL_MAX_TOP);
+      this.viewMatrix.setMaxScreenRect(
+        LAppDefine.VIEW_LOGICAL_MAX_LEFT,
+        LAppDefine.VIEW_LOGICAL_MAX_RIGHT,
+        LAppDefine.VIEW_LOGICAL_MAX_BOTTOM,
+        LAppDefine.VIEW_LOGICAL_MAX_TOP,
+      );
       this.viewMatrix.setMaxScale(LAppDefine.VIEW_MAX_SCALE);
       this.viewMatrix.setMinScale(LAppDefine.VIEW_MIN_SCALE);
       this.projMatrix = new L2DMatrix44();
@@ -73,36 +82,86 @@ class Cubism2Model {
       this.deviceToScreen = new L2DMatrix44();
       this.deviceToScreen.multTranslate(-width / 2.0, -height / 2.0);
       this.deviceToScreen.multScale(2 / width, -2 / width);
-      this.gl = this.canvas.getContext('webgl2', { premultipliedAlpha: true, preserveDrawingBuffer: true });
+      this.gl = this.canvas.getContext("webgl2", {
+        premultipliedAlpha: true,
+        preserveDrawingBuffer: true,
+      });
       if (!this.gl) {
-        throw new Error('Failed to create WebGL context.');
+        throw new Error("Failed to create WebGL context.");
       }
       // Activate this model's PlatformManager and GL context right before loading
       this.live2DMgr.activatePlatformManager();
       Live2D.setGL(this.gl, this._glContextIndex);
-      this.live2DMgr.onLoadStart = (total) => window.dispatchEvent(new CustomEvent(EVENTS.LOAD_START, { detail: { canvas: this.canvas, total } }));
-      this.live2DMgr.onProgress = (loaded, total, file) => window.dispatchEvent(new CustomEvent(EVENTS.LOAD_PROGRESS, { detail: { canvas: this.canvas, loaded, total, file } }));
-      this.live2DMgr.onMotionStart = ({ group, index, duration, file }) => window.dispatchEvent(new CustomEvent(EVENTS.MOTION_START, { detail: { canvas: this.canvas, group, index, duration, file } }));
-      this.live2DMgr.onMotionEnd = ({ group, index, file }) => window.dispatchEvent(new CustomEvent(EVENTS.MOTION_END, { detail: { canvas: this.canvas, group, index, file } }));
-      this.live2DMgr.onExpressionStart = ({ id }) => window.dispatchEvent(new CustomEvent(EVENTS.EXPRESSION_START, { detail: { canvas: this.canvas, id } }));
+      this.live2DMgr.onLoadStart = (total) =>
+        window.dispatchEvent(
+          new CustomEvent(EVENTS.LOAD_START, {
+            detail: { canvas: this.canvas, total },
+          }),
+        );
+      this.live2DMgr.onProgress = (loaded, total, file) =>
+        window.dispatchEvent(
+          new CustomEvent(EVENTS.LOAD_PROGRESS, {
+            detail: { canvas: this.canvas, loaded, total, file },
+          }),
+        );
+      this.live2DMgr.onMotionStart = ({ group, index, duration, file }) =>
+        window.dispatchEvent(
+          new CustomEvent(EVENTS.MOTION_START, {
+            detail: { canvas: this.canvas, group, index, duration, file },
+          }),
+        );
+      this.live2DMgr.onMotionEnd = ({ group, index, file }) =>
+        window.dispatchEvent(
+          new CustomEvent(EVENTS.MOTION_END, {
+            detail: { canvas: this.canvas, group, index, file },
+          }),
+        );
+      this.live2DMgr.onExpressionStart = ({ id }) =>
+        window.dispatchEvent(
+          new CustomEvent(EVENTS.EXPRESSION_START, {
+            detail: { canvas: this.canvas, id },
+          }),
+        );
       this.gl.clearColor(0.0, 0.0, 0.0, 0.0);
       await this.changeModelWithJSON(modelSettingPath, modelSetting);
+      // 在第一帧渲染前快照初始参数值，作为真正的 default。
+      // _$vr 在每帧 update() 中会被同步为 _$_2 的当前值（脏检查机制），
+      // 动画一旦开始就无法再用它区分默认值与当前值。
+      const initModel = this.live2DMgr.getModel();
+      if (initModel?.live2DModel) {
+        const ctx = initModel.live2DModel.getModelContext();
+        this._paramDefaults = Float32Array.from(ctx._$_2);
+      }
       this.startDraw();
     };
     // Chain onto the global queue so Cubism2 models load one at a time
-    _loadQueue = _loadQueue.then(doInit).catch(err => { throw err; });
+    _loadQueue = _loadQueue.then(doInit).catch((err) => {
+      throw err;
+    });
     return _loadQueue;
   }
 
   destroy() {
     if (this.canvas) {
-      this.canvas.removeEventListener('click', this._boundMouseEvent, false);
-      document.removeEventListener('mousemove', this._boundMouseEvent, false);
-      document.removeEventListener('mouseout', this._boundMouseEvent, false);
-      this.canvas.removeEventListener('contextmenu', this._boundMouseEvent, false);
-      this.canvas.removeEventListener('touchstart', this._boundTouchEvent, false);
-      this.canvas.removeEventListener('touchend', this._boundTouchEvent, false);
-      this.canvas.removeEventListener('touchmove', this._boundTouchEvent, false);
+      this.canvas.removeEventListener("click", this._boundMouseEvent, false);
+      document.removeEventListener("mousemove", this._boundMouseEvent, false);
+      document.removeEventListener("mouseout", this._boundMouseEvent, false);
+      this.canvas.removeEventListener(
+        "contextmenu",
+        this._boundMouseEvent,
+        false,
+      );
+      this.canvas.removeEventListener(
+        "touchstart",
+        this._boundTouchEvent,
+        false,
+      );
+      this.canvas.removeEventListener("touchend", this._boundTouchEvent, false);
+      this.canvas.removeEventListener(
+        "touchmove",
+        this._boundTouchEvent,
+        false,
+      );
     }
     if (this._resizeObserver) {
       this._resizeObserver.disconnect();
@@ -151,8 +210,7 @@ class Cubism2Model {
     MatrixStack.multMatrix(this.viewMatrix.getArray());
     MatrixStack.push();
     const model = this.live2DMgr.getModel();
-    if (model == null)
-      return;
+    if (model == null) return;
     if (model.initialized && !model.updating) {
       model.update();
       model.draw(this.gl);
@@ -164,10 +222,13 @@ class Cubism2Model {
       const finished = model.expressionManager.isFinished();
       if (!this._expressionWasPlaying && !finished) {
         this._expressionWasPlaying = true;
-      }
-      else if (this._expressionWasPlaying && finished) {
+      } else if (this._expressionWasPlaying && finished) {
         this._expressionWasPlaying = false;
-        window.dispatchEvent(new CustomEvent(EVENTS.EXPRESSION_END, { detail: { canvas: this.canvas } }));
+        window.dispatchEvent(
+          new CustomEvent(EVENTS.EXPRESSION_END, {
+            detail: { canvas: this.canvas },
+          }),
+        );
       }
     }
   }
@@ -177,7 +238,11 @@ class Cubism2Model {
   }
 
   async changeModelWithJSON(modelSettingPath, modelSetting) {
-    await this.live2DMgr.changeModelWithJSON(this.gl, modelSettingPath, modelSetting);
+    await this.live2DMgr.changeModelWithJSON(
+      this.gl,
+      modelSettingPath,
+      modelSetting,
+    );
   }
 
   setPosition(x, y) {
@@ -195,6 +260,22 @@ class Cubism2Model {
     const model = this.live2DMgr.getModel();
     if (!model) return;
     model._forcedParams = { ...params };
+  }
+
+  getParams() {
+    const model = this.live2DMgr.getModel();
+    if (!model?.live2DModel) return [];
+    const ctx = model.live2DModel.getModelContext();
+    const count = ctx._$qo; // _$pb 按 2 倍预分配，_$qo 才是实际参数个数
+    return Array.from({ length: count }, (_, i) => ({
+      id: ctx._$pb[i],
+      value: ctx._$_2[i],
+      min: ctx._$Rr[i],
+      max: ctx._$Or[i],
+      // _$vr 在每帧 update() 后会被同步为 _$_2，不能作为 default；
+      // 使用初始化时快照的真实默认值。
+      default: this._paramDefaults?.[i] ?? ctx._$_2[i],
+    }));
   }
 
   _computeFitScale() {
@@ -229,13 +310,25 @@ class Cubism2Model {
     const right = LAppDefine.VIEW_LOGICAL_RIGHT;
     this.viewMatrix = new L2DViewMatrix();
     this.viewMatrix.setScreenRect(left, right, -ratio, ratio);
-    this.viewMatrix.setMaxScreenRect(LAppDefine.VIEW_LOGICAL_MAX_LEFT, LAppDefine.VIEW_LOGICAL_MAX_RIGHT, LAppDefine.VIEW_LOGICAL_MAX_BOTTOM, LAppDefine.VIEW_LOGICAL_MAX_TOP);
+    this.viewMatrix.setMaxScreenRect(
+      LAppDefine.VIEW_LOGICAL_MAX_LEFT,
+      LAppDefine.VIEW_LOGICAL_MAX_RIGHT,
+      LAppDefine.VIEW_LOGICAL_MAX_BOTTOM,
+      LAppDefine.VIEW_LOGICAL_MAX_TOP,
+    );
     this.viewMatrix.setMaxScale(LAppDefine.VIEW_MAX_SCALE);
     this.viewMatrix.setMinScale(LAppDefine.VIEW_MIN_SCALE);
     const fitScale = this._computeFitScale();
-    this.viewMatrix.adjustScale(0, 0, (this._userScale ?? 1) * ratio * fitScale);
+    this.viewMatrix.adjustScale(
+      0,
+      0,
+      (this._userScale ?? 1) * ratio * fitScale,
+    );
     if (this._userPosition !== undefined) {
-      this.viewMatrix.translate(this._userPosition[0] * ratio, this._userPosition[1] * ratio);
+      this.viewMatrix.translate(
+        this._userPosition[0] * ratio,
+        this._userPosition[1] * ratio,
+      );
     }
   }
 
@@ -262,11 +355,19 @@ class Cubism2Model {
     const rect = this.canvas.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
-    const vx = Math.max(-1, Math.min(1, (event.clientX - centerX) / (rect.width / 2)));
-    const vy = Math.max(-1, Math.min(1, -(event.clientY - centerY) / (rect.height / 2)));
+    const vx = Math.max(
+      -1,
+      Math.min(1, (event.clientX - centerX) / (rect.width / 2)),
+    );
+    const vy = Math.max(
+      -1,
+      Math.min(1, -(event.clientY - centerY) / (rect.height / 2)),
+    );
     this.dragMgr.setPoint(vx, vy);
-    const canvasX = (event.clientX - rect.left) * (this.canvas.width / rect.width);
-    const canvasY = (event.clientY - rect.top) * (this.canvas.height / rect.height);
+    const canvasX =
+      (event.clientX - rect.left) * (this.canvas.width / rect.width);
+    const canvasY =
+      (event.clientY - rect.top) * (this.canvas.height / rect.height);
     const hx = this.transformViewX(canvasX);
     const hy = this.transformViewY(canvasY);
     const model = this.live2DMgr?.getModel();
@@ -275,7 +376,11 @@ class Cubism2Model {
       for (let i = 0; i < count; i++) {
         const areaName = model.modelSetting.getHitAreaName(i);
         if (model.hitTest(areaName, hx, hy)) {
-          window.dispatchEvent(new CustomEvent(EVENTS.TAP_BODY, { detail: { canvas: this.canvas, areaName } }));
+          window.dispatchEvent(
+            new CustomEvent(EVENTS.TAP_BODY, {
+              detail: { canvas: this.canvas, areaName },
+            }),
+          );
         }
       }
     }
@@ -285,8 +390,14 @@ class Cubism2Model {
     const rect = this.canvas.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
-    const vx = Math.max(-1, Math.min(1, (event.clientX - centerX) / (rect.width / 2)));
-    const vy = Math.max(-1, Math.min(1, -(event.clientY - centerY) / (rect.height / 2)));
+    const vx = Math.max(
+      -1,
+      Math.min(1, (event.clientX - centerX) / (rect.width / 2)),
+    );
+    const vy = Math.max(
+      -1,
+      Math.min(1, -(event.clientY - centerY) / (rect.height / 2)),
+    );
     this.dragMgr.setPoint(vx, vy);
   }
 
@@ -296,13 +407,11 @@ class Cubism2Model {
 
   mouseEvent(e) {
     e.preventDefault();
-    if (e.type == 'click' || e.type == 'contextmenu') {
+    if (e.type == "click" || e.type == "contextmenu") {
       this.modelTurnHead(e);
-    }
-    else if (e.type == 'mousemove') {
+    } else if (e.type == "mousemove") {
       this.followPointer(e);
-    }
-    else if (e.type == 'mouseout') {
+    } else if (e.type == "mouseout") {
       this.lookFront();
     }
   }
@@ -310,14 +419,11 @@ class Cubism2Model {
   touchEvent(e) {
     e.preventDefault();
     const touch = e.touches[0];
-    if (e.type == 'touchstart') {
-      if (e.touches.length == 1)
-        this.modelTurnHead(touch);
-    }
-    else if (e.type == 'touchmove') {
+    if (e.type == "touchstart") {
+      if (e.touches.length == 1) this.modelTurnHead(touch);
+    } else if (e.type == "touchmove") {
       this.followPointer(touch);
-    }
-    else if (e.type == 'touchend') {
+    } else if (e.type == "touchend") {
       this.lookFront();
     }
   }
@@ -380,13 +486,17 @@ class Cubism2Model {
     return result;
   }
 
+  setVolume(v) {
+    const model = this.live2DMgr.getModel();
+    if (model) model._volume = v;
+  }
+
   playMotion(group, index, priority = LAppDefine.PRIORITY_NORMAL) {
     const model = this.live2DMgr.getModel();
     if (!model) return;
     if (index === undefined) {
       model.startRandomMotion(group, priority);
-    }
-    else {
+    } else {
       model.startMotion(group, index, priority);
     }
   }
@@ -394,7 +504,8 @@ class Cubism2Model {
   getMotionGroups() {
     const model = this.live2DMgr.getModel();
     if (!model?.modelSetting) return {};
-    const motions = model.modelSetting.json[model.modelSetting.MOTION_GROUPS] ?? {};
+    const motions =
+      model.modelSetting.json[model.modelSetting.MOTION_GROUPS] ?? {};
     const result = {};
     for (const group of Object.keys(motions)) {
       result[group] = model.modelSetting.getMotionNum(group);
@@ -405,7 +516,8 @@ class Cubism2Model {
   getMotionFiles() {
     const model = this.live2DMgr.getModel();
     if (!model?.modelSetting) return {};
-    const motions = model.modelSetting.json[model.modelSetting.MOTION_GROUPS] ?? {};
+    const motions =
+      model.modelSetting.json[model.modelSetting.MOTION_GROUPS] ?? {};
     const result = {};
     for (const group of Object.keys(motions)) {
       const count = model.modelSetting.getMotionNum(group);

@@ -54,7 +54,23 @@
       "Bash(cat /Users/hacxy/Projects/l2d/__tests__/styles/*.css)",
       "Bash(npm test:*)",
       "Bash(find /Users/hacxy/Projects/l2d/docs -type f -name \"*.md\" -exec grep -l \".\" {} \\\\;)",
-      "Bash(ls -l /Users/hacxy/Projects/l2d/__tests__/demo/*.ts)"
+      "Bash(ls -l /Users/hacxy/Projects/l2d/__tests__/demo/*.ts)",
+      "Bash(grep -rn \"Live2DModelWebGL\\\\|live2d\\\\.min\\\\|importScripts\\\\|script.*live2d\" /Users/hacxy/Projects/l2d/index.html /Users/hacxy/Projects/l2d/__tests__/demo/*.html /Users/hacxy/Projects/l2d/__tests__/framework/*.ts)",
+      "Bash(grep -E \"prototype\\\\.\\(get|_\\\\\\\\\\\\$\\)\")",
+      "Bash(grep 'getParamID\\\\|getParamId\\\\|paramId\\\\|paramID\\\\|_\\\\$pb\\\\|_\\\\$Ob\\\\|getParamCount\\\\|_\\\\$2r\\\\|_\\\\$wL')",
+      "Bash(grep '_\\\\$pb\\\\.\\\\|_\\\\$pb\\\\b\\\\|this\\\\._\\\\$_2\\\\b\\\\|this\\\\._\\\\$Or\\\\b\\\\|this\\\\._\\\\$Rr\\\\b\\\\|getModelContext\\\\|_\\\\$5S')",
+      "Bash(grep '_\\\\$02\\\\b\\\\|_\\\\$pb\\\\[')",
+      "Bash(grep 'getParamIndex\\\\b\\\\|_\\\\$pb\\\\.length\\\\|_\\\\$pb\\\\[aI\\\\]\\\\|_\\\\$pb\\\\[')",
+      "Bash(grep -A5 \"prototype\\\\._\\\\\\\\\\\\$02=function\")",
+      "Bash(grep '_\\\\$vr\\\\b')",
+      "Bash(grep '_\\\\$Or\\\\b\\\\|_\\\\$Rr\\\\b\\\\|_\\\\$vr\\\\b\\\\|\\\\._\\\\$qo\\\\b')",
+      "Bash(grep \"this\\\\._\\\\\\\\\\\\$\")",
+      "Bash(npx tsc:*)",
+      "Bash(grep '_\\\\$vr\\\\[')",
+      "Bash(grep '_\\\\$qo\\\\b\\\\|_\\\\$pb=new\\\\|aJ=new Array\\\\|_$pb\\\\.length')"
+    ],
+    "additionalDirectories": [
+      "/Users/hacxy/Projects/l2d-viewer"
     ]
   }
 }

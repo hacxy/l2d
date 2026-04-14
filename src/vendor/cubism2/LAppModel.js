@@ -257,6 +257,7 @@ class LAppModel extends L2DBaseModel {
       const soundName = this.modelSetting.getMotionSound(name, no);
       const snd = document.createElement('audio');
       snd.src = this.modelHomeDir + soundName;
+      snd.volume = this._volume ?? 0;
       snd.play().catch(() => {});
       this.mainMotionManager.startMotionPrio(motion, priority);
     }

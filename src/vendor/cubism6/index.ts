@@ -385,6 +385,25 @@ export class AppDelegate {
     model._forcedParams = { ...params };
   }
 
+  public getParams(): Array<{ id: string; value: number; min: number; max: number; default: number }> {
+    const model = this._subdelegates[0]?.getLive2DManager()?._models?.[0];
+    if (!model?._model) return [];
+    const m = model._model;
+    const count = m.getParameterCount();
+    return Array.from({ length: count }, (_, i) => ({
+      id: m.getParameterId(i).getString(),
+      value: m.getParameterValueByIndex(i),
+      min: m.getParameterMinimumValue(i),
+      max: m.getParameterMaximumValue(i),
+      default: m.getParameterDefaultValue(i),
+    }));
+  }
+
+  public setVolume(v: number): void {
+    const model = this._subdelegates[0]?.getLive2DManager()?._models?.[0];
+    if (model) model._volume = v;
+  }
+
   public setScale(scale: number): void {
     const subdelegate = this._subdelegates[0];
     subdelegate._userScale = scale;

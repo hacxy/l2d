@@ -1,5 +1,5 @@
 import type { ModelState } from './motion-controller.js';
-import type { L2DEventMap, Options } from './types.js';
+import type { L2DEventMap, Options, ParamInfo } from './types.js';
 import { cloneCanvas } from './canvas-manager.js';
 import { EVENTS } from './const.js';
 import { Emitter } from './emitter.js';
@@ -112,6 +112,17 @@ class L2D extends Emitter<L2DEventMap> {
   }
 
   /**
+   * 设置动作声音文件的播放音量，与加载选项中的 `volume` 作用一致。
+   * @param volume - 音量，范围 `0`（静音）~ `1`（最大）
+   */
+  setVolume(volume: number) {
+    if (this._state.currentVersion === 2 && this._state.l2d2Model)
+      this._state.l2d2Model.setVolume(volume);
+    else if (this._state.currentVersion !== null && this._state.l2d6Model)
+      this._state.l2d6Model.setVolume(volume);
+  }
+
+  /**
    * 设置模型缩放比例，与加载选项中的 `scale` 作用一致。
    * @param scale - 缩放比例，`1` 为原始大小
    */
@@ -135,7 +146,11 @@ class L2D extends Emitter<L2DEventMap> {
   }
 
   /**
-   * 批量设置模型参数值，参数 ID 可在模型的 `.cdi3.json` 文件中查看。
+   * 批量设置模型参数值，参数 ID。
+   *
+   * - **Cubism 2 模型**：打开模型目录下任意一个 `.mtn` 动作文件（文本格式），其中 `$curve` 段的每行开头即为参数 ID，例如 `PARAM_MOUTH_OPEN_Y`。
+   *
+   * - **Cubism 6 模型**：打开模型目录下任意一个 `.motion3.json` 动作文件，找到 `"Curves"` 数组，每个对象的 `"Id"` 即为参数名。
    * @example l2d.setParams({ ParamEyeLOpen: 0, ParamA: 1 })
    */
   setParams(params: Record<string, number>) {
@@ -143,6 +158,18 @@ class L2D extends Emitter<L2DEventMap> {
       this._state.l2d2Model.setParams(params);
     else if (this._state.currentVersion !== null && this._state.l2d6Model)
       this._state.l2d6Model.setParams(params);
+  }
+
+  /**
+   * 获取模型所有参数的当前状态，每帧调用可实现实时追踪。
+   * Cubism 2 / Cubism 6 均支持完整的 `id` / `value` / `min` / `max` / `default`。
+   */
+  getParams(): ParamInfo[] {
+    if (this._state.currentVersion === 2 && this._state.l2d2Model)
+      return this._state.l2d2Model.getParams();
+    else if (this._state.currentVersion !== null && this._state.l2d6Model)
+      return this._state.l2d6Model.getParams();
+    return [];
   }
 
   /**
