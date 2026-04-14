@@ -1,6 +1,6 @@
 ---
 sidebar:
-  sort: 3
+  sort: 7
 ---
 
 # 口型动作同步
@@ -208,6 +208,6 @@ textInput.addEventListener('keydown', e => {
 
 <DemoBlock demo="demoLipSync">
 
-<<< ../demos/index.ts#demoLipSync{ts}
+<<< ../../demos/index.ts#demoLipSync{ts}
 
 </DemoBlock>

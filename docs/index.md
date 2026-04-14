@@ -5,7 +5,7 @@ markdownStyles: false
 
 hero:
   name: "L2D"
-  text: "为浏览器而生的 Live2D 加载库"
+  text: "在浏览器中加载 Live2D 模型更简单"
   tagline: 零依赖 · 全版本兼容 · 开箱即用
   actions:
     - theme: brand
@@ -23,7 +23,7 @@ features:
     details: 无需手动引入 SDK，传入模型路径即可加载，自动识别版本
   - title: 全版本兼容
     details: 内置 Cubism 2 & 6 运行时，覆盖所有Live2D模型版本
-  - title: 丰富的交互能力
+  - title: 丰富的API
     details: 支持播放动作、切换表情、点击区域检测，提供完整的加载与交互事件回调
   - title: 零依赖，轻量
     details: 单一 JS 文件，不绑定任何框架，Vue、React、原生项目均可直接使用

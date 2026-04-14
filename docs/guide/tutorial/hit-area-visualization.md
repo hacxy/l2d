@@ -1,6 +1,6 @@
 ---
 sidebar:
-  sort: 2
+  sort: 6
 ---
 
 # 可视化点击区域
@@ -138,7 +138,7 @@ l2d.load({
 
 <DemoBlock demo="demoHitArea">
 
-<<< ../demos/index.ts#demoHitArea{ts}
+<<< ../../demos/index.ts#demoHitArea{ts}
 
 </DemoBlock>
 

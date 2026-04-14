@@ -67,9 +67,9 @@
   <rect x="140" y="468" width="240" height="32" rx="6" fill="#1e293b" stroke="#7c3aed" stroke-width="1"/>
   <text x="260" y="489" text-anchor="middle" fill="#c4b5fd" font-size="12">motionstart / motionend</text>
 
-  <!-- expressionstart / expressionend -->
+  <!-- expressionchange -->
   <rect x="140" y="508" width="240" height="32" rx="6" fill="#1e293b" stroke="#7c3aed" stroke-width="1"/>
-  <text x="260" y="529" text-anchor="middle" fill="#c4b5fd" font-size="12">expressionstart / expressionend</text>
+  <text x="260" y="529" text-anchor="middle" fill="#c4b5fd" font-size="12">expressionchange</text>
 
   <!-- reload arrow (loop back) -->
   <path d="M120,456 C50,456 50,130 160,120" stroke="#f97316" stroke-width="1.5" fill="none" stroke-dasharray="5,3" marker-end="url(#arrow-orange)"/>
