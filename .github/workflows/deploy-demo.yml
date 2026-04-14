@@ -1,4 +1,4 @@
-name: DeployDocs
+name: DeployDemo
 on:
   push: # 监听调用时机为push事件
     branches: [main]
