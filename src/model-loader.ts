@@ -13,6 +13,50 @@ export interface LoadContext {
   replaceCanvas: () => HTMLCanvasElement
 }
 
+async function loadCubism2(ctx: LoadContext, canvas: HTMLCanvasElement, options: Options, result: unknown): Promise<void> {
+  const model = new Cubism2Model(canvas);
+  ctx.state.l2d2Model = model;
+  try {
+    await model.init(canvas, options.path, result);
+  }
+  catch (e) {
+    logger.error('Failed to initialize Cubism2 model.', e);
+    return;
+  }
+  if (options.position)
+    model.setPosition(options.position[0], options.position[1]);
+  ctx.resize();
+  if (typeof options.scale === 'number')
+    model.setScale(options.scale);
+  if (typeof options.volume === 'number')
+    model.setVolume(options.volume);
+  ctx.emit('loaded');
+}
+
+async function loadCubism6(ctx: LoadContext, canvas: HTMLCanvasElement, options: Options): Promise<void> {
+  const model = new Cubism6Model(canvas);
+  ctx.state.l2d6Model = model;
+  if (!model.initialize()) {
+    logger.error('Failed to initialize Cubism6 model');
+    return;
+  }
+  if (typeof options.scale === 'number')
+    model.setScale(options.scale);
+  if (options.position)
+    model.setPosition(options.position[0], options.position[1]);
+  if (typeof options.volume === 'number')
+    model.setVolume(options.volume);
+  model.changeModel(options.path);
+  model.run();
+  await new Promise<void>(resolve => {
+    model.onLoaded(() => {
+      ctx.resize();
+      ctx.emit('loaded');
+      resolve();
+    });
+  });
+}
+
 export async function loadModel(ctx: LoadContext, options: Options): Promise<void> {
   const { state } = ctx;
   let canvas = ctx.canvas;
@@ -48,44 +92,8 @@ export async function loadModel(ctx: LoadContext, options: Options): Promise<voi
 
   state.currentVersion = version;
 
-  if (version === 2) {
-    const model = new Cubism2Model(canvas);
-    state.l2d2Model = model;
-    try {
-      await model.init(canvas, options.path, result);
-    }
-    catch (e) {
-      logger.error('Failed to initialize Cubism2 model.', e);
-      return;
-    }
-    if (options.position)
-      model.setPosition(options.position[0], options.position[1]);
-    ctx.resize();
-    if (typeof options.scale === 'number')
-      model.setScale(options.scale);
-    ctx.emit('loaded');
-  }
-  else {
-    const model = new Cubism6Model(canvas);
-    state.l2d6Model = model;
-    if (!model.initialize()) {
-      logger.error('Failed to initialize Cubism6 model');
-      return;
-    }
-    if (typeof options.scale === 'number') {
-      model.setScale(options.scale);
-    }
-    if (options.position) {
-      model.setPosition(options.position[0], options.position[1]);
-    }
-    model.changeModel(options.path);
-    model.run();
-    await new Promise<void>(resolve => {
-      model.onLoaded(() => {
-        ctx.resize();
-        ctx.emit('loaded');
-        resolve();
-      });
-    });
-  }
+  if (version === 2)
+    await loadCubism2(ctx, canvas, options, result);
+  else
+    await loadCubism6(ctx, canvas, options);
 }

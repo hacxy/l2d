@@ -486,6 +486,11 @@ class Cubism2Model {
     return result;
   }
 
+  setVolume(v) {
+    const model = this.live2DMgr.getModel();
+    if (model) model._volume = v;
+  }
+
   playMotion(group, index, priority = LAppDefine.PRIORITY_NORMAL) {
     const model = this.live2DMgr.getModel();
     if (!model) return;

@@ -28,6 +28,10 @@ export interface Options {
    * 日志输出级别，默认 `'warn'`。设为 `'trace'` 可查看详细加载日志，设为 `'error'` 可屏蔽警告。
    */
   logLevel?: 'error' | 'warn' | 'info' | 'trace'
+  /**
+   * 动作声音文件的播放音量，范围 `0`（静音）~ `1`（最大），默认 `0`。
+   */
+  volume?: number
 }
 
 export interface L2DEventMap {

@@ -24,6 +24,7 @@ declare class Cubism2Model {
   changeModelWithJSON(modelSettingPath: any, modelSetting: any): Promise<void>;
   setPosition(x: number, y: number): void;
   setScale(scale: number): void;
+  setVolume(v: number): void;
   setParams(params: Record<string, number>): void;
   getParams(): Array<{ id: string; value: number; min: number; max: number; default: number }>;
   resize(): void;

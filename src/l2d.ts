@@ -112,6 +112,17 @@ class L2D extends Emitter<L2DEventMap> {
   }
 
   /**
+   * 设置动作声音文件的播放音量，与加载选项中的 `volume` 作用一致。
+   * @param volume - 音量，范围 `0`（静音）~ `1`（最大）
+   */
+  setVolume(volume: number) {
+    if (this._state.currentVersion === 2 && this._state.l2d2Model)
+      this._state.l2d2Model.setVolume(volume);
+    else if (this._state.currentVersion !== null && this._state.l2d6Model)
+      this._state.l2d6Model.setVolume(volume);
+  }
+
+  /**
    * 设置模型缩放比例，与加载选项中的 `scale` 作用一致。
    * @param scale - 缩放比例，`1` 为原始大小
    */

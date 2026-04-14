@@ -811,6 +811,7 @@ export class LAppModel extends CubismUserModel {
       }
       const audio = document.createElement('audio');
       audio.src = path;
+      audio.volume = this._volume;
       audio.play().catch((e) => { console.warn('[l2d] audio play failed:', e); });
       this._audioElement = audio;
     }
@@ -1193,6 +1194,7 @@ export class LAppModel extends CubismUserModel {
   _allMotionCount: number; // モーション総数
   _wavFileHandler: LAppWavFileHandler; //wavファイルハンドラ
   _audioElement: HTMLAudioElement | null = null; // 当前播放的音频元素
+  _volume: number = 0; // 音频播放音量
 
   // 动作事件回调（自动闲置动作 & 外部均触发）
   onMotionStart: ((info: { group: string; index: number; duration: number | null; file: string }) => void) | null = null;

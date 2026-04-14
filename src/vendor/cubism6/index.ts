@@ -399,6 +399,11 @@ export class AppDelegate {
     }));
   }
 
+  public setVolume(v: number): void {
+    const model = this._subdelegates[0]?.getLive2DManager()?._models?.[0];
+    if (model) model._volume = v;
+  }
+
   public setScale(scale: number): void {
     const subdelegate = this._subdelegates[0];
     subdelegate._userScale = scale;
