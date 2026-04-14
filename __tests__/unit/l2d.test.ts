@@ -360,34 +360,19 @@ describe('l2D — CustomEvent 事件桥接', () => {
     expect(fn).toHaveBeenCalledWith('Idle', 0, null);
   });
 
-  it('live2d:expressionstart 触发 expressionstart 事件', async () => {
+  it('live2d:expressionchange 触发 expressionchange 事件', async () => {
     const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
     const fn = vi.fn();
-    l2d.on('expressionstart', fn);
+    l2d.on('expressionchange', fn);
 
-    window.dispatchEvent(new CustomEvent('live2d:expressionstart', {
+    window.dispatchEvent(new CustomEvent('live2d:expressionchange', {
       detail: { canvas, id: 'happy' },
     }));
 
     expect(fn).toHaveBeenCalledWith('happy');
-  });
-
-  it('live2d:expressionend 触发 expressionend 事件', async () => {
-    const { init } = await import('../../src/index.ts');
-    const canvas = makeCanvas();
-    const l2d = init(canvas);
-
-    const fn = vi.fn();
-    l2d.on('expressionend', fn);
-
-    window.dispatchEvent(new CustomEvent('live2d:expressionend', {
-      detail: { canvas },
-    }));
-
-    expect(fn).toHaveBeenCalledOnce();
   });
 
   it('live2d:tapbody 触发 tap 事件', async () => {

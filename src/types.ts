@@ -76,7 +76,7 @@ export interface L2DEventMap {
    */
   loaded: () => void
   /**
-   * 调用 `setExpression()` 后，表情过渡动画开始播放时触发，`id` 为表情 ID
+   * 调用 `setExpression()` 后立即触发，`id` 为切换目标的表情 ID
    * @demo
    * <DemoBlock demo="demo9">
    *
@@ -84,17 +84,7 @@ export interface L2DEventMap {
    *
    * </DemoBlock>
    */
-  expressionstart: (id: string) => void
-  /**
-   * 表情过渡动画播放结束时触发
-   * @demo
-   * <DemoBlock demo="demo10">
-   *
-   * <<< ../../demos/index.ts#demo10{ts}
-   *
-   * </DemoBlock>
-   */
-  expressionend: () => void
+  expressionchange: (id: string) => void
   /**
    * 调用 `playMotion()` 或随机动作被触发后，动作开始播放时触发
    * @demo

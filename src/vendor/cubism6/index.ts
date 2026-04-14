@@ -169,7 +169,6 @@ export class AppDelegate {
   _drawFrameId: number | null = null;
   _modelLoadedEmitted: boolean = false;
   _onLoaded: (() => void) | null = null;
-  _expressionWasPlaying: boolean = false;
   private mouseMoveEventListener: ((e: MouseEvent) => void) | null = null;
   private mouseEndedEventListener: ((e: MouseEvent) => void) | null = null;
   private tapEventListener: ((e: PointerEvent) => void) | null = null;
@@ -192,19 +191,6 @@ export class AppDelegate {
 
       for (const sd of this._subdelegates) {
         sd.update();
-      }
-
-      // 检测表情结束
-      const model = this._subdelegates[0]?.getLive2DManager()?._models?.[0];
-      if (model) {
-        const exprFinished = model._expressionManager?.isFinished();
-        if (!this._expressionWasPlaying && exprFinished === false) {
-          this._expressionWasPlaying = true;
-        }
-        else if (this._expressionWasPlaying && exprFinished === true) {
-          this._expressionWasPlaying = false;
-          window.dispatchEvent(new CustomEvent(EVENTS.EXPRESSION_END, { detail: { canvas: this._canvas } }));
-        }
       }
 
       this._drawFrameId = window.requestAnimationFrame(loop);

@@ -52,7 +52,7 @@ export default {
       }
     }
 
-    l2d.on('expressionstart', id => {
+    l2d.on('expressionchange', id => {
       paintActive(id);
     });
 

@@ -217,20 +217,6 @@ class Cubism2Model {
     }
     MatrixStack.pop();
 
-    // Detect expression end
-    if (model?.expressionManager) {
-      const finished = model.expressionManager.isFinished();
-      if (!this._expressionWasPlaying && !finished) {
-        this._expressionWasPlaying = true;
-      } else if (this._expressionWasPlaying && finished) {
-        this._expressionWasPlaying = false;
-        window.dispatchEvent(
-          new CustomEvent(EVENTS.EXPRESSION_END, {
-            detail: { canvas: this.canvas },
-          }),
-        );
-      }
-    }
   }
 
   async changeModel(modelSettingPath) {
