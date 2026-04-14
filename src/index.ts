@@ -4,8 +4,6 @@ import './vendor/lib/live2dcubismcore.js';
 import L2D from './l2d.js';
 import logger from './logger.js';
 
-declare const __VERSION__: string;
-
 /**
  * Initialize L2D instance
  * @param canvasEl canvas element
