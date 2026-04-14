@@ -7,6 +7,8 @@ export default {
       path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
     }).then(() => {
       console.log('模型已准备就绪');
+    }).catch(err => {
+      console.error(err);
     });
   },
 } satisfies Demo;

@@ -50,7 +50,7 @@ const l2d = init(document.getElementById('l2d') as HTMLCanvasElement);
 
 ## 加载模型
 
-在画布中创建和加载一个模型, 只需要调用`l2d`实例下的 `load` 方法, 调用时可以传入 [options](../model/index.md) 来定义模型地址和模型样式, 同时 `load` 是一个异步函数, 当 `then` 方法被调用时表示模型创建成功.
+在画布中创建和加载一个模型, 只需要调用`l2d`实例下的 `load` 方法, 调用时可以传入 [options](../model/index.md) 来定义模型地址和模型样式, 同时 `load` 是一个异步函数, 当 `then` 方法被调用时表示模型创建成功，相反当catch被调用时，说明模型文件加载失败，需检查path属性传入的地址能否通过网络正常访问
 
 <DemoBlock demo="demo1">
 

@@ -13,6 +13,8 @@ export function demo1(init: Init, l2dCanvas: Canvas, message: MessageApiInjectio
     path: 'https://model.hacxy.cn/cat-black/model.json',
   }).then(() => {
     message.success('模型加载成功');
+  }).catch(err => {
+    console.error('模型加载失败', err);
   });
   // #endregion demo1
 }
