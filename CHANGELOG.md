@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/hacxy/l2d/compare/v2.1.0...v2.1.1) (2026-04-15)
+
+### Bug Fixes
+
+- motionstart事件中返回的duration值类型统一为number ([b724fb5](https://github.com/hacxy/l2d/commit/b724fb5127d035214a11cd4ffe92accfc596356e))
+- 移除expressionsend事件，expressionsstart改名为expressionschange，因为expressions是持久状态不存在开始和结束 ([8f68822](https://github.com/hacxy/l2d/commit/8f68822af0dab19e89584f29ac7abe90a52c1a3c))
+
 # [2.1.0](https://github.com/hacxy/l2d/compare/v2.0.0...v2.1.0) (2026-04-14)
 
 ### Features
