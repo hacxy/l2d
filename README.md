@@ -22,7 +22,58 @@
 
 L2D Demos: <https://l2d-demo.hacxy.cn>
 
+在线预览调试工具: <https://l2d-viewer.hacxy.cn>
+
 通过 [stackblitz](https://stackblitz.com/edit/vitejs-vite-dye9t3?file=src%2Fmain.ts) 在线游玩`l2d`.
+
+## 参与贡献
+
+欢迎任何形式的贡献，包括提交 Bug 报告、功能建议或直接提交代码。
+
+### 环境准备
+
+项目使用 [pnpm](https://pnpm.io) 管理依赖，Node.js 版本要求 **v24.14.0**。
+
+```bash
+# 克隆仓库
+git clone https://github.com/hacxy/l2d.git
+cd l2d
+
+# 安装依赖
+pnpm install
+```
+
+### 开发流程
+
+1. **创建 Issue**：建议先在 [Issues](https://github.com/hacxy/l2d/issues) 中描述你要解决的问题或新增的功能，获得反馈后再开始编码。
+
+2. **创建分支**：以 `<issue-id>-<github-username>` 格式从 `main` 分支新建特性分支，例如 `42-hacxy`。
+
+3. **启动开发环境**：
+
+   ```bash
+   pnpm run demo:dev   # 启动 demo 调试页面
+   ```
+
+4. **运行测试**：
+
+   ```bash
+   pnpm run test
+   ```
+
+5. **代码规范**：项目使用 ESLint，pre-commit 钩子会自动对暂存文件执行 lint 修复，也可手动运行：
+
+   ```bash
+   pnpm run lint:fix
+   ```
+
+6. **提交代码**：使用项目内置的交互式提交工具，它会引导你填写符合 [Conventional Commits](https://www.conventionalcommits.org) 规范的提交信息：
+
+   ```bash
+   pnpm run commit
+   ```
+
+7. **提交 Pull Request**：向 `main` 分支发起 PR，说明改动内容和动机，关联对应 Issue。
 
 ## 贡献者们
 

@@ -17,9 +17,8 @@ class L2D extends Emitter<L2DEventMap> {
   constructor(canvas: HTMLCanvasElement) {
     super();
     this.canvas = canvas;
-    this._on(EVENTS.MOTION_START, d => this.emit('motionstart', d.group, d.index, d.duration ?? null, d.file ?? null));
-    this._on(EVENTS.EXPRESSION_START, d => this.emit('expressionstart', d.id));
-    this._on(EVENTS.EXPRESSION_END, () => this.emit('expressionend'));
+    this._on(EVENTS.MOTION_START, d => this.emit('motionstart', d.group, d.index, d.duration ?? -1, d.file ?? null));
+    this._on(EVENTS.EXPRESSION_START, d => this.emit('expressionchange', d.id));
     this._on(EVENTS.LOAD_START, d => this.emit('loadstart', d.total));
     this._on(EVENTS.LOAD_PROGRESS, d => this.emit('loadprogress', d.loaded, d.total, d.file));
     this._on(EVENTS.TAP_BODY, d => this.emit('tap', d.areaName ?? ''));

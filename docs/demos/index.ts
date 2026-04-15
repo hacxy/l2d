@@ -13,6 +13,8 @@ export function demo1(init: Init, l2dCanvas: Canvas, message: MessageApiInjectio
     path: 'https://model.hacxy.cn/cat-black/model.json',
   }).then(() => {
     message.success('模型加载成功');
+  }).catch(err => {
+    console.error('模型加载失败', err);
   });
   // #endregion demo1
 }
@@ -147,7 +149,7 @@ export function demo8(init: Init, l2dCanvas: Canvas, message: MessageApiInjectio
 export function demo9(init: Init, l2dCanvas: Canvas, message: MessageApiInjection) {
   const l2d = init(l2dCanvas.value);
   // #region demo9
-  l2d.on('expressionstart', id => {
+  l2d.on('expressionchange', id => {
     message.info(`表情开始播放: ${id}`);
   });
 
@@ -159,24 +161,6 @@ export function demo9(init: Init, l2dCanvas: Canvas, message: MessageApiInjectio
       l2d.setExpression(first);
   });
   // #endregion demo9
-}
-
-// expressionend 事件
-export function demo10(init: Init, l2dCanvas: Canvas, message: MessageApiInjection) {
-  const l2d = init(l2dCanvas.value);
-  // #region demo10
-  l2d.on('expressionend', () => {
-    message.info('表情播放结束');
-  });
-
-  l2d.load({
-    path: 'https://model.hacxy.cn/shizuku/shizuku.model.json',
-  }).then(() => {
-    const [first] = l2d.getExpressions();
-    if (first)
-      l2d.setExpression(first);
-  });
-  // #endregion demo10
 }
 
 // motionend 事件

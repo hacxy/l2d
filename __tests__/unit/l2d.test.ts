@@ -21,6 +21,7 @@ const mockCubism5Instance = vi.hoisted(() => ({
   getMotionGroups: vi.fn(() => ({ Idle: 3, Tap: 2 })),
   getMotionFiles: vi.fn(() => ({ Idle: ['motions/idle_0.motion3.json', 'motions/idle_1.motion3.json', 'motions/idle_2.motion3.json'], Tap: ['motions/tap_0.motion3.json', 'motions/tap_1.motion3.json'] })),
   getHitAreaBounds: vi.fn(() => []),
+  setVolume: vi.fn(),
 }));
 
 const mockCubism2Instance = vi.hoisted(() => ({
@@ -37,6 +38,7 @@ const mockCubism2Instance = vi.hoisted(() => ({
   getMotionGroups: vi.fn(() => ({ Idle: 2 })),
   getMotionFiles: vi.fn(() => ({ Idle: ['motions/idle_0.mtn', 'motions/idle_1.mtn'] })),
   getHitAreaBounds: vi.fn(() => []),
+  setVolume: vi.fn(),
 }));
 
 // ---------------------------------------------------------------------------
@@ -315,7 +317,7 @@ describe('l2D — CustomEvent 事件桥接', () => {
     expect(fn).toHaveBeenCalledWith('Idle', 1, 2000, 'motions/idle_01.motion3.json');
   });
 
-  it('live2d:motionstart 携带 null duration 时传递 null', async () => {
+  it('live2d:motionstart 未携带 duration 时传递 -1', async () => {
     const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
@@ -327,7 +329,7 @@ describe('l2D — CustomEvent 事件桥接', () => {
       detail: { canvas, group: 'Tap', index: 0 },
     }));
 
-    expect(fn).toHaveBeenCalledWith('Tap', 0, null, null);
+    expect(fn).toHaveBeenCalledWith('Tap', 0, -1, null);
   });
 
   it('live2d:motionend 触发 motionend 事件', async () => {
@@ -360,34 +362,19 @@ describe('l2D — CustomEvent 事件桥接', () => {
     expect(fn).toHaveBeenCalledWith('Idle', 0, null);
   });
 
-  it('live2d:expressionstart 触发 expressionstart 事件', async () => {
+  it('live2d:expressionchange 触发 expressionchange 事件', async () => {
     const { init } = await import('../../src/index.ts');
     const canvas = makeCanvas();
     const l2d = init(canvas);
 
     const fn = vi.fn();
-    l2d.on('expressionstart', fn);
+    l2d.on('expressionchange', fn);
 
-    window.dispatchEvent(new CustomEvent('live2d:expressionstart', {
+    window.dispatchEvent(new CustomEvent('live2d:expressionchange', {
       detail: { canvas, id: 'happy' },
     }));
 
     expect(fn).toHaveBeenCalledWith('happy');
-  });
-
-  it('live2d:expressionend 触发 expressionend 事件', async () => {
-    const { init } = await import('../../src/index.ts');
-    const canvas = makeCanvas();
-    const l2d = init(canvas);
-
-    const fn = vi.fn();
-    l2d.on('expressionend', fn);
-
-    window.dispatchEvent(new CustomEvent('live2d:expressionend', {
-      detail: { canvas },
-    }));
-
-    expect(fn).toHaveBeenCalledOnce();
   });
 
   it('live2d:tapbody 触发 tap 事件', async () => {
@@ -494,6 +481,22 @@ describe('l2D.load() — Cubism5 补充分支', () => {
     await l2d.load({ path: '/models/test.model3.json' });
     expect(mockCubism5Instance.setScale).not.toHaveBeenCalled();
   });
+
+  it('传入 volume 选项后调用 setVolume', async () => {
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
+    const { init } = await import('../../src/index.ts');
+    const l2d = init(makeCanvas());
+    await l2d.load({ path: '/models/test.model3.json', volume: 0.8 });
+    expect(mockCubism5Instance.setVolume).toHaveBeenCalledWith(0.8);
+  });
+
+  it('不传 volume 时不调用 setVolume', async () => {
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
+    const { init } = await import('../../src/index.ts');
+    const l2d = init(makeCanvas());
+    await l2d.load({ path: '/models/test.model3.json' });
+    expect(mockCubism5Instance.setVolume).not.toHaveBeenCalled();
+  });
 });
 
 describe('l2D.load() — Cubism2 补充分支', () => {
@@ -531,6 +534,14 @@ describe('l2D.load() — Cubism2 补充分支', () => {
 
     await l2d.load({ path: '/models/test.model.json' });
     expect(l2d.getExpressions()).toEqual(['blink']);
+  });
+
+  it('传入 volume 选项后调用 setVolume', async () => {
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
+    const { init } = await import('../../src/index.ts');
+    const l2d = init(makeCanvas());
+    await l2d.load({ path: '/models/test.model.json', volume: 0.5 });
+    expect(mockCubism2Instance.setVolume).toHaveBeenCalledWith(0.5);
   });
 });
 
@@ -969,6 +980,40 @@ describe('l2D.load() — logLevel 选项', () => {
     const canvas = makeCanvas();
     const l2d = init(canvas);
     await expect(l2d.load({ path: '/models/test.model.json', logLevel: 'trace' })).resolves.not.toThrow();
+  });
+});
+
+describe('l2D.setVolume()', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
+  });
+
+  it('cubism6 加载后 setVolume() 调用底层', async () => {
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM5_JSON));
+    const { init } = await import('../../src/index.ts');
+    const l2d = init(makeCanvas());
+    await l2d.load({ path: '/models/test.model3.json' });
+    vi.clearAllMocks();
+    l2d.setVolume(0.7);
+    expect(mockCubism5Instance.setVolume).toHaveBeenCalledWith(0.7);
+  });
+
+  it('cubism2 加载后 setVolume() 调用底层', async () => {
+    vi.stubGlobal('fetch', makeFetchMock(CUBISM2_JSON));
+    const { init } = await import('../../src/index.ts');
+    const l2d = init(makeCanvas());
+    await l2d.load({ path: '/models/test.model.json' });
+    vi.clearAllMocks();
+    l2d.setVolume(0.3);
+    expect(mockCubism2Instance.setVolume).toHaveBeenCalledWith(0.3);
+  });
+
+  it('未加载时 setVolume() 不抛出错误', async () => {
+    const { init } = await import('../../src/index.ts');
+    const l2d = init(makeCanvas());
+    expect(() => l2d.setVolume(0.5)).not.toThrow();
   });
 });
 

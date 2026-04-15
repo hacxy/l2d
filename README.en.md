@@ -22,7 +22,58 @@
 
 L2D Demos: <https://l2d-demo.hacxy.cn>
 
+Online preview & debug tool: <https://l2d-viewer.hacxy.cn>
+
 Try `l2d` on [StackBlitz](https://stackblitz.com/edit/vitejs-vite-dye9t3?file=src%2Fmain.ts).
+
+## Contributing
+
+All kinds of contributions are welcome — bug reports, feature requests, or pull requests.
+
+### Prerequisites
+
+This project uses [pnpm](https://pnpm.io) to manage dependencies. Node.js **v24.14.0** is required.
+
+```bash
+# Clone the repository
+git clone https://github.com/hacxy/l2d.git
+cd l2d
+
+# Install dependencies
+pnpm install
+```
+
+### Workflow
+
+1. **Open an Issue** — Before writing code, open an [Issue](https://github.com/hacxy/l2d/issues) to describe the bug or feature. This keeps everyone aligned before work begins.
+
+2. **Create a branch** — Branch off `main` using the `<issue-id>-<github-username>` naming pattern, e.g. `42-hacxy`.
+
+3. **Start the dev environment**:
+
+   ```bash
+   pnpm run demo:dev   # Launch the demo debug page
+   ```
+
+4. **Run tests**:
+
+   ```bash
+   pnpm run test
+   ```
+
+5. **Code style** — ESLint runs automatically on staged files via a pre-commit hook. You can also run it manually:
+
+   ```bash
+   pnpm run lint:fix
+   ```
+
+6. **Commit** — Use the built-in interactive commit tool, which guides you through writing a message that follows the [Conventional Commits](https://www.conventionalcommits.org) spec:
+
+   ```bash
+   pnpm run commit
+   ```
+
+7. **Open a Pull Request** — Target the `main` branch, describe what changed and why, and link the relevant Issue.
 
 ## Contributors
 

@@ -1,90 +1,130 @@
 ---
 sidebar:
-  sort: 2
+  sort: 3
 ---
 
 # 快速开始
 
-要使用 `l2d` 将Live2D模型加载到浏览器中仅需以下三步
-
-## 安装
+## 安装 l2d
 
 ::: code-group
+
+```sh [pnpm]
+pnpm add l2d
+```
 
 ```sh [npm]
 npm install l2d
 ```
 
-```html [CDN]
-<script src="https://unpkg.com/l2d/dist/index.min.js"></script>
+```sh [yarn]
+yarn add l2d
 ```
 
 :::
 
-
-之后在浏览器中加载 Live2D 模型仅需两步, 假设 DOM 中存在一个 id 为 `l2d` 的 `canvas` 元素
+如果你的项目不使用构建工具，也可以通过 CDN 直接引入：
 
 ```html
-<canvas id="l2d"></canvas>
-```
-
-## 初始化画布
-
-::: code-group
-
-```ts [npm]
-import { init } from 'l2d';
-const l2d = init(document.getElementById('l2d') as HTMLCanvasElement);
-```
-
-```html [CDN]
 <script src="https://unpkg.com/l2d/dist/index.min.js"></script>
-<script>
-  const l2d = L2D.init(document.getElementById('l2d'));
-</script>
 ```
 
-:::
+## 创建画布
 
-调用 `init()` 方法初始化成功后, 它将返回一个l2d实例对象, 用于加载或调整模型状态.
+Live2D 模型渲染在 `<canvas>` 元素上。准备一个 canvas，并**通过 CSS** 设置它的显示尺寸：
+
+```html
+<canvas id="canvas" style="width: 300px; height: 400px;"></canvas>
+```
+
 
 ## 加载模型
 
-在画布中创建和加载一个模型, 只需要调用`l2d`实例下的 `load` 方法, 调用时可以传入 [options](../model/index.md) 来定义模型地址和模型样式, 同时 `load` 是一个异步函数, 当 `then` 方法被调用时表示模型创建成功.
+```ts
+import { init } from "l2d";
 
-<DemoBlock demo="demo1">
+// 1. 获取 canvas 元素
+const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 
-<<< ../../demos/index.ts#demo1{ts}
+// 2. 创建 L2D 实例
+const l2d = init(canvas);
 
-</DemoBlock>
+// 3. 加载模型（传入上一章介绍的入口文件路径）
+l2d.load({
+  path: "https://model.hacxy.cn/Haru/Haru.model3.json",
+});
+```
 
-- CDN方式请参考以下完整代码案例
+这三步就完成了一个模型的加载：`init()` 将实例绑定到 canvas，`load()` 负责下载资源并开始渲染。
 
-:::details CDN完整案例
-``` html
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <script src="https://unpkg.com/l2d/dist/index.min.js"></script>
-  </head>
+## 等待加载完成
+
+模型资源需要通过网络下载，加载是异步的。如果你需要在加载完成后执行某些操作，可以监听 `loaded` 事件：
+
+```ts
+// 方式一：事件监听（监听器必须在 load() 之前注册）
+l2d.on("loaded", () => {
+  console.log("模型加载完成！");
+});
+
+l2d.load({
+  path: "https://model.hacxy.cn/Haru/Haru.model3.json",
+});
+```
+
+```ts
+// 方式二：async/await
+await l2d.load({
+  path: "https://model.hacxy.cn/Haru/Haru.model3.json",
+});
+console.log("模型加载完成！");
+```
+
+> 使用事件监听方式时，请确保在调用 `l2d.load()` 之前完成注册，否则可能错过事件。
+
+## 显示加载进度
+
+对于资源较多的模型，可以监听 `loadstart` 和 `loadprogress` 事件展示加载进度：
+
+```ts
+l2d.on("loadstart", (total) => {
+  console.log(`共需加载 ${total} 个文件`);
+});
+
+l2d.on("loadprogress", (loaded, total, file) => {
+  const percent = Math.round((loaded / total) * 100);
+  console.log(`${percent}% — ${file}`);
+});
+```
+
+## CDN完整示例
+
+以下是一个不依赖构建工具、可以直接在浏览器运行的完整示例：
+
+```html
+<!DOCTYPE html>
+<html>
   <body>
-    <div style="display: flex">
-      <canvas id="l2d" style="width: 300px; height: 300px;"></canvas>
-    </div>
-    <script>
-      const l2d = L2D.init(document.getElementById('l2d'))
-      l2d
-        .load({
-          path: 'https://model.hacxy.cn/cat-black/model.json',
-        })
-        .then(() => {
-          console.log('加载成功')
-        })
+    <canvas id="canvas" style="width: 300px; height: 400px;"></canvas>
+
+    <script type="module">
+      import { init } from "https://unpkg.com/l2d/dist/index.min.js";
+
+      const canvas = document.getElementById("canvas");
+      const l2d = init(canvas);
+
+      l2d.on("loadprogress", (loaded, total) => {
+        console.log(`加载中 ${loaded}/${total}`);
+      });
+
+      l2d.on("loaded", () => {
+        console.log("加载完成");
+      });
+
+      l2d.load({
+        path: "https://model.hacxy.cn/Haru/Haru.model3.json",
+      });
     </script>
   </body>
 </html>
 ```
-:::
