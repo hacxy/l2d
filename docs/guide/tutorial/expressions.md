@@ -93,4 +93,4 @@ l2d.on("loaded", () => {
 | `Add`       | 在当前值基础上加 `Value` |
 | `Multiply`  | 将当前值乘以 `Value`     |
 
-
+参考[方法](../../reference/method.md)，以查阅所有的模型方法
