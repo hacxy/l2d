@@ -33,10 +33,10 @@ jobs:
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          username: deploy
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: docs/.vitepress/dist/
-          target: ~/Projects/.l2d_temp/
+          target: /srv/projects/.l2d_temp/
           rm: true
           strip_components: 3
 
@@ -44,10 +44,10 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          username: deploy
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            mkdir -p ~/Projects/l2d
-            rm -rf ~/Projects/l2d/*
-            cp -rf ~/Projects/.l2d_temp/*  ~/Projects/l2d/
-            rm -rf ~/Projects/.l2d_temp
+            mkdir -p /srv/projects/l2d
+            rm -rf /srv/projects/l2d/*
+            cp -rf /srv/projects/.l2d_temp/* /srv/projects/l2d/
+            rm -rf /srv/projects/.l2d_temp
