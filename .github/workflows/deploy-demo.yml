@@ -30,25 +30,15 @@ jobs:
           NODE_OPTIONS: --max_old_space_size=4096
         run: pnpm demo:build
 
-      - name: 部署产物到服务器
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: deploy
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: demo-dist/
-          target: /srv/projects/.l2d-demo_temp/
-          rm: true
-          strip_components: 1
+      - name: 配置 SSH 密钥
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: 执行远程脚本命令
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: deploy
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            mkdir -p /srv/projects/l2d-demo
-            rm -rf /srv/projects/l2d-demo/*
-            cp -rf /srv/projects/.l2d-demo_temp/* /srv/projects/l2d-demo/
-            rm -rf /srv/projects/.l2d-demo_temp
+      - name: 部署到服务器
+        run: |
+          rsync -avz --delete -e "ssh -i ~/.ssh/deploy_key" \
+            demo-dist/ \
+            deploy@${{ secrets.SSH_HOST }}:/srv/projects/l2d-demo/
