@@ -1,6 +1,7 @@
 name: DeployDocs
 on:
-  push: # 监听调用时机为push事件
+  workflow_dispatch:
+  push:
     branches: [main]
 jobs:
   build:
