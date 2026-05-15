@@ -107,11 +107,10 @@ l2d.on("loadprogress", (loaded, total, file) => {
   <body>
     <canvas id="canvas" style="width: 300px; height: 400px;"></canvas>
 
-    <script type="module">
-      import { init } from "https://unpkg.com/l2d/dist/index.min.js";
-
+    <script src="https://unpkg.com/l2d/dist/index.min.js"></script>
+    <script>
       const canvas = document.getElementById("canvas");
-      const l2d = init(canvas);
+      const l2d = L2D.init(canvas);
 
       l2d.on("loadprogress", (loaded, total) => {
         console.log(`加载中 ${loaded}/${total}`);
